@@ -559,3 +559,197 @@ HBuilderX，支持对项目创建或修改`别名`
 
 
 
+
+
+## 智能双击
+
+在HBuilderX中，但凡特殊点的字符，都能智能双击。
+
+- 双击引号/括号内侧，是选中引号/括号内的内容
+- 双击逗号两侧，是选择逗号前一段或后一段
+- 双击行尾，是选中该行(不含回车符)
+- 双击连词符（-_）选中整个词
+- 双击折叠行首内容开头，选择折叠段落
+- 双击行首缩进，选择相同缩进的段落
+- 双击列表符号，选择列表段落
+- 双击Tag开头或结尾，选择整段Tag
+- 双击属性赋值等号=，选择Html属性
+- 双击if、function等关键字，选择整段包围区域
+- 双击分号，选择js等语言的;分号前段落
+- 双击css类名左侧，选择Css类
+- 双击注释符选择注释区域
+- 双击#选择markdown标题段落
+- 双击语法定义符开头选择markdown图片、超链接、加粗、倾斜、代码等语法区
+
+
+
+
+
+
+
+## 同时注释if段首尾
+
+if块的调整很常见，除了包围、反包围外，常用操作还有同时注释掉if段首尾。
+
+1. 双击if选中if代码块
+2. 按`Ctrl+\`在选区首尾加光标，变成多光标模式
+3. 按`Ctrl+/`注释掉选区首尾行
+
+
+
+
+
+
+
+## 跳转/转到定义
+
+### 上一个光标位置
+
+在HBuilderX中，`Alt+Left` (MacOSX: `ctrl + -`)、点击工具栏上的`<`, 即可回到上一个光标位置
+
+
+
+### 转到行
+
+转到行快捷键：`ctrl + G`
+
+![image-20231116171036774](img/uniapp学习笔记/image-20231116171036774.png)
+
+
+
+![image-20231116171053566](img/uniapp学习笔记/image-20231116171053566.png)
+
+
+
+HBuilderX 3.1.13+版本，支持输入0跳转到首行、输入$跳转到最后一行
+
+
+
+### 转到定义
+
+转到定义的快捷键是`Alt+d`，鼠标操作是alt+左键单击
+
+
+
+### 转到定义到分栏
+
+`ctrl+alt+左键`，可以把一个定义处的代码打开在另一侧，方便共同查看
+
+
+
+
+
+## 查找替换
+
+### 快速查找文件
+
+`ctrl+p (MacOSX: ⌘P)`，可以定位到搜索框，输入文件名，快速打开任何文件。
+
+文件名后，敲击空格，输入项目名称，可以只搜索指定项目下文件
+
+按住`Ctrl+Tab`, 可以查看在编辑器中，打开的所有文件的列表
+
+
+
+### 查找索引符号
+
+在当前文件，按下`Ctrl + Shift + O`, 可以查找索引符号
+
+
+
+
+
+### 查找字符串
+
+ctrl +F
+
+- 范围：字符串查找，支持`按当前文件`、`按目录`、`按左侧选中`、`按当前项目`、`按所有项目`进行搜索查找。
+- 功能：字符串查找，支持`整词匹配`、`正则匹配`、`大小写匹配`，且支持`排除`特定目录
+
+
+
+### 区域内搜索
+
+支持选中一段文字，在顶部搜索栏选中区域搜索【Ctrl+Shift+f】，可以在特殊背景区内`搜索`、`替换`、`全选相同词`
+
+
+
+
+
+## 折叠
+
+折叠的快捷键是`alt+-`和`=`。
+
+或点击`行号`右边的`-`或`+`，即可完成折叠展开。
+
+
+
+
+
+## 格式化
+
+格式化快捷键, win：`ctrl + K`； mac: `command + K`
+
+
+
+### 格式化插件
+
+| 插件名称         | 对应插件配置中的名称    | 是否内置         | 可格式化的文件                             | 插件市场                                             | 插件教程                                                     |
+| ---------------- | ----------------------- | ---------------- | ------------------------------------------ | ---------------------------------------------------- | ------------------------------------------------------------ |
+| js-beautify      | format                  | 内置插件         | vue、html、js、css、json                   |                                                      | [文档](https://hx.dcloud.net.cn/Tutorial/extension/js-beautify) |
+| prettier         | format-prettier         | 非内置，需要下载 | less、sass、vue、stylus(vue内嵌)、ts、yaml | [下载地址](https://ext.dcloud.net.cn/plugin?id=2025) | [文档](https://hx.dcloud.net.cn/Tutorial/extension/prettier) |
+| stylus-supremacy | format-stylus-supremacy | 非内置，需要下载 | 格式化单独stylus文件                       | [下载地址](https://ext.dcloud.net.cn/plugin?id=2039) | [文档](https://ext.dcloud.net.cn/plugin?id=2039)             |
+
+
+
+
+
+1. 当同时存在`js-beautify`和`format-prettier`插件是，格式化`vue`文件，调用的是`format-prettier`插件
+2. `stylus-supremacy`只支持格式化独立的stylus文件，如需格式化vue文件内的stylus代码，需要同时安装prettier插件
+3. 本地插件目录：HBuilderX所有的插件，都存放于本地`plugins`目录下
+
+
+
+
+
+### 格式化插件配置
+
+点击菜单【工具】【设置 -> 插件配置】，选择相应插件, 点击`配置文件`进行配置
+
+
+
+
+
+## 语法校验
+
+代码语法校验，需要安装相应插件
+
+
+
+### 语法校验插件
+
+|        语言        |      插件名称      |                           插件地址                           |                           插件文档                           |
+| :----------------: | :----------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|        html        |   validate-html    | [下载地址](https://ext.dcloud.net.cn/plugin?name=validate-html) | [文档教程](https://hx.dcloud.net.cn/Tutorial/extension/validate-html) |
+| css/less/sass/scss | validate-stylelint | [下载地址](https://ext.dcloud.net.cn/plugin?name=validate-stylelint) | [文档教程](https://hx.dcloud.net.cn/Tutorial/extension/validate-stylelint) |
+|         js         |     eslint-js      | [下载地址](https://ext.dcloud.net.cn/plugin?name=eslint-js)  | [文档教程](https://hx.dcloud.net.cn/Tutorial/extension/eslint-js) |
+|        vue         |     eslint-vue     | [下载地址](https://ext.dcloud.net.cn/plugin?name=eslint-vue) | [文档教程](https://hx.dcloud.net.cn/Tutorial/extension/eslint-vue) |
+
+
+
+
+
+### 使用方法
+
+在对应的文件上，右键菜单，点击【验证本文档语法】
+
+校验概要结果会显示在`状态栏`
+
+比如有2个错误（如下图），可以按`F4`切换到不同的错误处
+
+
+
+![image-20231116172739241](img/uniapp学习笔记/image-20231116172739241.png)
+
+
+
