@@ -753,3 +753,373 @@ ctrl +F
 
 
 
+
+
+
+
+## 文件对比
+
+项目管理器，选中两个要对比的文件，右键菜单，点击【对比选中文件】
+
+
+
+![image-20231116173304097](img/uniapp学习笔记/image-20231116173304097.png)
+
+
+
+
+
+
+
+## 本地历史记录
+
+HBuilderX，文件修改、保存时在本地进行备份，防止意外丢失，可通过 “本地历史记录”查看备份文件
+
+在编辑器打开的文件上，点击右键菜单，点击【本地历史记录】
+
+
+
+![image-20231116173424251](img/uniapp学习笔记/image-20231116173424251.png)
+
+
+
+![image-20231116173451112](img/uniapp学习笔记/image-20231116173451112.png)
+
+
+
+
+
+菜单【设置】【常用设置】，可以配置`本地历史记录`
+
+- 单个文件最大备份数量
+- 单个文件大小限制
+- 最长保存时间
+
+
+
+![image-20231116173623448](img/uniapp学习笔记/image-20231116173623448.png)
+
+
+
+
+
+
+
+
+
+## editorconfig
+
+### 概述
+
+很多公司都要求各开发成员使用相同的编码风格，比如缩进是空格还是tab。
+
+`editorconfig`是一套解决这个问题的业内通用规范，通过在项目下存放配置文件`.editorconfig`，并在这个配置文件中描述规则，然后把这个配置文件和其他代码一起提交git/svn，所有项目成员，都会遵循相同的编码规范。
+
+`editorconfig`可以帮助开发者在不同的编辑器和IDE之间定义和维护一致的代码风格。 `editorconfig`包含一个用于定义代码格式的文件和一批编辑器插件，这些插件可以让编辑器读取配置文件并依此格式化代码。 `editorconfig`的配置文件十分易读，并且可以在各个操作系统、编辑器下工作
+
+
+
+
+
+### 示例
+
+`jQuery`在`Github`上的`.editorconfig`配置文件如下：
+
+
+
+```sh
+root = true
+
+[*]
+indent_style = tab
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[package.json]
+indent_style = space
+indent_size = 2
+```
+
+
+
+
+
+用于设置Python和JavaScript行尾和缩进风格的配置文件：
+
+```sh
+# EditorConfig is awesome: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+# 4 space indentation
+[*.py]
+indent_style = space
+indent_size = 4
+
+# Tab indentation (no size specified)
+[*.js]
+indent_style = tab
+
+# Indentation override for all JS under lib directory
+[lib/**.js]
+indent_style = space
+indent_size = 2
+
+# Matches the exact files either package.json or .travis.yml
+[{package.json,.travis.yml}]
+indent_style = space
+indent_size = 2
+```
+
+
+
+
+
+### 在哪里存放配置文件
+
+当打开一个文件时，`editorconfig`插件会在打开文件的目录和其每一级父目录查找.`editorconfig`文件，直到有一个配置文件`root=true`
+
+如果一个工程中出现多个配置文件，EditorConfig配置文件的读取层级是自上而下的，最深层的配置文件，最后读取。配置规则也是 按照读取的顺序来生效，所以路径上离代码最近的配置规则，优先级最高。
+
+
+
+
+
+### 文件格式详情
+
+`editorconfig`文件使用INI格式（译注：请参考维基百科），目的是可以与Python ConfigParser Library兼容，但是允许在分段名（译注：原文是section names）中使用“and”。 分段名是全局的文件路径，格式类似于`gitignore`。斜杠`/`作为路径分隔符，`#`或者`;`作为注释。注释应该单独占一行。`editorconfig`文件使用`UTF-8`格式、`CRLF`或`LF`作为换行符。
+
+
+
+|   通配符   |                 说明                 |
+| :--------: | :----------------------------------: |
+|     *      |       匹配除/之外的任意字符串        |
+|     **     |            匹配任意字符串            |
+|     ？     |           匹配任意单个字符           |
+|   [name]   |             匹配name字符             |
+|  [!name]   |            匹配非name字符            |
+| {s1,s3,s3} | 匹配任意给定的字符串（0.11.0起支持） |
+
+
+
+特殊字符可以用`\`转义，以使其不被认为是通配符
+
+
+
+|         属性说明         |                             说明                             |
+| :----------------------: | :----------------------------------------------------------: |
+|       indent_style       |               tab为hard-tabs，space为soft-tabs               |
+|       indent_size        | 设置整数表示规定每级缩进的列数和soft-tabs的宽度（译注：空格数）。如果设定为tab，则会使用tab_width的值（如果已指定） |
+|        tab_width         | 设置整数用于指定替代tab的列数。默认值就是indent_size的值，一般无需指定。 |
+|       end_of_line        |                定义换行符，支持lf、cr和crlf。                |
+| trim_trailing_whitespace |     设为true表示会除去换行行首的任意空白字符，false反之      |
+|   insert_final_newline   |        设为true表明使文件以一个空白行结尾，false反之         |
+|           root           | 表明是最顶层的配置文件，发现设为true时，才会停止查找.`editorconfig`文件。 |
+
+
+
+1. 所有的属性名和属性值对`大小写不敏感`。通常，如果没有明确指定某个属性，则会使用编辑器的配置，而`editorconfig`不会处理。
+2. 推荐不要指定某些`editorconfig`属性。比如，tab_width不需要特别指定，除非它与`indent_size`不同。同样的，当`indent_style`设为`tab`时，不需要配置`indent_size`，这样才方便阅读者使用他们习惯的缩进格式。另外，如果某些属性并没有规范化（比如`end_of_line`），就最好不要设置它。
+
+
+
+
+
+### 启用或关闭
+
+在【设置】中，有个editorconfig开关
+
+
+
+![image-20231117160912369](img/uniapp学习笔记/image-20231117160912369.png)
+
+
+
+
+
+
+
+
+
+## 外部命令
+
+### 使用场景
+
+- 压缩文件与解压
+- 压缩图片
+- 文档转换（比如markdown转pdf）
+- 调用python、shell脚本
+- 打开本地的某个程序
+- 传输文件到服务器
+- 操作服务器的某些服务（如启动、停止、重启nginx)
+- 下载文件
+- 安装apk到手机
+- 上传应用到应用分发网站（比如蒲公英）
+- 批量压缩
+- 其它的自动化操作
+- 上传文件到七牛云、阿里云等
+
+
+
+
+
+### 外部命令在哪里？
+
+菜单【工具】-->【外部命令】
+
+点击菜单【工具】-->【外部命令】-->【自定义外部命令】，就可以自定义外部命令，格式为json
+
+
+
+![image-20231117161151753](img/uniapp学习笔记/image-20231117161151753.png)
+
+
+
+
+
+
+
+### 示例
+
+模板如下：
+
+```sh
+//配置外层为数组结构，数组内可添加多个外部命令设置
+
+//外部命令可以让您在HBuilderX中通过菜单、快捷键等方式调用外部程序或命令行
+
+//注意: 左侧为教程，不是配置，需在右侧用户设置中添加外部命令才生效
+
+[
+    //------------外部命令 配置属性说明------------//
+    {
+        //名称，用于在“工具-运行外部命令”菜单中显示
+        "name":"Echo",
+
+        //需要执行的外部命令及参数：
+        // - 值支持string 和 array 两种形式 
+        // - 填写path环境中包含的命令或具体的程序路径及参数
+        // - 支持使用变量
+
+        // - command值为string: 命令与参数连写，命令或参数包含空格时需要使用\"\"包围
+        "command":"echo ${file}",
+
+        // - command值为array: 命令与参数分开写，命令或参数包含空格时不需要额外处理
+        "command": ["C:/Program Files (x86)/Google/Chrome/Application/chrome.exe", "${file}"],
+
+        //运行的环境 [可选项]：
+        // - process(默认值): 后台运行，运行时不显示输入输出
+        // - shell: 在cmd这样的独立shell环境下运行，运行时会打开shell窗口
+        // - terminal: 在HBuilderX自带的内置终端插件中运行
+        "type" : "shell",
+
+        //工作目录 [可选项]：命令运行时的工作目录，默认是文件所在目录
+        // - 支持使用变量
+        "workingDir" : "",
+
+        //快捷键 [可选项] : 可通过此快捷键直接运行此外部命令
+        "key": "ctrl+r"
+    },
+
+    //------------外部命令 变量说明------------//
+    //'command'、'workingDir'中可使用预定义的变量来获取当前文件的路径信息
+    // - ${file}             当前文件的完整路径,            比如 D:\\files\\test.txt
+    // - ${fileName}         当前文件的文件名,              比如 test.txt
+    // - ${fileExtension}    当前文件的扩展名,              比如 txt
+    // - ${fileBasename}     当前文件仅包含文件名的部分,     比如 test
+    // - ${fileDir}          当前文件所在目录的完整路径,     比如 D:\\files
+    // - ${projectDir}       当前文件所在项目的完整路径,     只有当前文件是项目管理器中某个项目下的文件时才起作用
+
+    //------------外部命令 示例------------//
+    //1. 在独立shell窗体下使用dir命令打印当前文件所在目录下文件列表
+    {
+        "name":"Dir",
+        "command":"dir ${fileDir}",
+        "type": "shell"
+    },
+    //2. 如安装了Android Studio，可以在avd中新建一个模拟器，然后在HBuilderX中使用快捷键将模拟器直接启动而不必启动AS。注意该终端关闭会导致模拟器关闭，所以更适合在HBuilderX的内置终端中打开
+    {
+        "name":"Android模拟器",
+        "command":"C:\\Users\\username\\AppData\\Local\\Android\\sdk\\emulator\\emulator.exe -netdelay none -netspeed full -avd Nexus_5X_API_27_x86",
+        "type" : "terminal",
+        "key":"alt+shift+e"
+    }
+
+]
+
+```
+
+
+
+
+
+
+
+压缩、解压：
+
+```sh
+[{
+    "name": "文件: 压缩7z格式",
+    "command": "\"C:/Program\ Files/7-Zip/7z.exe\" a ${file}.7z ${file}",
+    "type": "process",
+    "key": ""
+  },
+  {
+    "name": "文件: 压缩zip格式",
+    "command": [
+      "C:/Program Files/7-Zip/7z.exe",
+      "a",
+      "${file}.zip",
+      "${file}"
+    ],
+    "type": "process",
+    "key": ""
+  },
+  {
+    "name": "文件: 解压",
+    "command": "\"C:/Program Files/7-Zip/7z.exe\" x ${file}",
+    "type": "shell",
+    "key": ""
+  }
+]
+```
+
+
+
+
+
+![image-20231117161907654](img/uniapp学习笔记/image-20231117161907654.png)
+
+
+
+
+
+
+
+调用外部python、shell等脚本
+
+```sh
+[{
+  "name":"调用python脚本",
+  "command":"python script.py",
+  "type" : "terminal",
+  "key":"alt+shift+p"
+  }]
+```
+
+
+
+
+
+
+
+## 终端
+
