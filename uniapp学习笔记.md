@@ -1253,5 +1253,176 @@ ife的示例如下：
 
 
 
-## Vue支持
+## vue doc
+
+### 概述
+
+可以理解为，vue`组件`使用说明。
+
+在其它文件，使用`组件`的时候，弹出代码提示。
+
+
+
+
+
+### 支持的标签
+
+**主要用在`script`部分，需要写在`export default`上面**
+
+
+
+|    标签     |                             用法                             |                             说明                             |
+| :---------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| description |                @description 这是一个描述信息                 |                        一个组件描述。                        |
+|  tutorial   |  @tutorial [https://www.dcloud.io](https://www.dcloud.io/)   |                   用于引用其他文档或教程。                   |
+|  property   |                    @property {type} name                     |                     用于描述组件的属性。                     |
+|    value    |                 @value 描述属性能够使用的值                  |  值域，用于限定属性能够使用的值。它紧跟在property后面使用。  |
+|    event    | @event {(e:MouseEvent)=>void} 事件名称 @event {Function} 事件名称 | 用于提示事件说明。 有两种使用方式, 可写死Function, 也可以写箭头函数。 |
+|   example   |  @example `<Pagination @total="50" @close=""></Pagination>`  | 用于提供示例代码。它可以包含一段代码片段，用于演示如何使用注释的代码。可以多行，支持 markdown 语法。 |
+| uniPlatform | @uniPlatform {"web": {"uniVer": "3.6.2+", "unixVer": "x" }}  | 仅用于提供uniapp兼容性信息。 `uniPlatform`需要参考详细规范。**`3.9.0+版本后支持`** |
+
+
+
+
+
+### 示例
+
+```vue
+/**
+ * 翻页组件
+ * @description 翻页组件
+ * @tutorial http://www.baidu.com
+ * @property {Number} total 翻页数据总数
+ * @property {String} size  组件大小
+ * @value big 大
+ * @value small 小
+ * @event {(e:MouseEvent)=>void} open 事件名称
+ * @event {Function} close 关闭事件
+ * @example <Pagination @total="50" @close=""></Pagination>
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {
+ *       "osVer": "8.0",
+ *       "uniVer": "3.7.0",
+ *       "unixVer": "3.9.0"
+ *     },
+ *     "ios": {
+ *       "osVer": "8.0",
+ *       "uniVer": "3.7.0",
+ *       "unixVer": "3.9.0"
+ *     }
+ *   },
+ *   "mp": {
+ *     "weixin": {
+ *       "hostVer": "8.0",
+ *       "uniVer": "3.7.0",
+ *       "unixVer": "x"
+ *     },
+ *     "kuaishou": {
+ *       "hostVer": "8.0",
+ *       "uniVer": "3.7.0",
+ *       "unixVer": "x"
+ *     }
+ *   },
+ *   "web": {
+ *     "uniVer": "3.6.2+",
+ *     "unixVer": "x"
+ *   }
+ * }
+ */
+export default {
+    props: {
+        total: Number,
+        size: String,
+    },
+    data() {
+        return {
+            pageSize: 10,
+            pageNumber: 0,
+        };
+    },
+    methods: {
+        handleChange(data, event) {
+            this.$emit('PsPn', this.pageSize, this.pageNumber);
+        },
+    },
+};
+```
+
+
+
+
+
+
+
+
+
+## JSDoc
+
+### 概述
+
+**JSDoc有2个作用，导出API文档和明确代码类型，辅助代码提示。**
+
+JSDoc描述了函数或变量的功能、值域、示例等很多代码提示时需要的数据，还可以通过类型定义，给动态的JS变量或函数赋予明确的类型。
+
+- 对于普通开发者，书写JSDoc有助于代码可读性的提升，在很多要求严格的大公司，JSDoc是强制要求编写的。 完善的JSDoc也能让开发者自定义的函数在引用时得到更方便的代码提示。
+- 对于框架开发者，书写好的JSDoc是必须的，除了生成API手册，良好的JSDoc可以让框架在IDE里得到更好的提示。
+
+
+
+敲`/**`回车即可生成JSDoc注释模板
+
+
+
+
+
+### 支持的标签
+
+|                             标签                             |                          用法                          |                       说明                        |
+| :----------------------------------------------------------: | :----------------------------------------------------: | :-----------------------------------------------: |
+| [description](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=description) |                   @description 内容                    |              描述。支持markdown语法               |
+| [example](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=example) |                        @example                        |      示例代码，可以多行，支持 markdown 语法       |
+| [param](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=param) |              @param {Type} paramName 描述              |              可以指定参数类型及描述               |
+| [property](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=property) |             @property {Type} propName 描述             |            可以指定对象属性类型及描述             |
+| [value](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=value) |                    @value value描述                    | 变量支持的值域，需要紧跟在@property或者@param后面 |
+| [defaultValue](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=defaultvalue) |                  @defaultValue value                   |                      默认值                       |
+| [remark](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=remark) |                      @remark 内容                      |  提供注意事项说明，可以多行，支持 markdown 语法   |
+| [return](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=return) |                       {属性类型}                       |                 描述函数的返回值                  |
+| [since](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=since) |                           无                           |  版本号 从哪个 HBuilderX 或者编译器版本开始支持   |
+| [tutorial](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=tutorial) |                     @tutorial url                      |                   引用教程文档                    |
+| [type](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=type) |                      @type {Type}                      |                  描述变量的类型                   |
+| [uniPlatform](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=uniplatform) | `@uniPlatform { "app":{...},"mp":{...},"web":{...}} }` |      用于提供兼容性信息。仅用于`uni-app`项目      |
+
+### 
+
+
+
+### 示例
+
+
+
+```js
+/**
+ * @description 这是一个动物的构建函数
+ */
+function Animal(name, weight) {
+    this.name = name;
+    this.weight = weight;
+}
+```
+
+
+
+```js
+/**
+ * @description 这是一个构造函数
+ * @example
+ * 函数使用示例：
+ * var animal = new Animal('cat', 10);
+ */
+function Animal(name,weight){
+    this.name = name;
+    this.weight = weight;
+}
+```
 
