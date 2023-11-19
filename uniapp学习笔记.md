@@ -1393,7 +1393,9 @@ JSDoc描述了函数或变量的功能、值域、示例等很多代码提示时
 | [type](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=type) |                      @type {Type}                      |                  描述变量的类型                   |
 | [uniPlatform](https://hx.dcloud.net.cn/Tutorial/Language/jsdoc?id=uniplatform) | `@uniPlatform { "app":{...},"mp":{...},"web":{...}} }` |      用于提供兼容性信息。仅用于`uni-app`项目      |
 
-### 
+
+
+
 
 
 
@@ -1425,4 +1427,296 @@ function Animal(name,weight){
     this.weight = weight;
 }
 ```
+
+
+
+
+
+
+
+
+
+
+
+## 常用插件
+
+### validate-html
+
+html语法校验插件，需要到[插件市场](https://ext.dcloud.net.cn/plugin?name=validate-html)安装
+
+
+
+安装完成后，进入【设置】【插件配置】【htmlhintrc】，点击htmlhintrc, 即可配置相关规则
+
+|           选项           |                           说明                           |
+| :----------------------: | :------------------------------------------------------: |
+|    tagname-lowercase     |        标签名是否开启小写; true:启用, false:禁用         |
+|      attr-lowercase      |        属性名是否开启小写，true:启用, false:禁用         |
+| attr-value-double-quotes |    属性值是否必须放在双引号中，true:启用, false:禁用     |
+|      doctype-first       | Doctype是否必须是HTML文档的第一行，true:启用, false:禁用 |
+|         tag-pair         |         标签是否必须成对，true:启用, false:禁用          |
+|     spec-char-escape     |       特殊字符是否必须转义，true:启用, false:禁用        |
+|        id-unique         |        ID属性是否必须唯一，true:启用, false:禁用         |
+|      src-not-empty       |          src属性是否为空，true:启用, false:禁用          |
+|   attr-no-duplication:   |  同一标签中，属性值是否不可重复, true:启用, false:禁用   |
+
+
+
+
+
+### validate-stylelint
+
+validate-stylelint, 用于校验css、less、scss语法
+
+此插件，需要到[插件市场](https://ext.dcloud.net.cn/plugin?name=validate-stylelint)安装
+
+
+
+
+
+
+
+### eslint-js
+
+eslint-js, 用于校验js和html中的js代码
+
+[eslint-js插件安装地址](https://ext.dcloud.net.cn/plugin?id=2037)
+
+
+
+
+
+### eslint-vue
+
+此插件用于vue语法校验。[eslint-vue插件安装地址](https://ext.dcloud.net.cn/plugin?id=2005)
+
+
+
+
+
+### js-beautify
+
+HBuilderX 3.7.6+, 内置format插件(即js-beautify)，支持项目下格式化配置.jsbeautifyrc文件
+
+只有项目下存在`.jsbeautifyrc`文件时才会生效。否则则采用HBuilderX内置的jsbeautifyrc格式化规则
+
+
+
+
+
+### Formator-Prettier
+
+此插件用于格式化less、sass、vue、stylus、ts、yaml代码
+
+此插件需要到[插件市场](https://ext.dcloud.net.cn/plugin?id=2025)下载。
+
+
+
+
+
+
+
+### compile-node-sass
+
+Scss/Sass 是一款强化 CSS 的辅助工具，它在 CSS 语法的基础上增加了变量 (variables)、嵌套 (nested rules)、混合 (mixins)、导入 (inline imports) 等高级功能，这些拓展令 CSS 更加强大与优雅。
+
+使用 Scss/Sass 以及 Scss/Sass 的样式库（如 Compass）有助于更好地组织管理样式文件，以及更高效地开发项目。
+
+compile-node-sass插件，编译sass/scss为css。
+
+在HBuilderX中，使用`scss/sass`是需要安装`compile-node-sass编译插件`的
+
+安装sass插件，需要到[插件市场](https://ext.dcloud.net.cn/plugin?id=2046)安装
+
+
+
+- uni-app项目，会自动编译使用sass的文件。
+- 单独编译sass文件。选中sass文件，点击右键菜单 -> 外部命令 -> sass -> 编译scss/sass
+
+
+
+点击菜单【工具 -> 插件配置 -> compile-node-sass -> package.json】，即可打开配置文件文件。
+
+打开package.json, 修改key值，即可配置快捷键；可通过此快捷键直接运行此外部命令
+
+
+
+点击菜单【工具 -> 插件配置 -> compile-node-sass -> package.json】，即可打开配置文件文件。
+
+配置文件中`onDidSaveExecution`，表示保存的时候是否触发编译，默认为false
+
+
+
+
+
+
+
+### sftp/ftp插件
+
+此插件是vscode中流行的ftp插件，因HBuilderX兼容vscode的部分插件生态，也可以在HBuilderX中使用。
+
+- 使用此插件，可将本地工作区文件，与FTP服务器或linux服务器文件同步。
+- 支持`ftp/sftp`协议
+- 支持远程文件目录`浏览`、`上传`、`下载`、`删除`
+- 支持`自动保存上传`
+
+
+
+[SFTP/FTP插件市场插件地址](https://ext.dcloud.net.cn/plugin?id=2038)
+
+
+
+1. 在项目管理器，新建一个空目录或空项目，然后选中
+2. 右键菜单，点击【Ftp: 创建连接配置】
+3. 系统自动创建`.ftp/ftp-sync.json`配置文件
+4. 编辑`ftp-sync.json`, 填写`host（ip）`、`username（用户名）`、`password（密码）`、`port（端口）`、`protocol（协议）`
+5. 填写完配置文件，右键菜单，点击【Ftp: 浏览远程文件】
+6. 选择文件目录，进行`上传`、`下载`、`删除`操作
+
+
+
+
+
+
+
+
+
+
+
+
+
+# uni-app组成和跨端原理
+
+## 基本语言和开发规范
+
+uni-app代码编写，基本语言包括js、vue、css。以及ts、scss等css预编译器。
+
+在app端，还支持原生渲染的nvue，以及可以编译为kotlin和swift的uts。
+
+
+
+为了实现多端兼容，综合考虑编译速度、运行性能等因素，`uni-app` 约定了如下开发规范：
+
+- 页面文件遵循 [Vue 单文件组件 (SFC) 规范](https://vue-loader.vuejs.org/zh/spec.html)，即每个页面是一个.vue文件
+- 组件标签靠近小程序规范，详见[uni-app 组件规范](https://uniapp.dcloud.net.cn/component/)
+- 接口能力（JS API）靠近小程序规范，但需将前缀 `wx`、`my` 等替换为 `uni`，详见[uni-app接口规范](https://uniapp.dcloud.net.cn/api/)
+- 数据绑定及事件处理同 `Vue.js` 规范，同时补充了[应用生命周期](https://uniapp.dcloud.net.cn/collocation/App.html#applifecycle)及[页面的生命周期](https://uniapp.dcloud.net.cn/tutorial/page.html#lifecycle)
+- 如需兼容app-nvue平台，建议使用flex布局进行开发
+
+
+
+uni-app分`编译器`和`运行时（runtime）`。uni-app能实现一套代码、多端运行，是通过这2部分配合完成的
+
+
+
+编译器将开发者的代码进行编译，编译的输出物由各个终端的runtime进行解析，每个平台（Web、Android App、iOS App、各家小程序）都有各自的runtime
+
+
+
+
+
+## 编译器
+
+- 编译器运行在电脑开发环境。一般是内置在HBuilderX工具中，也可以使用独立的cli版。
+- 开发者按uni-app规范编写代码，由编译器将开发者的代码编译生成每个平台支持的特有代码
+  - 在web平台，将.vue文件编译为js代码。与普通的vue cli项目类似
+  - 在微信小程序平台，编译器将.vue文件拆分生成wxml、wxss、js等代码
+  - 在app平台，将.vue文件编译为js代码。进一步，如果涉及uts代码：
+    - 在Android平台，将.uts文件编译为kotlin代码
+    - 在iOS平台，将.uts文件编译为swift代码
+- 编译器分vue2版和vue3版
+  - vue2版：基于`webpack`实现
+  - vue3版：基于`Vite`实现，性能更快
+- 编译器支持条件编译，即可以指定某部分代码只编译到特定的终端平台。从而将公用和个性化融合在一个工程中。
+
+
+
+
+
+
+
+## 运行时
+
+runtime不是运行在电脑开发环境，而是运行在真正的终端上。
+
+uni-app在每个平台（Web、Android App、iOS App、各家小程序）都有各自的runtime。这是一个比较庞大的工程。
+
+- 在小程序端，uni-app的runtime，主要是一个小程序版的vue runtime，页面路由、组件、api等方面基本都是转义。
+- 在web端，uni-app的runtime相比普通的vue项目，多了一套ui库、页面路由框架、和uni对象（即常见API封装）
+- 在App端，uni-app的runtime更复杂，可以先简单理解为DCloud也有一套小程序引擎，打包app时将开发者的代码和DCloud的小程序打包成了apk或ipa
+
+
+
+uni-app runtime包括3部分：基础框架、组件、API。
+
+
+
+1. 基础框架：
+   - 包括语法、数据驱动、全局文件、应用管理、页面管理、js引擎、渲染和排版引擎等
+   - 在web和小程序上，不需要uni-app提供js引擎和排版引擎，直接使用浏览器和小程序的即可。但app上需要uni-app提供
+   - App的js引擎：App-Android上，uni-app的js引擎是v8，App-iOS是jscore
+   - App的渲染引擎：同时提供了2套渲染引擎，`.vue`页面文件由webview渲染，原理与小程序相同；`.nvue`页面文件由原生渲染，原理与react native相同。开发者可以根据需要自主选择渲染引擎。
+2. 组件：
+   - runtime中包括的组件只有基础组件，如`<view>`、`<button>`等。扩展组件不包含在uni-app的runtime中，而是下载到用户的项目代码中。（这些组件都是vue组件）
+   - 为了降低开发者的学习成本，uni-app的内置基础组件命名规范与小程序基本相同。
+   - 这几十个组件不管在哪个平台，已被处理为均有一致表现。
+   - 在小程序端，uni-app基础组件会直接转义为小程序自己的内置组件。在小程序的runtime中不占体积。
+   - 在web和android、iOS端，这几十个组件都在uni-app的runtime中，会占用一定体积，相当于内置了一套ui库。
+   - 组件的扩展：
+     - 有了几十个基础组件，大多数扩展组件也都是基于这些基础组件封装的。比如官方提供的扩展ui库`uni ui`。
+     - 在web平台，for web的各种ui库（如elementUI）也可以使用，但这些库由于操作了dom，无法跨端在app和小程序中使用。
+     - 在App平台，uni-app也支持使用原生编程语言来自行扩展原生组件，比如原生的地图、ar等。
+     - uni-app同时支持将[微信自定义组件](https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject)运行到微信小程序、web、app这3个平台。注意微信自定义组件不是vue组件。
+3. API：
+   - uni-app runtime内置了大量常见的、跨端的 [API](https://uniapp.dcloud.net.cn/api/)，比如联网(uni.request)、读取存储(uni.getStorage)
+   - 同时uni-app不限制各端原生平台的API调用。开发者可以在uni-app框架中无限制的调用该平台所有能使用的API。即，在小程序平台，小程序的所有API都可以使用；在web平台，浏览器的所有API都可使用；在iOS和Android平台，os的所有API都可以使用。
+   - 也就是说，使用uni-app的标准API，可以跨端使用。但对于不跨端的部分，仍可以调用该端的专有API。由于常见的API都已经被封装内置，所以日常开发时，开发者只需关注uni标准API，当需要调用特色端能力时在条件编译里编写特色API调用代码。
+   - [ext API](https://uniapp.dcloud.net.cn/api/extapi)：web和app的runtime体积不小，如果把小程序的所有API等内置进去会让开发者的最终应用体积变大。所以有部分不常用的API被剥离为ext API。虽然仍然是uni.开头，但需要单独下载插件到项目下
+   - 小程序平台：uni对象会转为小程序的自有对象，比如在微信小程序平台，编写uni.request等同于wx.request。那么所有wx.的API都可以这样使用。
+   - web平台：window、dom等浏览器专用API仍可以使用
+   - app平台：除了uni.的API，还可以使用[plus.的API](https://www.html5plus.org/doc/h5p.html)、[Native.js](https://uniapp.dcloud.net.cn/tutorial/native-js)，以及通过uts编写原生插件，或者使用java和objectC编写原生插件。这些原生插件调用os的API并封装给js使用。
+
+
+
+
+
+## 逻辑层和渲染层分离
+
+在web平台，逻辑层（js）和渲染层（html、css），都运行在统一的webview里。
+
+但在小程序和app端，逻辑层和渲染层被分离了。
+
+分离的核心原因是性能。过去很多开发者吐槽基于webview的app性能不佳，很大原因是js运算和界面渲染抢资源导致的卡顿。
+
+不管小程序还是app，逻辑层都独立为了单独的js引擎，渲染层仍然是webview
+
+**所以注意小程序和app的逻辑层都不支持浏览器专用的window、dom等API。app只能在渲染层操作window、dom**，即[renderjs](https://uniapp.dcloud.net.cn/tutorial/renderjs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
