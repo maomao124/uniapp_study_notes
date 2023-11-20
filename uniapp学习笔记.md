@@ -1700,6 +1700,63 @@ uni-app runtime包括3部分：基础框架、组件、API。
 
 
 
+# 工程
+
+## 概述
+
+一个 uni-app 工程，就是一个 Vue 项目
+
+
+
+## 目录结构
+
+一个uni-app工程，默认包含如下目录及文件：
+
+```sh
+┌─uniCloud              云空间目录，阿里云为uniCloud-aliyun,腾讯云为uniCloud-tcb
+│─components            符合vue组件规范的uni-app组件目录
+│  └─comp-a.vue         可复用的a组件
+├─utssdk                存放uts文件
+├─pages                 业务页面文件存放的目录
+│  ├─index
+│  │  └─index.vue       index页面
+│  └─list
+│     └─list.vue        list页面
+├─static                存放应用引用的本地静态资源（如图片、视频等）的目录，注意：静态资源都应存放于此目录
+├─uni_modules           存放[uni_module](/uni_modules)。
+├─platforms             存放各平台专用页面的目录
+├─nativeplugins         App原生语言插件 
+├─nativeResources       App端原生资源目录
+│  ├─android            Android原生资源目录
+|  └─ios                iOS原生资源目录
+├─hybrid                App端存放本地html文件的目录
+├─wxcomponents          存放小程序组件的目录
+├─unpackage             非工程代码，一般存放运行或发行的编译结果
+├─AndroidManifest.xml   Android原生应用清单文件
+├─Info.plist            iOS原生应用配置文件
+├─main.js               Vue初始化入口文件
+├─App.vue               应用配置，用来配置App全局样式以及监听 应用生命周期
+├─manifest.json         配置应用名称、appid、logo、版本等打包信息
+├─pages.json            配置页面路由、导航条、选项卡等页面类信息
+└─uni.scss              这里是uni-app内置的常用样式变量
+```
+
+
+
+
+
+## static目录
+
+uni-app编译器根据pages.json扫描需要编译的页面，并根据页面引入的js、css合并打包文件。
+对于本地的图片、字体、视频、文件等资源，如果可以直接识别，那么也会把这些资源文件打包进去，但如果这些资源以变量的方式引用， 比如：`<image :src="url"></image>`，甚至可能有更复杂的函数计算，此时编译器无法分析
+
+那么有了static目录，编译器就会把这个目录整体复制到最终编译包内。这样只要运行时确实能获取到这个图片，就可以显示。
+
+当然这也带来一个注意事项，如果static里有一些没有使用的废文件，也会被打包到编译包里，造成体积变大
+
+另外注意，static目录支持特殊的平台子目录，比如web、app、mp-weixin等，这些目录存放专有平台的文件，这些平台的文件在打包其他平台时不会被包含
+
+非 `static` 目录下的文件（vue组件、js、css 等）只有被引用时，才会被打包编译
 
 
 
@@ -1713,10 +1770,128 @@ uni-app runtime包括3部分：基础框架、组件、API。
 
 
 
+# 页面
+
+## 概述
+
+uni-app项目中，一个页面就是一个符合`Vue SFC规范`的 vue 文件
+
+在 uni-app js 引擎版中，后缀名是`.vue`文件或`.nvue`文件。 这些页面均全平台支持，差异在于当 uni-app 发行到App平台时，`.vue`文件会使用webview进行渲染，`.nvue`会使用原生进行渲染
+
+一个页面可以同时存在vue和nvue，在[pages.json](https://uniapp.dcloud.net.cn/collocation/pages)的路由注册中不包含页面文件名后缀，同一个页面可以对应2个文件名。重名时优先级如下：
+
+- 在非app平台，先使用vue，忽略nvue
+- 在app平台，使用nvue，忽略vue
 
 
 
 
+
+在 uni-app x 中，后缀名是`.uvue`文件
+
+uni-app x 中没有js引擎和webview，不支持和vue页面并存。
+
+uni-app x 在app-android上，每个页面都是一个全屏activity，不支持透明。
+
+
+
+
+
+## 新建页面
+
+`uni-app`中的页面，默认保存在工程根目录下的`pages`目录下
+
+每次新建页面，均需在`pages.json`中配置`pages`列表；未在`pages.json -> pages` 中注册的页面，`uni-app`会在编译阶段进行忽略
+
+通过HBuilderX开发 `uni-app` 项目时，在 `uni-app` 项目上右键“新建页面”，HBuilderX会自动在`pages.json`中完成页面注册，开发更方便
+
+
+
+![image-20231120101642753](img/uniapp学习笔记/image-20231120101642753.png)
+
+
+
+
+
+新建页面时，可以选择`是否创建同名目录`。创建目录的意义在于：
+
+* 如果你的页面较复杂，需要拆分多个附属的js、css、组件等文件，则使用目录归纳比较合适
+* 如果只有一个页面文件，大可不必多放一层目录
+
+
+
+
+
+## 删除页面
+
+删除页面时，需做两件工作：
+
+- 删除`.vue`文件、`.nvue`、`.uvue`文件
+- 删除`pages.json -> pages`列表项中的配置
+
+
+
+
+
+## pages.json
+
+pages.json是工程的页面管理配置文件，包括：页面路由注册、页面参数配置（原生标题栏、下拉刷新...）、首页tabbar等众多功能
+
+
+
+
+
+## 页面生命周期
+
+`uni-app` 页面除支持 Vue 组件生命周期外还支持下方页面生命周期函数，当以组合式 API 使用时，在 Vue2 和 Vue3 中存在一定区别
+
+
+
+|               函数名                |                             说明                             |                         平台差异说明                         | 最低版本 |
+| :---------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :------: |
+|               onInit                | 监听页面初始化，其参数同 onLoad 参数，为上个页面传递的数据，参数类型为 Object（用于页面传参），触发时机早于 onLoad |                          百度小程序                          |  3.1.0+  |
+|               onLoad                | 监听页面加载，该钩子被调用时，响应式数据、计算属性、方法、侦听器、props、slots 已设置完成，其参数为上个页面传递的数据，参数类型为 Object（用于页面传参），参考[示例](https://uniapp.dcloud.net.cn/api/router#navigateto)。 |                                                              |          |
+|               onShow                | 监听页面显示，页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面 |                                                              |          |
+|               onReady               | 监听页面初次渲染完成，此时组件已挂载完成，DOM 树($el)已可用，注意如果渲染速度快，会在页面进入动画完成前触发 |                                                              |          |
+|               onHide                |                         监听页面隐藏                         |                                                              |          |
+|              onUnload               |                         监听页面卸载                         |                                                              |          |
+|              onResize               |                       监听窗口尺寸变化                       |                 App、微信小程序、快手小程序                  |          |
+|          onPullDownRefresh          | 监听用户下拉动作，一般用于下拉刷新，参考[示例](https://uniapp.dcloud.net.cn/api/ui/pulldown) |                                                              |          |
+|            onReachBottom            | 页面滚动到底部的事件（不是scroll-view滚到底），常用于下拉下一页数据。具体见下方注意事项 |                                                              |          |
+|            onTabItemTap             |      点击 tab 时触发，参数为Object，具体见下方注意事项       | 微信小程序、QQ小程序、支付宝小程序、百度小程序、H5、App、快手小程序、京东小程序 |          |
+|          onShareAppMessage          |                      用户点击右上角分享                      | 微信小程序、QQ小程序、支付宝小程序、抖音小程序、飞书小程序、快手小程序、京东小程序 |          |
+|            onPageScroll             |                  监听页面滚动，参数为Object                  |                          nvue不支持                          |          |
+|      onNavigationBarButtonTap       |           监听原生标题栏按钮点击事件，参数为Object           |                           App、H5                            |          |
+|             onBackPress             | 监听页面返回，返回 event = {from:backbutton、 navigateBack} ，backbutton 表示来源是左上角返回按钮或 android 返回键；navigateBack表示来源是 uni.navigateBack；[详见](https://uniapp.dcloud.net.cn/tutorial/page.html#onbackpress) |                    app、H5、支付宝小程序                     |          |
+|  onNavigationBarSearchInputChanged  |           监听原生标题栏搜索输入框输入内容变化事件           |                           App、H5                            |  1.6.0   |
+| onNavigationBarSearchInputConfirmed | 监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。 |                           App、H5                            |  1.6.0   |
+|  onNavigationBarSearchInputClicked  | 监听原生标题栏搜索输入框点击事件（pages.json 中的 searchInput 配置 disabled 为 true 时才会触发） |                           App、H5                            |  1.6.0   |
+|           onShareTimeline           |                监听用户点击右上角转发到朋友圈                |                          微信小程序                          |  2.8.1+  |
+|          onAddToFavorites           |                    监听用户点击右上角收藏                    |                     微信小程序、QQ小程序                     |  2.8.1+  |
+
+
+
+
+
+
+
+## onShow和onHide
+
+页面显示，是一个会重复触发的事件
+
+a页面刚进入时，会触发a页面的onShow
+
+当a跳转到b页面时，a会触发onHide，而b会触发onShow
+
+但当b被关闭时，b会触发onUnload，此时a再次显示出现，会再次触发onShow
+
+在tabbar页面（指pages.json里配置的tabbar），不同tab页面互相切换时，会触发各自的onShow和onHide。
+
+
+
+
+
+## onInit
 
 
 
