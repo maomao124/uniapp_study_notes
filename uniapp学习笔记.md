@@ -1893,5 +1893,187 @@ a页面刚进入时，会触发a页面的onShow
 
 ## onInit
 
+- 仅百度小程序基础库 3.260 以上支持 onInit 生命周期
+- 其他版本或平台可以同时使用 onLoad 生命周期进行兼容，注意避免重复执行相同逻辑
+- 不依赖页面传参的逻辑可以直接使用 created 生命周期替代
 
+
+
+
+
+## onReachBottom
+
+可在pages.json里定义具体页面底部的触发距离onReachBottomDistance
+
+比如设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
+
+如使用scroll-view导致页面没有滚动，则触底事件不会被触发
+
+
+
+
+
+## onPageScroll
+
+|   属性    |  类型  |                 说明                 |
+| :-------: | :----: | :----------------------------------: |
+| scrollTop | Number | 页面在垂直方向已滚动的距离（单位px） |
+
+
+
+```js
+onPageScroll : function(e) { //nvue暂不支持滚动监听，可用bindingx代替
+	console.log("滚动距离为：" + e.scrollTop);
+}
+```
+
+
+
+
+
+
+
+## onBackPress
+
+| 属性 |  类型  |                             说明                             |
+| ---- | :----: | :----------------------------------------------------------: |
+| from | String | 触发返回行为的来源：'backbutton'——左上角导航栏按钮及安卓返回键；'navigateBack'——uni.navigateBack() 方法。**支付宝小程序端不支持返回此字段** |
+
+
+
+```js
+export default {
+	onBackPress(options) {
+		console.log('from:' + options.from)
+	}
+}
+```
+
+
+
+- `onBackPress`上不可使用`async`，会导致无法阻止默认返回
+- 支付宝小程序只有真机可以监听到非`navigateBack`引发的返回事件（使用小程序开发工具时不会触发`onBackPress`），不可以阻止默认返回行为
+
+
+
+
+
+## onTabItemTap
+
+|   属性   |  类型  |             说明             |
+| :------: | :----: | :--------------------------: |
+|  index   | Number | 被点击tabItem的序号，从0开始 |
+| pagePath | String |   被点击tabItem的页面路径    |
+|   text   | String |   被点击tabItem的按钮文字    |
+
+
+
+```js
+onTabItemTap : function(e) {
+	console.log(e);
+	// e的返回格式为json对象： {"index":0,"text":"首页","pagePath":"pages/index/index"}
+},
+```
+
+
+
+* onTabItemTap常用于点击当前tabitem，滚动或刷新当前页面。如果是点击不同的tabitem，一定会触发页面切换。
+* 如果想在App端实现点击某个tabitem不跳转页面，不能使用onTabItemTap，可以使用plus.nativeObj.view放一个区块盖住原先的tabitem，并拦截点击事件。
+* 支付宝小程序平台onTabItemTap表现为点击非当前tabitem后触发，因此不能用于实现点击返回顶部这种操作
+
+
+
+
+
+## 组件生命周期
+
+`uni-app` 组件支持的生命周期，与vue标准组件的生命周期相同
+
+
+
+|    函数名     |                             说明                             | 平台差异说明 | 最低版本 |
+| :-----------: | :----------------------------------------------------------: | :----------: | :------: |
+| beforeCreate  |                    在实例初始化之前被调用                    |              |          |
+|    created    |                  在实例创建完成后被立即调用                  |              |          |
+|  beforeMount  |                    在挂载开始之前被调用。                    |              |          |
+|    mounted    | 挂载到实例上去之后调用。注意：此处并不能确定子组件被全部挂载，如果需要子组件完全挂载之后在执行操作可以使用`$nextTick` |              |          |
+| beforeUpdate  |          数据更新时调用，发生在虚拟 DOM 打补丁之前           | 仅H5平台支持 |          |
+|    updated    | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子 | 仅H5平台支持 |          |
+| beforeDestroy |         实例销毁之前调用。在这一步，实例仍然完全可用         |              |          |
+|   destroyed   | Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁 |              |          |
+
+
+
+
+
+
+
+## 页面调用接口
+
+### getApp()
+
+`getApp()` 函数用于获取当前应用实例，一般用于获取globalData。也可通过应用实例调用 `App.vue methods` 中定义的方法
+
+```js
+const app = getApp()
+console.log(app.globalData)
+```
+
+
+
+- 不要在定义于 `App()` 内的函数中，或调用 `App` 前调用 `getApp()` ，可以通过 `this.$scope` 获取对应的app实例
+- 通过 `getApp()` 获取实例之后，不要私自调用生命周期函数。
+- 当在首页`nvue`中使用`getApp()`不一定可以获取真正的`App`对象。对此提供了`const app = getApp({allowDefault: true})`用来获取原始的`App`对象，可以用来在首页对`globalData`等初始化
+
+
+
+
+
+### getCurrentPages()
+
+`getCurrentPages()` 函数用于获取当前[页面栈](https://uniapp.dcloud.net.cn/tutorial/page.html#页面栈)的实例，以数组形式按栈的顺序给出，数组中的元素为页面实例，第一个元素为首页，最后一个元素为当前页面
+
+
+
+每个页面实例的方法属性列表：
+
+
+
+| 方法                  | 描述                          | 平台说明 |
+| --------------------- | ----------------------------- | -------- |
+| page.$getAppWebview() | 获取当前页面的webview对象实例 | App      |
+| page.route            | 获取当前页面的路由            |          |
+
+
+
+`getCurrentPages()`仅用于展示页面栈的情况，请勿修改页面栈，以免造成页面状态错误。
+页面关闭时，对应页面实例会在页面栈中删除
+
+
+
+- `navigateTo`, `redirectTo` 只能打开非 tabBar 页面。
+- `switchTab` 只能打开 `tabBar` 页面。
+- `reLaunch` 可以打开任意页面。
+- 页面底部的 `tabBar` 由页面决定，即只要是定义为 `tabBar` 的页面，底部都有 `tabBar`。
+- 不能在首页 `onReady` 之前进行页面跳转
+
+
+
+
+
+### $getAppWebview()
+
+`uni-app` 在 `getCurrentPages()`获得的页面里内置了一个方法 `$getAppWebview()` 可以得到当前webview的对象实例，从而实现对 webview 更强大的控制。在 html5Plus 中，plus.webview具有强大的控制能力
+
+但`uni-app`框架有自己的窗口管理机制，请不要自己创建和销毁webview，如有需求覆盖子窗体上去
+
+**此方法仅 App 支持**
+
+
+
+
+
+
+
+## 页面通讯
 
