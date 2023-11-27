@@ -2077,3 +2077,153 @@ console.log(app.globalData)
 
 ## 页面通讯
 
+### uni.$emit(eventName,OBJECT)
+
+触发全局的自定义事件。附加参数都会传给监听器回调。
+
+
+
+|   属性    |  类型  |          描述          |
+| :-------: | :----: | :--------------------: |
+| eventName | String |         事件名         |
+|  OBJECT   | Object | 触发事件携带的附加参数 |
+
+
+
+
+
+```js
+uni.$emit('update',{msg:'页面更新'})
+```
+
+
+
+
+
+
+
+### uni.$on(eventName,callback)
+
+监听全局的自定义事件。事件可以由 uni.$emit 触发，回调函数会接收所有传入事件触发函数的额外参数
+
+
+
+|   属性    |   类型   |      描述      |
+| :-------: | :------: | :------------: |
+| eventName |  String  |     事件名     |
+| callback  | Function | 事件的回调函数 |
+
+
+
+
+
+```js
+uni.$on('update',function(data){
+		console.log('监听到事件来自 update ，携带参数 msg 为：' + data.msg);
+	})
+```
+
+
+
+
+
+### uni.$once(eventName,callback)
+
+监听全局的自定义事件。事件可以由 uni.$emit 触发，但是只触发一次，在第一次触发之后移除监听器
+
+
+
+|   属性    |   类型   |      描述      |
+| :-------: | :------: | :------------: |
+| eventName |  String  |     事件名     |
+| callback  | Function | 事件的回调函数 |
+
+
+
+```js
+uni.$once('update',function(data){
+		console.log('监听到事件来自 update ，携带参数 msg 为：' + data.msg);
+	})
+```
+
+
+
+
+
+### uni.$off([eventName, callback])
+
+移除全局自定义事件监听器
+
+
+
+|   属性    |      类型       |      描述      |
+| :-------: | :-------------: | :------------: |
+| eventName | Array＜String＞ |     事件名     |
+| callback  |    Function     | 事件的回调函数 |
+
+
+
+
+
+- 如果没有提供参数，则移除所有的事件监听器；
+- 如果只提供了事件，则移除该事件所有的监听器；
+- 如果同时提供了事件与回调，则只移除这个回调的监听器；
+- 提供的回调必须跟$on的回调为同一个才能移除这个回调的监听器；
+
+
+
+
+
+
+
+### 示例
+
+`$emit`、`$on`、`$off`常用于跨页面、跨组件通讯
+
+
+
+
+
+
+
+
+
+## 路由
+
+`uni-app`页面路由为框架统一管理，开发者需要在[pages.json](https://uniapp.dcloud.net.cn/collocation/pages#pages)里配置每个路由页面的路径及页面样式。类似小程序在 app.json 中配置页面路由一样。所以 `uni-app` 的路由用法与 `Vue Router` 不同
+
+
+
+`uni-app` 有两种页面路由跳转方式：使用[navigator](https://uniapp.dcloud.net.cn/component/navigator)组件跳转、调用[API](https://uniapp.dcloud.net.cn/api/router)跳转。
+
+
+
+页面返回时会自动关闭 loading 及 toast, modal 及 actionSheet 不会自动关闭。
+
+页面关闭时，只是销毁了页面实例
+
+
+
+
+
+
+
+## 页面栈
+
+框架以栈的形式管理当前所有页面， 当发生路由切换的时候，页面栈的表现如下：
+
+|  路由方式  |            页面栈表现             |                           触发时机                           |
+| :--------: | :-------------------------------: | :----------------------------------------------------------: |
+|   初始化   |            新页面入栈             |                   uni-app 打开的第一个页面                   |
+| 打开新页面 |            新页面入栈             | 调用 API  [uni.navigateTo](https://uniapp.dcloud.net.cn/api/router#navigateto) 、使用组件  \<navigator open-type="navigate"/> |
+| 页面重定向 |     当前页面出栈，新页面入栈      | 调用 API  [uni.redirectTo](https://uniapp.dcloud.net.cn/api/router#redirectto) 、使用组件 \<navigator open-type="redirectTo"/> |
+|  页面返回  |   页面不断出栈，直到目标返回页    | 调用 API  [uni.navigateBack](https://uniapp.dcloud.net.cn/api/router#navigateback)  、使用组件 \<navigator open-type="navigateBack"/> 、用户按左上角返回按钮、安卓用户点击物理back按键 |
+|  Tab 切换  | 页面全部出栈，只留下新的 Tab 页面 | 调用 API  [uni.switchTab](https://uniapp.dcloud.net.cn/api/router#switchtab) 、使用组件 \<navigator open-type="switchTab"/> 、用户切换 Tab |
+|   重加载   |   页面全部出栈，只留下新的页面    | 调用 API  [uni.reLaunch](https://uniapp.dcloud.net.cn/api/router#relaunch) 、使用组件  \<navigator open-type="reLaunch"/> |
+
+
+
+
+
+
+
