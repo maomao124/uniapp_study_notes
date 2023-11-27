@@ -2583,3 +2583,437 @@ uni-app 的 vue3 模式：vue 文件及 nvue 文件均支持最新版 ts
 
 # 条件编译
 
+## 编译器
+
+- vue2：`uni-app`编译器基于wepback实现
+- vue3：`uni-app`编译器基于Vite实现，编译速度更快
+
+
+
+`cli` 方式创建的项目，编译器安装在项目下。编译器不会跟随`HBuilderX`升级
+
+`HBuilderX`可视化界面创建的项目，编译器在`HBuilderX`的安装目录下的`plugin`目录，随着`HBuilderX`的升级会自动升级编译器
+
+
+
+
+
+## 条件编译
+
+在 C 语言中，通过 #ifdef、#ifndef 的方式，为 windows、mac 等不同 os 编译不同的代码。 `uni-app` 参考这个思路，为 `uni-app` 提供了条件编译手段，在一个工程里优雅的完成了平台个性化实现
+
+条件编译是用特殊的注释作为标记，在编译时根据这些特殊的注释，将注释里面的代码编译到不同平台
+
+
+
+**写法：** 以 `#ifdef` 或 `#ifndef` 加 `%PLATFORM%` 开头，以 `#endif` 结尾
+
+- `#ifdef`：if defined 仅在某平台存在
+- `#ifndef`：if not defined 除了某平台均存在
+- `%PLATFORM%`：平台名称
+
+
+
+|                       条件编译写法                       |                             说明                             |
+| :------------------------------------------------------: | :----------------------------------------------------------: |
+|       #ifdef **APP-PLUS** 需条件编译的代码 #endif        |                  仅出现在 App 平台下的代码                   |
+|          #ifndef **H5** 需条件编译的代码 #endif          |    除了 H5 平台，其它平台均存在的代码（注意if后面有个n）     |
+| #ifdef **H5** \|\| **MP-WEIXIN** 需条件编译的代码 #endif | 在 H5 平台或微信小程序平台存在的代码（这里只有\|\|，不可能出现&&，因为没有交集） |
+
+
+
+
+
+%PLATFORM% **可取值如下：**
+
+|                         |                                                              |                  |
+| :---------------------: | :----------------------------------------------------------: | :--------------: |
+|           值            |                           生效条件                           |     版本支持     |
+|          VUE3           | uni-app js引擎版用于区分vue2和3，[详情](https://ask.dcloud.net.cn/article/37834) | HBuilderX 3.2.0+ |
+|        UNI-APP-X        | 用于区分是否是uni-app x项目 [详情](https://uniapp.dcloud.net.cn/tutorial/platform.html#UNI-APP-X) | HBuilderX 3.9.0+ |
+|       uniVersion        | 用于区分编译器的版本 [详情](https://uniapp.dcloud.net.cn/tutorial/platform.html#uniVersion) | HBuilderX 3.9.0+ |
+|           APP           |                             App                              |                  |
+|        APP-PLUS         |                 uni-app js引擎版编译为App时                  |                  |
+| APP-PLUS-NVUE或APP-NVUE |                        App nvue 页面                         |                  |
+|       APP-ANDROID       | App Android 平台 [详情](https://uniapp.dcloud.net.cn/tutorial/platform.html#UTS) |                  |
+|         APP-IOS         | App iOS 平台 [详情](https://uniapp.dcloud.net.cn/tutorial/platform.html#UTS) |                  |
+|           H5            |                     H5（推荐使用 `WEB`）                     |                  |
+|           WEB           |                        web（同`H5`）                         | HBuilderX 3.6.3+ |
+|        MP-WEIXIN        |                          微信小程序                          |                  |
+|        MP-ALIPAY        |                         支付宝小程序                         |                  |
+|        MP-BAIDU         |                          百度小程序                          |                  |
+|       MP-TOUTIAO        |                          抖音小程序                          |                  |
+|         MP-LARK         |                          飞书小程序                          |                  |
+|          MP-QQ          |                           QQ小程序                           |                  |
+|       MP-KUAISHOU       |                          快手小程序                          |                  |
+|          MP-JD          |                          京东小程序                          |                  |
+|         MP-360          |                          360小程序                           |                  |
+|           MP            | 微信小程序/支付宝小程序/百度小程序/抖音小程序/飞书小程序/QQ小程序/360小程序 |                  |
+|    QUICKAPP-WEBVIEW     |                  快应用通用(包含联盟、华为)                  |                  |
+| QUICKAPP-WEBVIEW-UNION  |                          快应用联盟                          |                  |
+| QUICKAPP-WEBVIEW-HUAWEI |                          快应用华为                          |                  |
+
+
+
+
+
+条件编译是利用注释实现的，在不同语法里注释写法不一样，js/uts使用 `// 注释`、css 使用 `/* 注释 */`、vue/nvue/uvue 模板里使用 `<!-- 注释 -->`
+
+条件编译APP-PLUS包含APP-NVUE和APP-VUE，APP-PLUS-NVUE和APP-NVUE没什么区别，为了简写后面出了APP-NVUE
+
+对于未定义平台名称，`#ifdef` 中的代码不会生效，而 `#ifndef` 中的代码会生效；
+
+
+
+
+
+
+
+## 示例
+
+```vue
+<template>
+	<view class="content">
+		<view class="text-area">
+			<!-- #ifdef H5 -->
+			<text @click="show()" class="title">H5</text>
+			<!-- #endif -->
+			<!-- #ifdef APP-ANDROID -->
+			<text @click="show()" class="title">安卓平台</text>
+			<!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<text @click="show()" class="title">微信小程序</text>
+			<!-- #endif -->
+			<!-- #ifdef APP-IOS -->
+			<text @click="show()" class="title">IOS平台</text>
+			<!-- #endif -->
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods:
+		{
+			show()
+			{
+				// #ifdef H5
+				uni.showModal({
+					title:'提示',
+					content:'当前编译的是H5代码',
+					showCancel:false,
+				})
+				// #endif
+				// #ifdef APP-ANDROID
+				uni.showModal({
+					title:'提示',
+					content:'当前编译的是安卓代码',
+					showCancel:false,
+				})
+				// #endif
+				// #ifdef MP-WEIXIN
+				uni.showModal({
+					title:'提示',
+					content:'当前编译的是微信小程序代码',
+					showCancel:false,
+				})
+				// #endif
+				// #ifdef APP-IOS
+				uni.showModal({
+					title:'提示',
+					content:'当前编译的是IOS代码',
+					showCancel:false,
+				})
+				// #endif
+			}
+		}
+	}
+</script>
+
+<style>
+	.content
+	{
+		/* #ifdef H5 */
+		background-color: aquamarine;
+		/* #endif */
+		/* #ifdef APP-ANDROID */
+		background-color: red;
+		/* #endif */
+		/* #ifdef MP-WEIXIN */
+		background-color: greenyellow;
+		/* #endif */
+		/* #ifdef APP-IOS */
+		background-color: blueviolet;
+		/* #endif */
+	}
+</style>
+
+```
+
+
+
+
+
+使用h5运行：
+
+![image-20231127161840211](img/uniapp学习笔记/image-20231127161840211.png)
+
+
+
+![image-20231127161856631](img/uniapp学习笔记/image-20231127161856631.png)
+
+
+
+使用微信小程序打开：
+
+![image-20231127161910633](img/uniapp学习笔记/image-20231127161910633.png)
+
+
+
+
+
+![image-20231127161919492](img/uniapp学习笔记/image-20231127161919492.png)
+
+
+
+
+
+
+
+## static目录的条件编译
+
+在不同平台，引用的静态资源可能也存在差异，通过 static 的条件编译可以解决此问题，static 目录下新建不同平台的专有目录，目录名称均为小写
+
+|  目录名称   |         说明         |   版本支持   |
+| :---------: | :------------------: | :----------: |
+|  app-plus   | app（推荐使用`app`） |              |
+|     app     |         app          | uni-app 3.9+ |
+|     h5      | H5（推荐使用`web`）  |              |
+|     web     |         web          | uni-app 3.9+ |
+|  mp-weixin  |      微信小程序      |              |
+|  mp-alipay  |     支付宝小程序     |              |
+|  mp-baidu   |      百度小程序      |              |
+|    mp-qq    |       QQ小程序       |              |
+| mp-toutiao  |      抖音小程序      |              |
+|   mp-lark   |      飞书小程序      |              |
+| mp-kuaishou |      快手小程序      |              |
+|    mp-jd    |      京东小程序      |              |
+
+
+
+`a.png` 只有在微信小程序平台才会编译进去，`b.png` 在所有平台都会被编译：
+
+```sh
+┌─static
+│  ├─mp-weixin
+│  │  └─a.png
+│  └─b.png
+├─main.js
+├─App.vue
+├─manifest.json
+└─pages.json
+```
+
+
+
+
+
+
+
+
+
+
+
+# pages.json
+
+## 概述
+
+`pages.json` 文件用来对 uni-app 进行全局配置，决定页面文件的路径、窗口样式、原生的导航栏、底部的原生tabbar 等。
+
+它类似微信小程序中`app.json`的**页面管理**部分。注意定位权限申请等原属于`app.json`的内容，在uni-app中是在manifest中配置
+
+
+
+
+
+## 配置项列表
+
+|                             属性                             |     类型     | 必填 |                  描述                   |         平台兼容         |
+| :----------------------------------------------------------: | :----------: | :--- | :-------------------------------------: | :----------------------: |
+| [globalStyle](https://uniapp.dcloud.net.cn/collocation/pages#globalstyle) |    Object    | 否   |         设置默认页面的窗口表现          |                          |
+| [pages](https://uniapp.dcloud.net.cn/collocation/pages#pages) | Object Array | 是   |         设置页面路径及窗口表现          |                          |
+| [easycom](https://uniapp.dcloud.net.cn/collocation/pages#easycom) |    Object    | 否   |            组件自动引入规则             |          2.5.5+          |
+| [tabBar](https://uniapp.dcloud.net.cn/collocation/pages#tabbar) |    Object    | 否   |           设置底部 tab 的表现           |                          |
+| [condition](https://uniapp.dcloud.net.cn/collocation/pages#condition) |    Object    | 否   |              启动模式配置               |                          |
+| [subPackages](https://uniapp.dcloud.net.cn/collocation/pages#subPackages) | Object Array | 否   |              分包加载配置               |   H5、uni-app x 不支持   |
+| [preloadRule](https://uniapp.dcloud.net.cn/collocation/pages#preloadrule) |    Object    | 否   |             分包预下载规则              |        微信小程序        |
+| [workers](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html) |    String    | 否   |         `Worker` 代码放置的目录         |        微信小程序        |
+| [leftWindow](https://uniapp.dcloud.net.cn/collocation/pages#leftwindow) |    Object    | 否   |              大屏左侧窗口               |            H5            |
+| [topWindow](https://uniapp.dcloud.net.cn/collocation/pages#topwindow) |    Object    | 否   |              大屏顶部窗口               |            H5            |
+| [rightWindow](https://uniapp.dcloud.net.cn/collocation/pages#rightwindow) |    Object    | 否   |              大屏右侧窗口               |            H5            |
+| [uniIdRouter](https://uniapp.dcloud.net.cn/uniCloud/uni-id-summary#uni-id-router) |    Object    | 否   | 自动跳转相关配置，新增于HBuilderX 3.5.0 |     uni-app x 不支持     |
+|                        entryPagePath                         |    String    | 否   |   默认启动首页，新增于HBuilderX 3.7.0   | 微信小程序、支付宝小程序 |
+
+
+
+
+
+
+
+## globalStyle
+
+用于设置应用的状态栏、导航条、标题、窗口背景色等
+
+
+
+|             属性             |   类型   | 默认值  |                             描述                             |                         平台差异说明                         |
+| :--------------------------: | :------: | :-----: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| navigationBarBackgroundColor | HexColor | #F8F8F8 |               导航栏背景颜色（同状态栏背景色）               |       APP与H5为#F8F8F8，小程序平台请参考相应小程序文档       |
+|    navigationBarTextStyle    |  String  |  black  |      导航栏标题颜色及状态栏前景颜色，仅支持 black/white      |                                                              |
+|    navigationBarTitleText    |  String  |         |                      导航栏标题文字内容                      |                                                              |
+|     navigationBarShadow      |  Object  |         |                   导航栏阴影，配置参考下方                   |                       uni-app x 不支持                       |
+|       navigationStyle        |  String  | default | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏 |        微信小程序 7.0+、百度小程序、H5、App（2.0.3+）        |
+|        disableScroll         | Boolean  |  false  | 设置为 true 则页面整体不能上下滚动（bounce效果），只在页面配置中有效，在globalStyle中设置无效 |             微信小程序（iOS）、百度小程序（iOS）             |
+|       backgroundColor        | HexColor | #ffffff |                         窗口的背景色                         |  微信小程序、百度小程序、抖音小程序、飞书小程序、京东小程序  |
+|     backgroundTextStyle      |  String  |  dark   |            下拉 loading 的样式，仅支持 dark/light            |                       uni-app x 不支持                       |
+|    enablePullDownRefresh     | Boolean  |  false  |                       是否开启下拉刷新                       |                                                              |
+|    onReachBottomDistance     |  Number  |   50    |      页面上拉触底事件触发时距页面底部距离，单位只支持px      |                       uni-app x 不支持                       |
+|      backgroundColorTop      | HexColor | #ffffff |              顶部窗口的背景色（bounce回弹区域）              |                         仅 iOS 平台                          |
+|    backgroundColorBottom     | HexColor | #ffffff |              底部窗口的背景色（bounce回弹区域）              |                         仅 iOS 平台                          |
+|       disableSwipeBack       | Boolean  |  false  |                       是否禁用滑动返回                       |                      App-iOS（3.4.0+）                       |
+|          titleImage          |  String  |         | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |           支付宝小程序、H5、App(uni-app x 不支持)            |
+|       transparentTitle       |  String  |  none   | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |           支付宝小程序、H5、APP(uni-app x 不支持)            |
+|        titlePenetrate        |  String  |   NO    |                        导航栏点击穿透                        |                       支付宝小程序、H5                       |
+|           app-plus           |  Object  |         |                设置编译到 App 平台的特定样式                 |                             App                              |
+|              h5              |  Object  |         | 设置编译到 H5 平台的特定样式，配置项参考下方 [H5](https://uniapp.dcloud.net.cn/collocation/pages#h5) |                              H5                              |
+|          mp-alipay           |  Object  |         |             设置编译到 mp-alipay 平台的特定样式              |                         支付宝小程序                         |
+|          mp-weixin           |  Object  |         |             设置编译到 mp-weixin 平台的特定样式              |                          微信小程序                          |
+|           mp-baidu           |  Object  |         |              设置编译到 mp-baidu 平台的特定样式              |                          百度小程序                          |
+|          mp-toutiao          |  Object  |         |             设置编译到 mp-toutiao 平台的特定样式             |                          抖音小程序                          |
+|           mp-lark            |  Object  |         |              设置编译到 mp-lark 平台的特定样式               |                          飞书小程序                          |
+|            mp-qq             |  Object  |         |               设置编译到 mp-qq 平台的特定样式                |                           QQ小程序                           |
+|         mp-kuaishou          |  Object  |         |            设置编译到 mp-kuaishou 平台的特定样式             |                          快手小程序                          |
+|            mp-jd             |  Object  |         |               设置编译到 mp-jd 平台的特定样式                |                          京东小程序                          |
+|       usingComponents        |  Object  |         |                        引用小程序组件                        | App(uni-app x 不支持)、微信小程序、支付宝小程序、百度小程序、京东小程序 |
+|          leftWindow          | Boolean  |  true   |       当存在 leftWindow时，当前页面是否显示 leftWindow       |                              H5                              |
+|          topWindow           | Boolean  |  true   |       当存在 topWindow 时，当前页面是否显示 topWindow        |                              H5                              |
+|         rightWindow          | Boolean  |  true   |      当存在 rightWindow时，当前页面是否显示 rightWindow      |                              H5                              |
+|           maxWidth           |  Number  |         | 单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选) |                         H5（2.9.9+）                         |
+
+
+
+
+
+
+
+## topWindow
+
+用于解决宽屏适配问题。
+
+以现有的手机应用为mainWindow，在左、上、右，可以追加新的页面显示窗体
+
+| 属性       | 类型   | 默认值 |         描述         |
+| ---------- | :----- | :----: | :------------------: |
+| path       | String |        |     配置页面路径     |
+| style      | Object |        |   配置页面窗口表现   |
+| matchMedia | Object |        | 配置显示该窗口的规则 |
+
+
+
+
+
+## pages
+
+`uni-app` 通过 pages 节点配置应用由哪些页面组成，pages 节点接收一个数组，数组每个项都是一个对象，其属性值如下：
+
+|   属性    |  类型   | 默认值 |         描述         |
+| :-------: | :-----: | :----: | :------------------: |
+|   path    | String  |        |     配置页面路径     |
+|   style   | Object  |        |   配置页面窗口表现   |
+| needLogin | Boolean | false  | 是否需要登录才可访问 |
+
+
+
+
+
+- pages节点的第一项为应用入口页（即首页）
+- **应用中新增/减少页面**，都需要对 pages 数组进行修改
+- 文件名**不需要写后缀**，框架会自动寻找路径下的页面资源
+
+
+
+
+
+## style
+
+用于设置每个页面的状态栏、导航条、标题、窗口背景色等。
+
+页面中配置项会覆盖 globalStyle 中相同的配置项
+
+
+
+|             属性             |   类型   | 默认值  |                             描述                             |                         平台差异说明                         |
+| :--------------------------: | :------: | :-----: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| navigationBarBackgroundColor | HexColor | #F8F8F8 |               导航栏背景颜色（同状态栏背景色）               |       APP与H5为#F8F8F8，小程序平台请参考相应小程序文档       |
+|    navigationBarTextStyle    |  String  |  black  |      导航栏标题颜色及状态栏前景颜色，仅支持 black/white      |                                                              |
+|    navigationBarTitleText    |  String  |         |                      导航栏标题文字内容                      |                                                              |
+|     navigationBarShadow      |  Object  |         |                          导航栏阴影                          |                       uni-app x 不支持                       |
+|       navigationStyle        |  String  | default | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏 |        微信小程序 7.0+、百度小程序、H5、App（2.0.3+）        |
+|        disableScroll         | Boolean  |  false  | 设置为 true 则页面整体不能上下滚动（bounce效果），只在页面配置中有效，在globalStyle中设置无效 |             微信小程序（iOS）、百度小程序（iOS）             |
+|       backgroundColor        | HexColor | #ffffff |                         窗口的背景色                         |  微信小程序、百度小程序、抖音小程序、飞书小程序、京东小程序  |
+|     backgroundTextStyle      |  String  |  dark   |            下拉 loading 的样式，仅支持 dark/light            |                       uni-app x 不支持                       |
+|    enablePullDownRefresh     | Boolean  |  false  |                       是否开启下拉刷新                       |                                                              |
+|    onReachBottomDistance     |  Number  |   50    |      页面上拉触底事件触发时距页面底部距离，单位只支持px      |                       uni-app x 不支持                       |
+|      backgroundColorTop      | HexColor | #ffffff |              顶部窗口的背景色（bounce回弹区域）              |                         仅 iOS 平台                          |
+|    backgroundColorBottom     | HexColor | #ffffff |              底部窗口的背景色（bounce回弹区域）              |                         仅 iOS 平台                          |
+|       disableSwipeBack       | Boolean  |  false  |                       是否禁用滑动返回                       |                      App-iOS（3.4.0+）                       |
+|          titleImage          |  String  |         | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |           支付宝小程序、H5、App(uni-app x 不支持)            |
+|       transparentTitle       |  String  |  none   | 导航栏透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |           支付宝小程序、H5、APP(uni-app x 不支持)            |
+|        titlePenetrate        |  String  |   NO    |                        导航栏点击穿透                        |                       支付宝小程序、H5                       |
+|           app-plus           |  Object  |         |                设置编译到 App 平台的特定样式                 |                             App                              |
+|              h5              |  Object  |         |                 设置编译到 H5 平台的特定样式                 |                              H5                              |
+|          mp-alipay           |  Object  |         |             设置编译到 mp-alipay 平台的特定样式              |                         支付宝小程序                         |
+|          mp-weixin           |  Object  |         |             设置编译到 mp-weixin 平台的特定样式              |                          微信小程序                          |
+|           mp-baidu           |  Object  |         |              设置编译到 mp-baidu 平台的特定样式              |                          百度小程序                          |
+|          mp-toutiao          |  Object  |         |             设置编译到 mp-toutiao 平台的特定样式             |                          抖音小程序                          |
+|           mp-lark            |  Object  |         |              设置编译到 mp-lark 平台的特定样式               |                          飞书小程序                          |
+|            mp-qq             |  Object  |         |               设置编译到 mp-qq 平台的特定样式                |                           QQ小程序                           |
+|         mp-kuaishou          |  Object  |         |            设置编译到 mp-kuaishou 平台的特定样式             |                          快手小程序                          |
+|            mp-jd             |  Object  |         |               设置编译到 mp-jd 平台的特定样式                |                          京东小程序                          |
+|       usingComponents        |  Object  |         |                        引用小程序组件                        | App(uni-app x 不支持)、微信小程序、支付宝小程序、百度小程序、京东小程序 |
+|          leftWindow          | Boolean  |  true   |       当存在 leftWindow时，当前页面是否显示 leftWindow       |                              H5                              |
+|          topWindow           | Boolean  |  true   |       当存在 topWindow 时，当前页面是否显示 topWindow        |                              H5                              |
+|         rightWindow          | Boolean  |  true   |      当存在 rightWindow时，当前页面是否显示 rightWindow      |                              H5                              |
+|           maxWidth           |  Number  |         | 单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选) |                         H5（2.9.9+）                         |
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 内置组件
+
+## 视图容器
+
+### 概述
+
+所有的视图组件，包括view、swiper等，本身不显示任何可视化元素。它们的用途都是为了包裹其他真正显示的组件
+
+
+
+### view
+
+它类似于传统html中的div，用于包裹各种元素内容
+
