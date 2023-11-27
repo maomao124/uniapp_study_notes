@@ -2182,6 +2182,70 @@ uni.$once('update',function(data){
 
 
 
+```vue
+<template>
+	<view class="content">
+		<view class="data">
+			<text>{{val}}</text>
+		</view>
+		<button type="primary" @click="comunicationOff">结束监听</button>
+		<button type="primary" @click="start()">开始监听</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				val: 0
+			}
+		},
+		onLoad() {
+			setInterval(() => {
+				uni.$emit('add', {
+					data: 2
+				})
+			}, 1000)
+			uni.$on('add', this.add)
+		},
+		methods: {
+			comunicationOff() {
+				uni.$off('add', this.add)
+			},
+			add(e) {
+			
+				this.val += e.data
+			},
+			start() {
+				uni.$on('add', this.add)
+			}
+		}
+	}
+</script>
+
+<style>
+	.content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.data {
+		text-align: center;
+		line-height: 40px;
+		margin-top: 40px;
+	}
+
+	button {
+		width: 200px;
+		margin: 20px 0;
+	}
+</style>
+```
+
+
+
 
 
 
@@ -2226,4 +2290,296 @@ uni.$once('update',function(data){
 
 
 
+
+
+
+
+
+
+
+# 互相引用
+
+## 引用组件
+
+传统vue项目开发，引用组件需要`导入 - 注册 - 使用`三个步骤
+
+```vue
+<template>
+	<view>
+		<!-- 3.使用组件 -->
+		<uni-rate text="1"></uni-rate>
+	</view>
+</template>
+<script>
+	// 1. 导入组件
+	import uniRate from '@/components/uni-rate/uni-rate.vue';
+	export default {
+		components: { uniRate } // 2. 注册组件
+	}
+</script>
+```
+
+
+
+`uni-app`的`easycom`机制，将组件引用进一步优化，开发者只管使用，无需考虑导入和注册
+
+```vue
+<template>
+	<view>
+		<!-- 1.使用组件 -->
+		<uni-rate text="1"></uni-rate>
+	</view>
+</template>
+<script>
+</script>
+```
+
+
+
+在 uni-app 项目中，页面引用组件和组件引用组件的方式都是一样的（可以理解为：页面是一种特殊的组件），均支持通过 `easycom` 方式直接引用
+
+
+
+
+
+## 引用js
+
+### 引入
+
+`js`文件或`script`标签内（包括 renderjs 等）引入`js`文件时，可以使用相对路径和绝对路径
+
+```js
+// 绝对路径，@指向项目根目录，在cli项目中@指向src目录
+import add from '@/common/add.js';
+// 相对路径
+import add from '../../common/add.js';
+```
+
+
+
+- js 文件不支持使用`/`开头的方式引入
+
+
+
+
+
+### NPM支持
+
+uni-app支持使用**npm**安装第三方包。
+
+
+
+若项目之前未使用npm管理依赖（项目根目录下无package.json文件），先在项目根目录执行命令初始化npm工程：
+
+```sh
+npm init -y
+```
+
+
+
+cli项目默认已经有package.json了。HBuilderX创建的项目默认没有，需要通过初始化命令来创建
+
+
+
+在项目根目录执行命令安装npm包：
+
+```sh
+npm install xxx --save
+```
+
+
+
+安装完即可使用npm包，js中引入npm包：
+
+```js
+import package from 'xxx'
+const package = require('xxx')
+```
+
+
+
+node_modules 目录必须在项目根目录下。不管是cli项目还是HBuilderX创建的项目
+
+
+
+
+
+
+
+## 引用css
+
+使用`@import`语句可以导入外联样式表，`@import`后跟需要导入的外联样式表的相对路径，用`;`表示语句结束
+
+```vue
+<style>
+    @import "../../common/uni.css";
+
+    .uni-card {
+        box-shadow: none;
+    }
+</style>
+```
+
+
+
+
+
+
+
+## 静态资源
+
+`template`内引入静态资源，如`image`、`video`等标签的`src`属性时，可以使用相对路径或者绝对路径
+
+```html
+<!-- 绝对路径，/static指根目录下的static目录，在cli项目中/static指src目录下的static目录 -->
+<image class="logo" src="/static/logo.png"></image>
+<image class="logo" src="@/static/logo.png"></image>
+<!-- 相对路径 -->
+<image class="logo" src="../../static/logo.png"></image>
+```
+
+
+
+
+
+`css`文件或`style标签`内引入`css`文件时（scss、less 文件同理），可以使用相对路径或绝对路径
+
+```js
+/* 绝对路径 */
+@import url('/common/uni.css');
+@import url('@/common/uni.css');
+/* 相对路径 */
+@import url('../../common/uni.css');
+```
+
+
+
+
+
+
+
+
+
+
+
+# js语法
+
+## 标准js和浏览器js的区别
+
+`uni-app`的js代码，h5端运行于浏览器中。非h5端（包含小程序和App），Android平台运行在v8引擎中，iOS平台运行在iOS自带的jscore引擎中，都没有运行在浏览器或webview里
+
+非H5端，虽然不支持window、document、navigator等浏览器的js API，但也支持标准ECMAScript
+
+所以uni-app的非H5端，一样支持标准js，支持if、for等语法，支持字符串、数字、时间、布尔值、数组、自定义对象等变量类型及各种处理方法。仅仅是不支持window、document、navigator等浏览器专用对象
+
+
+
+## ES6支持
+
+uni-app 在支持绝大部分 ES6 API 的同时，也支持了 ES7 的 await/async
+
+
+
+
+
+## Android平台
+
+JS脚本运行在独立Google V8引擎中，版本与Chrome83一致，因此支持的语法与Android系统版本无关
+
+vue页面渲染在系统Webview中，受Android系统版本影响，在Android低端机上存在css浏览器兼容性问题，太新的css语法在低版本不支持
+
+nvue页面使用系统原生View渲染
+
+
+
+
+
+## iOS平台
+
+JS脚本运行在iOS操作系统提供的JavaScriptCore 引擎，因此支持的语法与iOS系统有关，跟iOS系统的Safari浏览器一致
+
+vue页面渲染在系统WKWebview中，受iOS系统版本影响，兼容性与iOS系统的Safari浏览器一致
+
+nvue页面使用系统原生View渲染
+
+
+
+
+
+
+
+
+
+# TypeScript支持
+
+uni-app 支持使用 ts 开发
+
+类型定义文件由 @dcloudio/types 模块提供，安装后请注意配置 tsconfig.json 文件中的 compilerOptions > types 部分
+
+
+
+在 vue 或 nvue 页面的 script 节点，添加属性 `lang="ts"`
+
+```vue
+<script lang="ts">
+    
+</script>
+```
+
+
+
+在根目录创建 `tsconfig.json` 文件，并进行个性化配置
+
+```json
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": [
+      "@dcloudio/types"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "unpackage",
+    "src/**/*.nvue"
+  ]
+}
+```
+
+
+
+
+
+uni-app 的 vue2 模式：nvue 文件中不支持编写 ts。vue 文件中可以使用 ts，但 ts 版本根据项目类型有区别。HBuilderX 创建的项目使用 ts 3.7.5，cli 创建的项目使用 ts 4.x
+
+uni-app 的 vue3 模式：vue 文件及 nvue 文件均支持最新版 ts
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 条件编译
 
