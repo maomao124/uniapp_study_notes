@@ -3457,3 +3457,494 @@ scroll-view{
 
 #### 属性
 
+|             属性名             |    类型     |      默认值       |                             说明                             |                         平台差异说明                         |
+| :----------------------------: | :---------: | :---------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|         indicator-dots         |   Boolean   |       false       |                      是否显示面板指示点                      |                                                              |
+|        indicator-color         |    Color    | rgba(0, 0, 0, .3) |                          指示点颜色                          |                                                              |
+|     indicator-active-color     |    Color    |      #000000      |                     当前选中的指示点颜色                     |                                                              |
+|          active-class          |   String    |                   |                  swiper-item 可见时的 class                  |                         支付宝小程序                         |
+|         changing-class         |   String    |                   | acceleration 设置为 true 时且处于滑动过程中，中间若干屏处于可见时的class |                         支付宝小程序                         |
+|            autoplay            |   Boolean   |       false       |                         是否自动切换                         |                                                              |
+|            current             |   Number    |         0         |                     当前所在滑块的 index                     |                                                              |
+|        current-item-id         |   String    |                   |      当前所在滑块的 item-id ，不能与 current 被同时指定      |                      支付宝小程序不支持                      |
+|            interval            |   Number    |       5000        |                       自动切换时间间隔                       |                                                              |
+|            duration            |   Number    |        500        |                         滑动动画时长                         |                        app-nvue不支持                        |
+|            circular            |   Boolean   |       false       |         是否采用衔接滑动，即播放到末尾后重新回到开头         |                                                              |
+|            vertical            |   Boolean   |       false       |                      滑动方向是否为纵向                      |                                                              |
+|        previous-margin         |   String    |        0px        |    前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值     |            app-nvue、抖音小程序、飞书小程序不支持            |
+|          next-margin           |   String    |        0px        |    后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值     |            app-nvue、抖音小程序、飞书小程序不支持            |
+|          acceleration          |   Boolean   |       false       |            当开启时，会根据滑动速度，连续滑动多屏            |                         支付宝小程序                         |
+| disable-programmatic-animation |   Boolean   |       false       |         是否禁用代码变动触发 swiper 切换时使用动画。         |                         支付宝小程序                         |
+|     display-multiple-items     |   Number    |         1         |                      同时显示的滑块数量                      |                 app-nvue、支付宝小程序不支持                 |
+|    skip-hidden-item-layout     |   Boolean   |       false       | 是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息 |                 App、微信小程序、京东小程序                  |
+|         disable-touch          |   Boolean   |       false       |                   是否禁止用户 touch 操作                    | App 2.5.5+、H5 2.5.5+、支付宝小程序、抖音小程序与飞书小程序（只在初始化时有效，不能动态变更） |
+|           touchable            |   Boolean   |       true        |    是否监听用户的触摸事件，只在初始化时有效，不能动态变更    | 抖音小程序与飞书小程序（uni-app 2.5.5+ 推荐统一使用 disable-touch） |
+|        easing-function         |   String    |      default      | 指定 swiper 切换缓动动画类型，有效值：default、linear、easeInCubic、easeOutCubic、easeInOutCubic |              微信小程序、快手小程序、京东小程序              |
+|            @change             | EventHandle |                   | current 改变时会触发 change 事件，event.detail = {current: current, source: source} |                                                              |
+|          @transition           | EventHandle |                   | swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy}，支付宝小程序暂不支持dx, dy | App、H5、微信小程序、支付宝小程序、抖音小程序、飞书小程序、QQ小程序、快手小程序 |
+|        @animationfinish        | EventHandle |                   | 动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source} |                 抖音小程序与飞书小程序不支持                 |
+
+
+
+
+
+easing-function值：
+
+|       值       |     说明     |
+| :------------: | :----------: |
+|    default     | 默认缓动函数 |
+|     linear     |   线性动画   |
+|  easeInCubic   |   缓入动画   |
+|  easeOutCubic  |   缓出动画   |
+| easeInOutCubic | 缓入缓出动画 |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view class="uni-margin-wrap">
+			<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval"
+				:duration="duration">
+				<swiper-item>
+					<view class="swiper-item uni-bg-red">A</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="swiper-item uni-bg-green">B</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="swiper-item uni-bg-blue">C</view>
+				</swiper-item>
+				<swiper-item>
+					<view class="swiper-item uni-bg-skyblue">D</view>
+				</swiper-item>
+			</swiper>
+		</view>
+		
+		<view class="swiper-list">
+			<view class="uni-list-cell uni-list-cell-pd">
+				<view class="uni-list-cell-db">指示点</view>
+				<switch :checked="indicatorDots" @change="changeIndicatorDots" />
+			</view>
+			<view class="uni-list-cell uni-list-cell-pd">
+				<view class="uni-list-cell-db">自动播放</view>
+				<switch :checked="autoplay" @change="changeAutoplay" />
+			</view>
+		</view>
+		
+		<view class="uni-padding-wrap">
+			<view class="uni-common-mt">
+				<text>幻灯片切换时长(ms)</text>
+				<text class="info">{{duration}}</text>
+			</view>
+			<slider @change="durationChange" :value="duration" min="500" max="2000" />
+			<view class="uni-common-mt">
+				<text>自动播放间隔时长(ms)</text>
+				<text class="info">{{interval}}</text>
+			</view>
+			<slider @change="intervalChange" :value="interval" min="2000" max="10000" />
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            background: ['color1', 'color2', 'color3'],
+            indicatorDots: true,
+            autoplay: true,
+            interval: 2000,
+            duration: 500
+        }
+    },
+    methods: {
+        changeIndicatorDots(e) {
+            this.indicatorDots = !this.indicatorDots
+        },
+        changeAutoplay(e) {
+            this.autoplay = !this.autoplay
+        },
+        intervalChange(e) {
+            this.interval = e.target.value
+        },
+        durationChange(e) {
+            this.duration = e.target.value
+        }
+    }
+}
+</script>
+
+<style>
+	.uni-margin-wrap {
+		width: 690rpx;
+		width: 100%;
+	}
+	.swiper {
+		height: 300rpx;
+	}
+	.swiper-item {
+		display: block;
+		height: 300rpx;
+		line-height: 300rpx;
+		text-align: center;
+	}
+	.swiper-list {
+		margin-top: 40rpx;
+		margin-bottom: 0;
+	}
+	.uni-common-mt {
+		margin-top: 60rpx;
+		position: relative;
+	}
+	.info {
+		position: absolute;
+		right: 20rpx;
+	}
+	.uni-padding-wrap {
+		width: 550rpx;
+		padding: 0 100rpx;
+	}
+	.uni-bg-red{
+		background-color: red;
+	}
+	.uni-bg-green{
+		background-color: green;
+	}
+	.uni-bg-blue{
+		background-color: blue;
+	}
+	.uni-bg-skyblue{
+		background-color: skyblue;
+	}
+</style>
+
+```
+
+
+
+
+
+![image-20231129143638134](img/uniapp学习笔记/image-20231129143638134.png)
+
+
+
+![image-20231129143655508](img/uniapp学习笔记/image-20231129143655508.png)
+
+
+
+![image-20231129143705252](img/uniapp学习笔记/image-20231129143705252.png)
+
+
+
+
+
+
+
+### match-media
+
+#### 概述
+
+media query 匹配检测节点
+
+类似于网页开发中使用媒体查询来适配大屏小屏，match-media是一个可适配不同屏幕的基本视图组件。可以指定一组 media query 媒体查询规则，满足查询条件时，这个组件才会被展示
+
+例如在match-media组件中放置一个侧边栏，媒体查询规则设置为宽屏才显示，就可以实现在PC宽屏显示该侧边栏，而在手机窄屏中不显示侧边栏的效果
+
+
+
+
+
+#### 属性
+
+|   属性名    |  类型  | 默认值 | 必填 |                说明                 |
+| :---------: | :----: | :----: | :--: | :---------------------------------: |
+|  min-width  | number |        |  否  |     页面最小宽度（ px 为单位）      |
+|  max-width  | number |        |  否  |     页面最大宽度（ px 为单位）      |
+|    width    | number |        |  否  |       页面宽度（ px 为单位）        |
+| min-height  | number |        |  否  |     页面最小高度（ px 为单位）      |
+| max-height  | number |        |  否  |     页面最大高度（ px 为单位）      |
+|   height    | number |        |  否  |       页面高度（ px 为单位）        |
+| orientation | string |        |  否  | 屏幕方向（ landscape 或 portrait ） |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<match-media min-width="300" max-width="700">宽度300-700</match-media>
+		<match-media min-width="0" max-width="300">宽度0-300</match-media>
+		<match-media min-width="700" max-width="1000">宽度300-700</match-media>
+		<match-media min-width="1000" max-width="10000">宽度1000-10000</match-media>
+		<match-media min-height="300" max-height="700">高度300-700</match-media>
+		<match-media min-height="0" max-height="300">高度0-300</match-media>
+		<match-media min-height="700" max-height="1000">高度700-1000</match-media>
+		<match-media min-height="1000" max-height="10000">高度1000-10000</match-media>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+![image-20231129144537307](img/uniapp学习笔记/image-20231129144537307.png)
+
+
+
+
+
+![image-20231129144550514](img/uniapp学习笔记/image-20231129144550514.png)
+
+
+
+
+
+### movable-area
+
+由于app和小程序的架构是逻辑层与视图层分离，使用js监听拖动时会引发逻辑层和视图层的频繁通讯，影响性能。为了方便高性能的实现拖动，平台特封装了`movable-area`组件
+
+`movable-area`指代可拖动的范围，在其中内嵌`movable-view`组件用于指示可拖动的区域
+
+即手指/鼠标按住`movable-view`拖动或双指缩放，但拖不出`movable-area`规定的范围
+
+
+
+| 属性名     |  类型   | 默认值 |                             说明                             |
+| :--------- | :-----: | :----: | :----------------------------------------------------------: |
+| scale-area | Boolean | false  | 当里面的 movable-view 设置为支持双指缩放时，设置此值可将缩放手势生效区域修改为整个 movable-area |
+
+
+
+
+
+### movable-view
+
+#### 概述
+
+可移动的视图容器，在页面中可以拖拽滑动或双指缩放
+
+`movable-view`必须在`movable-area`组件中，并且必须是直接子节点，否则不能移动
+
+
+
+#### 属性
+
+|    属性名     |      类型       | 默认值 |                             说明                             |  平台差异说明   |
+| :-----------: | :-------------: | :----: | :----------------------------------------------------------: | :-------------: |
+|   direction   |     String      |  none  | movable-view的移动方向，属性值有all、vertical、horizontal、none |                 |
+|    inertia    |     Boolean     | false  |                   movable-view是否带有惯性                   |                 |
+| out-of-bounds |     Boolean     | false  |         超过可移动区域后，movable-view是否还可以移动         |                 |
+|       x       | Number / String |        | 定义x轴方向的偏移，如果x的值不在可移动范围内，会自动移动到可移动范围；改变x的值会触发动画 |                 |
+|       y       | Number / String |        | 定义y轴方向的偏移，如果y的值不在可移动范围内，会自动移动到可移动范围；改变y的值会触发动画 |                 |
+|    damping    |     Number      |   20   | 阻尼系数，用于控制x或y改变时的动画和过界回弹的动画，值越大移动越快 | 360小程序不支持 |
+|   friction    |     Number      |   2    | 摩擦系数，用于控制惯性滑动的动画，值越大摩擦力越大，滑动越快停止；必须大于0，否则会被设置成默认值 | 360小程序不支持 |
+|   disabled    |     Boolean     | false  |                           是否禁用                           |                 |
+|     scale     |     Boolean     | false  |   是否支持双指缩放，默认缩放手势生效区域是在movable-view内   | 360小程序不支持 |
+|   scale-min   |     Number      |  0.5   |                      定义缩放倍数最小值                      |                 |
+|   scale-max   |     Number      |   10   |                      定义缩放倍数最大值                      |                 |
+|  scale-value  |     Number      |   1    |              定义缩放倍数，取值范围为 0.5 - 10               |                 |
+|   animation   |     Boolean     |  true  |                         是否使用动画                         |                 |
+|    @change    |   EventHandle   |        | 拖动过程中触发的事件，event.detail = {x: x, y: y, source: source}，其中source表示产生移动的原因，值可为touch（拖动）、touch-out-of-bounds（超出移动范围）、out-of-bounds（超出移动范围后的回弹）、friction（惯性）和空字符串（setData） |                 |
+|    @scale     |   EventHandle   |        | 缩放过程中触发的事件，event.detail = {x: x, y: y, scale: scale}， |                 |
+
+
+
+
+
+* movable-view 必须设置width和height属性，不设置默认为10px
+* movable-view 默认为绝对定位，top和left属性为0px
+* 当movable-view小于movable-area时，movable-view的移动范围是在movable-area内；当movable-view大于movable-area时，movable-view的移动范围必须包含movable-area
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<movable-area>
+			<movable-view direction="all" @change="change" :out-of-bounds="true" :inertia="true"></movable-view>
+		</movable-area>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			change(e)
+			{
+				console.log("事件触发,",e);
+			}
+		}
+	}
+</script>
+
+<style>
+movable-area{
+	width: 300px;
+	height: 600px;
+	background-color: aqua;
+}
+movable-view{
+	width: 30px;
+	height: 30px;
+	background-color: red;
+}
+</style>
+
+```
+
+
+
+![image-20231129150209753](img/uniapp学习笔记/image-20231129150209753.png)
+
+
+
+![image-20231129150220032](img/uniapp学习笔记/image-20231129150220032.png)
+
+
+
+
+
+事件对象：
+
+```json
+{
+	"_processed": true,
+	"currentTarget": {
+		"dataset": {},
+		"id": "",
+		"offsetLeft": 0,
+		"offsetTop": 0
+	},
+	"detail": {
+		"source": "friction",
+		"x": 42.700000000000003,
+		"y": 121.3
+	},
+	"mp": {
+		"@warning": "mp is deprecated",
+		"currentTarget": {
+			"dataset": {},
+			"id": "",
+			"offsetLeft": 0,
+			"offsetTop": 0
+		},
+		"detail": {
+			"source": "friction",
+			"x": 42.700000000000003,
+			"y": 121.3
+		},
+		"preventDefault": "function(){}",
+		"stopPropagation": "function(){}",
+		"target": {
+			"dataset": {},
+			"id": "",
+			"offsetLeft": 0,
+			"offsetTop": 0,
+			"source": "friction",
+			"x": 42.700000000000003,
+			"y": 121.3
+		},
+		"timeStamp": 0,
+		"type": "change"
+	},
+	"preventDefault": "function(){}",
+	"stopPropagation": "function(){}",
+	"target": {
+		"dataset": {},
+		"id": "",
+		"offsetLeft": 0,
+		"offsetTop": 0,
+		"source": "friction",
+		"x": 42.700000000000003,
+		"y": 121.3
+	},
+	"timeStamp": 0,
+	"type": "change"
+}
+```
+
+
+
+
+
+
+
+### cover-view
+
+覆盖在原生组件上的文本视图
+
+| 属性名     |     类型      | 默认值 |                             说明                             |    平台差异说明    |
+| :--------- | :-----------: | :----: | :----------------------------------------------------------: | :----------------: |
+| scroll-top | number/string |        | 设置顶部滚动偏移量，仅在设置了 overflow-y: scroll 成为滚动元素后生效 | 支付宝小程序不支持 |
+
+
+
+
+
+### cover-image
+
+#### 概述
+
+覆盖在原生组件上的图片视图。可覆盖的原生组件同`cover-view`，支持嵌套在`cover-view`里
+
+
+
+**不支持的 CSS**
+
+- position: fixed
+- opacity
+- overflow
+- padding
+- linebreak
+- white-space
+
+
+
+
+
+#### 属性
+
+
+
+| 属性名 |    类型     | 默认值 |                          说明                          |                         平台差异说明                         |
+| :----- | :---------: | :----: | :----------------------------------------------------: | :----------------------------------------------------------: |
+| src    |   String    |        | 图标路径。支持本地路径、网络路径。不支持 base64 格式。 |                                                              |
+| @load  | eventhandle |        |                   图片加载成功时触发                   | 微信小程序 2.1.0、百度小程序、QQ小程序、快手小程序、京东小程序 |
+| @error | eventhandle |        |                   图片加载失败时触发                   |   微信小程序 2.1.0、百度小程序、QQ小程序、快手小程序、京东   |
