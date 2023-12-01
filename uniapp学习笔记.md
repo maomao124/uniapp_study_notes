@@ -3948,3 +3948,210 @@ movable-view{
 | src    |   String    |        | 图标路径。支持本地路径、网络路径。不支持 base64 格式。 |                                                              |
 | @load  | eventhandle |        |                   图片加载成功时触发                   | 微信小程序 2.1.0、百度小程序、QQ小程序、快手小程序、京东小程序 |
 | @error | eventhandle |        |                   图片加载失败时触发                   |   微信小程序 2.1.0、百度小程序、QQ小程序、快手小程序、京东   |
+
+
+
+
+
+
+
+
+
+## 基础内容
+
+### icon
+
+#### 概述
+
+图标。
+
+
+
+| 属性名 |  类型  | 默认值 |           说明           |
+| :----: | :----: | :----: | :----------------------: |
+|  type  | String |        |        icon的类型        |
+|  size  | Number |   23   |    icon的大小，单位px    |
+| color  | Color  |        | icon的颜色，同css的color |
+
+
+
+各平台 type 有效值说明：
+
+|             平台              |                         type 有效值                          |
+| :---------------------------: | :----------------------------------------------------------: |
+| App、H5、微信小程序、QQ小程序 | success, success_no_circle, info, warn, waiting, cancel, download, search, clear |
+|         支付宝小程序          | info, warn, waiting, cancel, download, search, clear, success, success_no_circle,loading |
+|          百度小程序           | success, info, warn, waiting, success_no_circle, clear, search, personal, setting, top, close, cancel, download, checkboxSelected, radioSelected, radioUnselect |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+<view>
+	<icon type="success" size="30"/>
+	<icon type="success_no_circle" size="30"/>
+	<icon type="info" size="30"/>
+	<icon type="warn" size="30"/>
+	<icon type="waiting" size="30"/>
+	<icon type="cancel" size="30"/>
+	<icon type="download" size="30"/>
+	<icon type="search" size="30"/>
+	<icon type="clear" size="30"/>
+</view>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+        }
+    },
+}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+![image-20231130172618326](img/uniapp学习笔记/image-20231130172618326.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+### text
+
+#### 概述
+
+文本组件。用于包裹文本内容。
+
+在app-uvue和app-nvue中，文本只能写在text中，而不能写在view的text区域。
+
+
+
+#### 属性
+
+|   属性名    |  类型   | 默认值 |     说明     |      平台差异说明      |
+| :---------: | :-----: | :----: | :----------: | :--------------------: |
+| selectable  | Boolean | false  | 文本是否可选 |                        |
+| user-select | Boolean | false  | 文本是否可选 |       微信小程序       |
+|    space    | String  |        | 显示连续空格 |    钉钉小程序不支持    |
+|   decode    | Boolean | false  |   是否解码   | 百度、钉钉小程序不支持 |
+
+
+
+
+
+**space**：
+
+|  值  |          说明          |
+| :--: | :--------------------: |
+| ensp |  中文字符空格一半大小  |
+| emsp |    中文字符空格大小    |
+| nbsp | 根据字体设置的空格大小 |
+
+
+
+- 支持 `\n` 方式换行。
+- 在app-nvue下，只有`<text>`才能包裹文本内容。无法在`<view>`组件包裹文本。
+- decode 可以解析的有 ` ` `<` `>` `&` `'` ` ` ` `。
+- 各个操作系统的空格标准并不一致。
+- 除了文本节点以外的其他节点都无法长按选中。
+- 如果使用 `<span>` 组件编译时会被转换为 `<text>`。
+- nvue 样式 `word-wrap` 在 Android 平台暂不支持
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>文本文本文本文本</text>
+		<br><br>
+		<text>文本文本换行\n文本文本</text>
+		<br><br>
+		<text :selectable="true">可选文本文本文本文本</text>
+		<br><br>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+![image-20231130174018048](img/uniapp学习笔记/image-20231130174018048.png)
+
+
+
+
+
+
+
+### progress
+
+#### 概述
+
+进度条。
+
+
+
+#### 属性
+
+|     属性名      |     类型      |          默认值          |                          说明                           |                         平台差异说明                         |
+| :-------------: | :-----------: | :----------------------: | :-----------------------------------------------------: | :----------------------------------------------------------: |
+|     percent     |    Number     |            无            |                       百分比0~100                       |                                                              |
+|    show-info    |    Boolean    |          false           |                 在进度条右侧显示百分比                  |                                                              |
+|  border-radius  | Number/String |            0             |                        圆角大小                         | app-nvue、微信基础库2.3.1+、QQ小程序、快手小程序、京东小程序 |
+|    font-size    | Number/String |            16            |                   右侧百分比字体大小                    |       app-nvue、微信基础库2.3.1+、QQ小程序、京东小程序       |
+|  stroke-width   |    Number     |            6             |                 进度条线的宽度，单位px                  |                                                              |
+|   activeColor   |     Color     | #09BB07（百度为#E6E6E6） |                  已选择的进度条的颜色                   |                                                              |
+| backgroundColor |     Color     |         #EBEBEB          |                  未选择的进度条的颜色                   |                                                              |
+|     active      |    Boolean    |          false           |                  进度条从左往右的动画                   |                                                              |
+|   active-mode   |    String     |        backwards         | backwards: 动画从头播；forwards：动画从上次结束点接着播 |    App、H5、微信小程序、QQ小程序、快手小程序、京东小程序     |
+|    duration     |    Number     |            30            |                  进度增加1%所需毫秒数                   | App-nvue2.6.1+、微信基础库2.8.2+、H5 3.1.11+、App-Vue 3.1.11+、快手小程序、京东小程序 |
+|   @activeend    |  EventHandle  |                          |                      动画完成事件                       |                    微信小程序、京东小程序                    |
+
+
+
+
+
