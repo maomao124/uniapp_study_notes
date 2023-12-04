@@ -4560,3 +4560,257 @@ checkbox：
 
 ### editor
 
+#### 概述
+
+富文本编辑器，可以对图片、文字格式进行编辑和混排。
+
+在web开发时，可以使用`contenteditable`来实现内容编辑。但这是一个dom API，在非H5平台无法使用。于是微信小程序和uni-app的App-vue提供了`editor`组件来实现这个功能，并且在uni-app的H5平台也提供了兼容。从技术本质来讲，这个组件仍然运行在视图层webview中，利用的也是浏览器的`contenteditable`功能。
+
+编辑器导出内容支持带标签的 `html`和纯文本的 `text`，编辑器内部采用 `delta` 格式进行存储。
+
+editor组件目前只有H5、App的vue页面、微信小程序、百度小程序支持，其他端平台自身未提供editor组件，只能使用web-view加载web页面
+
+
+
+- 插入的 html 中事件绑定会被移除
+- formats 中的 color 属性会统一以 hex 格式返回
+- 粘贴时仅纯文本内容会被拷贝进编辑器
+- 插入 html 到编辑器内时，编辑器会删除一些不必要的标签，以保证内容的统一。例如`<p><span>xxx</span></p>`会改写为`<p>xxx</p>`
+- 编辑器聚焦时页面会被上推，系统行为以保证编辑区可见
+- 不能直接插入视频或者其他文件，编辑时可以采用视频封面或者文件缩略图占位，并在图片属性中保存视频信息，预览时读取附加信息再还原为视频或者其他文件操作
+
+
+
+#### 属性
+
+|       属性       |    类型     | 默认值 | 必填 |                             说明                             |
+| :--------------: | :---------: | :----: | :--: | :----------------------------------------------------------: |
+|    read-only     |   boolean   | false  |  否  |                       设置编辑器为只读                       |
+|   placeholder    |   string    |        |  否  |                           提示信息                           |
+|  show-img-size   |   boolean   | false  |  否  |                  点击图片时显示图片大小控件                  |
+| show-img-toolbar |   boolean   | false  |  否  |                   点击图片时显示工具栏控件                   |
+| show-img-resize  |   boolean   | false  |  否  |                  点击图片时显示修改尺寸控件                  |
+|      @ready      | eventhandle |        |  否  |                    编辑器初始化完成时触发                    |
+|      @focus      | eventhandle |        |  否  |     编辑器聚焦时触发，event.detail = {html, text, delta}     |
+|      @blur       | eventhandle |        |  否  |      编辑器失去焦点时触发，detail = {html, text, delta}      |
+|      @input      | eventhandle |        |  否  |      编辑器内容改变时触发，detail = {html, text, delta}      |
+|  @statuschange   | eventhandle |        |  否  | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view class="container">
+			<editor id="editor" class="ql-container" :placeholder="placeholder" @ready="onEditorReady"></editor>
+			<button type="warn" @tap="undo">撤销</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				placeholder: '开始输入...'
+			}
+		},
+		methods: {
+			onEditorReady() {
+				// #ifdef MP-BAIDU
+				this.editorCtx = requireDynamicLib('editorLib').createEditorContext('editor');
+				// #endif
+
+				// #ifdef APP-PLUS || H5 ||MP-WEIXIN
+				uni.createSelectorQuery().select('#editor').context((res) => {
+					this.editorCtx = res.context
+				}).exec()
+				// #endif
+			},
+			undo() {
+				this.editorCtx.undo()
+			}
+		}
+	}
+</script>
+
+<style>
+.container {
+		padding: 10px;
+	}
+
+	#editor {
+		width: 100%;
+		height: 300px;
+		background-color: #CCCCCC;
+	}
+
+	button {
+		margin-top: 10px;
+	}
+</style>
+```
+
+
+
+
+
+![image-20231202194632883](img/uniapp学习笔记/image-20231202194632883.png)
+
+
+
+![image-20231202194650077](img/uniapp学习笔记/image-20231202194650077.png)
+
+
+
+
+
+
+
+### form
+
+#### 概述
+
+表单，将组件内的用户输入的`<switch>` `<input>` `<checkbox>` `<slider>` `<radio>` `<picker>` 提交
+
+当点击 `<form>` 表单中 formType 为 submit 的 `<button>` 组件时，会将表单组件中的 value 值进行提交，需要在表单组件中加上 name 来作为 key
+
+
+
+
+
+#### 属性
+
+
+
+|        属性名         |    类型     |                             说明                             |       平台差异说明       |
+| :-------------------: | :---------: | :----------------------------------------------------------: | :----------------------: |
+|     report-submit     |   Boolean   |                   是否返回 formId 用于发送                   | 微信小程序、支付宝小程序 |
+| report-submit-timeout |   number    | 等待一段时间（毫秒数）以确认 formId 是否生效。如果未指定这个参数，formId 有很小的概率是无效的（如遇到网络失败的情况）。指定这个参数将可以检测 formId 是否有效，以这个参数的时间作为这项检测的超时时间。如果失败，将返回 requestFormId:fail 开头的 formId |     微信小程序2.6.2      |
+|        @submit        | EventHandle | 携带 form 中的数据触发 submit 事件，event.detail = {value : {'name': 'value'} , formId: ''}，report-submit 为 true 时才会返回 formId |                          |
+|        @reset         | EventHandle |                 表单重置时会触发 reset 事件                  |                          |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view>
+			<view>
+				<form @submit="formSubmit" @reset="formReset">
+					<view class="uni-form-item uni-column">
+						<view class="title">switch</view>
+						<view>
+							<switch name="switch" />
+						</view>
+					</view>
+					<view class="uni-form-item uni-column">
+						<view class="title">radio</view>
+						<radio-group name="radio">
+							<label>
+								<radio value="radio1" /><text>选项一</text>
+							</label>
+							<label>
+								<radio value="radio2" /><text>选项二</text>
+							</label>
+						</radio-group>
+					</view>
+					<view class="uni-form-item uni-column">
+						<view class="title">checkbox</view>
+						<checkbox-group name="checkbox">
+							<label>
+								<checkbox value="checkbox1" /><text>选项一</text>
+							</label>
+							<label>
+								<checkbox value="checkbox2" /><text>选项二</text>
+							</label>
+						</checkbox-group>
+					</view>
+					<view class="uni-form-item uni-column">
+						<view class="title">slider</view>
+						<slider value="50" name="slider" show-value></slider>
+					</view>
+					<view class="uni-form-item uni-column">
+						<view class="title">input</view>
+						<input class="uni-input" name="input" placeholder="这是一个输入框" />
+					</view>
+					<view class="uni-btn-v">
+						<button form-type="submit">Submit</button>
+						<button type="default" form-type="reset">Reset</button>
+					</view>
+				</form>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {}
+		},
+		methods: {
+			formSubmit: function(e) {
+				console.log('form发生了submit事件，携带数据为：' + JSON.stringify(e.detail.value))
+				var formdata = e.detail.value
+				uni.showModal({
+					content: '表单数据内容：' + JSON.stringify(formdata),
+					showCancel: false
+				});
+			},
+			formReset: function(e) {
+				console.log('清空数据')
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+![image-20231204153757168](img/uniapp学习笔记/image-20231204153757168.png)
+
+
+
+![image-20231204153806590](img/uniapp学习笔记/image-20231204153806590.png)
+
+
+
+![image-20231204153826941](img/uniapp学习笔记/image-20231204153826941.png)
+
+
+
+![image-20231204153834382](img/uniapp学习笔记/image-20231204153834382.png)
+
+
+
+
+
+
+
+
+
+### input
+
+#### 概述
+
+单行输入框
+
+html规范中input不仅是输入框，还有radio、checkbox、时间、日期、文件选择功能。
+
+在uni-app规范中，input仅仅是输入框。其他功能uni-app有单独的组件或API
+
+
+
