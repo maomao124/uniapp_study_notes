@@ -5150,3 +5150,734 @@ for优先级高于内部控件，内部有多个控件的时候默认触发第�
 
 
 
+
+
+#### 示例
+
+**mode = selector**
+
+```vue
+<template>
+	<view>
+		<picker mode="selector" :range="data" @change="change" @cancel="cancel()">点击普通选择器</picker>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				data:['1','2','3','4','5'],
+			}
+		},
+		methods: {
+			change(e)
+			{
+				console.log("值被改变了，索引：",e.target.value,"值：",this.data[e.target.value]);
+			},
+			cancel()
+			{
+				console.log("取消");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+![image-20231206092848055](img/uniapp学习笔记/image-20231206092848055.png)
+
+
+
+
+
+**mode = multiSelector**
+
+```vue
+<template>
+	<view>
+		<picker mode="multiSelector" :range="data" @change="change" @cancel="cancel()">点击多列选择器</picker>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				data: [
+					['1', '2', '3', '4', '5'],
+					['6', '7', '8', '9', '10'],
+					['11', '12', '13', '14', '15']
+				],
+			}
+		},
+		methods: {
+			change(e) {
+				console.log("值被改变了，索引：", e.target.value, "值：",
+					this.data[0][e.target.value[0]],
+					this.data[1][e.target.value[1]],
+					this.data[2][e.target.value[2]]);
+			},
+			cancel() {
+				console.log("取消");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+![image-20231206092924734](img/uniapp学习笔记/image-20231206092924734.png)
+
+
+
+![image-20231206092942967](img/uniapp学习笔记/image-20231206092942967.png)
+
+
+
+
+
+
+
+**mode = date**
+
+```vue
+<template>
+	<view>
+		<picker mode="date" @change="change" start="2023-06-03" 
+		end="2024-07-22" @cancel="cancel()">点击日期选择器</picker>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		methods: {
+			change(e)
+			{
+				console.log("值被改变了，值：",e.target.value);
+			},
+			cancel()
+			{
+				console.log("取消");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+![image-20231206093017608](img/uniapp学习笔记/image-20231206093017608.png)
+
+
+
+
+
+**mode = time**
+
+```vue
+<template>
+	<view>
+		<picker mode="time" @change="change" start="12:33" end="18:44" @cancel="cancel()">点击时间选择器</picker>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		methods: {
+			change(e)
+			{
+				console.log("值被改变了，值：",e.target.value);
+			},
+			cancel()
+			{
+				console.log("取消");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+![image-20231206093111514](img/uniapp学习笔记/image-20231206093111514.png)
+
+
+
+
+
+
+
+**mode = region**
+
+```vue
+<template>
+	<view>
+		<picker mode="region" @change="change" @cancel="cancel()">点击省市区选择器</picker>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				data:['1','2','3','4','5'],
+			}
+		},
+		methods: {
+			change(e)
+			{
+				console.log("值被改变了，索引：",e.target.value,"值：",this.data[e.target.value]);
+			},
+			cancel()
+			{
+				console.log("取消");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+使用微信小程序打开：
+
+![image-20231206093326028](img/uniapp学习笔记/image-20231206093326028.png)
+
+
+
+![image-20231206093422651](img/uniapp学习笔记/image-20231206093422651.png)
+
+
+
+![image-20231206093454108](img/uniapp学习笔记/image-20231206093454108.png)
+
+
+
+
+
+
+
+
+
+
+
+### picker-view
+
+#### 概述
+
+嵌入页面的滚动选择器
+
+相对于`picker`组件，`picker-view`拥有更强的灵活性。当需要对自定义选择的弹出方式和UI表现时，往往需要使用`picker-view`
+
+
+
+**picker-view-column：**`<picker-view />` 的子组件，仅可放置于 `<picker-view />` 中，其子节点的高度会自动设置成与 picker-view 的选中框的高度一致
+
+
+
+
+
+#### 属性
+
+|      属性名       |      类型       |                            默认值                            |              平台差异说明              |
+| :---------------: | :-------------: | :----------------------------------------------------------: | :------------------------------------: |
+|       value       | Array＜Number＞ | 数组中的数字依次表示 picker-view 内的 picker-view-column 选择的第几项（下标从 0 开始），数字大于 picker-view-column 可选项长度时，选择最后一项。 |                                        |
+|  indicator-style  |     String      |                  设置选择器中间选中框的样式                  |                                        |
+|  indicator-class  |     String      | 设置选择器中间选中框的类名，注意页面或组件的style中写了scoped时，需要在类名前写/deep/ | app-nvue与抖音小程序与飞书小程序不支持 |
+|    mask-style     |     String      |                        设置蒙层的样式                        |                                        |
+|  mask-top-style   |     String      |                    设置蒙层上半部分的样式                    |       仅 app-nvue（3.6.7+） 支持       |
+| mask-bottom-style |     String      |                    设置蒙层下半部分的样式                    |       仅 app-nvue（3.6.7+） 支持       |
+|    mask-class     |     String      |                        设置蒙层的类名                        | app-nvue与抖音小程序与飞书小程序不支持 |
+| immediate-change  |     Boolean     | 是否在手指松开时立即触发 change 事件。若不开启则会在滚动动画结束后触发 change 事件。 |           微信小程序 2.21.1            |
+|      @change      |   EventHandle   | 当滚动选择，value 改变时触发 change 事件，event.detail = {value: value}；value为数组，表示 picker-view 内的 picker-view-column 当前选择的是第几项（下标从 0 开始） |                                        |
+|    @pickstart     |   eventhandle   |                  当滚动选择开始时候触发事件                  |      微信小程序2.3.1、快手小程序       |
+|     @pickend      |   eventhandle   |                  当滚动选择结束时候触发事件                  |      微信小程序2.3.1、快手小程序       |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view class="uni-padding-wrap">
+			<view class="uni-title">日期：{{year}}年{{month}}月{{day}}日</view>
+		</view>
+		<picker-view v-if="visible" :indicator-style="indicatorStyle" :value="value" @change="bindChange"
+			class="picker-view">
+			<picker-view-column>
+				<view class="item" v-for="(item,index) in years" :key="index">{{item}}年</view>
+			</picker-view-column>
+			<picker-view-column>
+				<view class="item" v-for="(item,index) in months" :key="index">{{item}}月</view>
+			</picker-view-column>
+			<picker-view-column>
+				<view class="item" v-for="(item,index) in days" :key="index">{{item}}日</view>
+			</picker-view-column>
+		</picker-view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data: function() {
+			const date = new Date()
+			const years = []
+			const year = date.getFullYear()
+			const months = []
+			const month = date.getMonth() + 1
+			const days = []
+			const day = date.getDate()
+			for (let i = 1990; i <= date.getFullYear(); i++) {
+				years.push(i)
+			}
+			for (let i = 1; i <= 12; i++) {
+				months.push(i)
+			}
+			for (let i = 1; i <= 31; i++) {
+				days.push(i)
+			}
+			return {
+				title: 'picker-view',
+				years,
+				year,
+				months,
+				month,
+				days,
+				day,
+				value: [9999, month - 1, day - 1],
+				visible: true,
+				indicatorStyle: `height: 50px;`
+			}
+		},
+		methods: {
+			bindChange: function(e) {
+				const val = e.detail.value
+				this.year = this.years[val[0]]
+				this.month = this.months[val[1]]
+				this.day = this.days[val[2]]
+			}
+		}
+	}
+</script>
+
+<style>
+.picker-view {
+		width: 750rpx;
+		height: 600rpx;
+		margin-top: 20rpx;
+	}
+	.item {
+		line-height: 100rpx;
+		text-align: center;
+	}
+</style>
+```
+
+
+
+
+
+![image-20231206114429175](img/uniapp学习笔记/image-20231206114429175.png)
+
+
+
+
+
+![image-20231206114442031](img/uniapp学习笔记/image-20231206114442031.png)
+
+
+
+
+
+
+
+
+
+
+
+### radio
+
+#### 概述
+
+* radio-group：单项选择器，内部由多个 `<radio>` 组成。通过把多个`radio`包裹在一个`radio-group`下，实现这些`radio`的单选
+* radio：单选项目
+
+
+
+
+
+#### 属性
+
+radio-group：
+
+| 属性名  |    类型     | 默认值 |                             说明                             |
+| :-----: | :---------: | :----: | :----------------------------------------------------------: |
+| @change | EventHandle |        | `<radio-group>` 中的选中项发生变化时触发 change 事件，event.detail = {value: 选中项radio的value} |
+
+
+
+radio：
+
+|  属性名  |  类型   | 默认值 |                             说明                             |
+| :------: | :-----: | :----: | :----------------------------------------------------------: |
+|  value   | String  |        | `<radio>` 标识。当该 `<radio>` 选中时，`<radio-group>` 的 change 事件会携带 `<radio>` 的 value |
+| checked  | Boolean | false  |                         当前是否选中                         |
+| disabled | Boolean | false  |                           是否禁用                           |
+|  color   |  Color  |        |                  radio的颜色，同css的color                   |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<radio-group @change="change">
+			<radio value="1">单选框1</radio>
+			<radio value="2">单选框2</radio>
+			<radio value="3">单选框3</radio>
+		</radio-group>
+		<radio-group @change="change">
+			<radio value="1">单选框1</radio>
+			<radio value="2">单选框2</radio>
+			<radio value="3" disabled="true">单选框3</radio>
+		</radio-group>
+		<radio-group @change="change">
+			<radio value="1" checked="true">单选框1</radio>
+			<radio value="2">单选框2</radio>
+			<radio value="3">单选框3</radio>
+		</radio-group>
+		<radio-group @change="change">
+			<radio value="1" color="#aaff00">单选框1</radio>
+			<radio value="2" color="#aaff00">单选框2</radio>
+			<radio value="3" color="#aaff00">单选框3</radio>
+		</radio-group>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			change(e)
+			{
+				console.log(e);
+				console.log("当前选择的是：",e.detail.value);
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+事件对象：
+
+```json
+{
+	"_processed": true,
+	"changedTouches": [],
+	"currentTarget": {
+		"dataset": {},
+		"id": "",
+		"offsetLeft": 0,
+		"offsetTop": 0
+	},
+	"detail": {
+		"value": "1"
+	},
+	"mp": {
+		"@warning": "mp is deprecated",
+		"changedTouches": [],
+		"currentTarget": {
+			"dataset": {},
+			"id": "",
+			"offsetLeft": 0,
+			"offsetTop": 0
+		},
+		"detail": {
+			"value": "1"
+		},
+		"preventDefault": "function(){}",
+		"stopPropagation": "function(){}",
+		"target": {
+			"dataset": {},
+			"id": "",
+			"offsetLeft": 0,
+			"offsetTop": 0,
+			"value": "1"
+		},
+		"timeStamp": 91939.100000075996,
+		"touches": [],
+		"type": "change"
+	},
+	"preventDefault": "function(){}",
+	"stopPropagation": "function(){}",
+	"target": {
+		"dataset": {},
+		"id": "",
+		"offsetLeft": 0,
+		"offsetTop": 0,
+		"value": "1"
+	},
+	"timeStamp": 91939.100000075996,
+	"touches": [],
+	"type": "change"
+}
+```
+
+
+
+
+
+![image-20231206115043586](img/uniapp学习笔记/image-20231206115043586.png)
+
+
+
+![image-20231206115334590](img/uniapp学习笔记/image-20231206115334590.png)
+
+
+
+
+
+
+
+
+
+### slider
+
+#### 概述
+
+滑动选择器
+
+
+
+#### 属性
+
+|     属性名      |    类型     |        默认值        |                          说明                           |
+| :-------------: | :---------: | :------------------: | :-----------------------------------------------------: |
+|       min       |   Number    |          0           |                         最小值                          |
+|       max       |   Number    |         100          |                         最大值                          |
+|      step       |   Number    |          1           |      步长，取值必须大于 0，并且可被(max - min)整除      |
+|    disabled     |   Boolean   |        false         |                        是否禁用                         |
+|      value      |   Number    |          0           |                        当前取值                         |
+|   activeColor   |    Color    | 各个平台不同，详见下 |              滑块左侧已选择部分的线条颜色               |
+| backgroundColor |    Color    |       #e9e9e9        |                  滑块右侧背景条的颜色                   |
+|   block-size    |   Number    |          28          |             滑块的大小，取值范围为 12 - 28              |
+|   block-color   |    Color    |       #ffffff        |                       滑块的颜色                        |
+|   show-value    |   Boolean   |        false         |                   是否显示当前 value                    |
+|     @change     | EventHandle |                      | 完成一次拖动后触发的事件，event.detail = {value: value} |
+|    @changing    | EventHandle |                      |   拖动过程中触发的事件，event.detail = {value: value}   |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view>
+			<slider value="60" @change="sliderChange" />
+		</view>
+		<view>
+			<slider value="60" @change="sliderChange" show-value />
+		</view>
+		<view>
+			<slider value="240" min="100" max="3000" @change="sliderChange" show-value />
+		</view>
+		<view>
+			<slider value="60" step="10" @change="sliderChange" show-value/>
+		</view>
+		<view>
+			<slider value="44" disabled="true" @change="sliderChange" show-value />
+		</view>
+		<view>
+			<slider value="60" @change="sliderChange" active-color="red" background-color="green" show-value />
+		</view>
+		<view>
+			<slider value="72" @change="sliderChange" 
+			active-color="red" background-color="green"
+			block-color="skyblue" show-value />
+		</view>
+		<view>
+			<slider value="45" @change="sliderChange" 
+			active-color="red" background-color="green"
+			block-color="skyblue" block-size="12" show-value />
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			sliderChange(e)
+			{
+				console.log(e.detail.value);
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+![image-20231206120402760](img/uniapp学习笔记/image-20231206120402760.png)
+
+
+
+
+
+
+
+### switch
+
+#### 概述
+
+开关选择器。
+
+
+
+#### 属性
+
+| 属性名   |    类型     | 默认值 |                             说明                             |         平台差异说明         |
+| :------- | :---------: | :----: | :----------------------------------------------------------: | :--------------------------: |
+| checked  |   Boolean   | false  |                           是否选中                           |                              |
+| disabled |   Boolean   | false  |                           是否禁用                           | 抖音小程序与飞书小程序不支持 |
+| type     |   String    | switch |                样式，有效值：switch, checkbox                |                              |
+| color    |    Color    |        |                switch 的颜色，同 css 的 color                |                              |
+| @change  | EventHandle |        | checked 改变时触发 change 事件，event.detail={ value:checked} |                              |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view>
+			<switch></switch>
+		</view>
+		<view>
+			<switch checked="true"></switch>
+		</view>
+		<view>
+			<switch checked="true" disabled="true"></switch>
+		</view>
+		<view>
+			<switch checked="true" color="#ffaaaa"></switch>
+		</view>
+		<view>
+			<switch checked="true" type="checkbox" color="#ffaaaa"></switch>
+		</view>
+		<view>
+			<switch checked="true" color="#ffaaaa" style="transform:scale(2)"></switch>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+![image-20231206141436334](img/uniapp学习笔记/image-20231206141436334.png)
+
+
+
+
+
+
+
+
+
+### textarea
+
