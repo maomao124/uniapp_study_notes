@@ -6086,3 +6086,296 @@ textarea{
 
 ### animation-view
 
+#### 概述
+
+Lottie动画组件
+
+官网：https://airbnb.design/lottie/
+
+
+
+animation-view组件是[uts组件](https://uniapp.dcloud.net.cn/plugin/uts-component.html)，需下载插件：[animation-view](https://ext.dcloud.net.cn/plugin?name=uni-animation-view)，仅App端nvue页面支持
+
+
+
+#### 属性
+
+| 属性名     |    类型     | 默认值 |                             说明                             |
+| :--------- | :---------: | :----: | :----------------------------------------------------------: |
+| path       |   String    |        |             动画资源地址，支持本地路径和网络路径             |
+| loop       |   Boolean   | false  |                       动画是否循环播放                       |
+| autoplay   |   Boolean   |  true  |                       动画是否自动播放                       |
+| action     |   String    |  play  |              动画操作，可取值 play、pause、stop              |
+| hidden     |   Boolean   |  true  |                         是否隐藏动画                         |
+| @bindended | EventHandle |        | 当播放到末尾时触发 ended 事件（自然播放结束会触发回调，循环播放结束及手动停止动画不会触发） |
+
+
+
+
+
+
+
+### audio
+
+#### 概述
+
+音频
+
+只有**App**、**H5**、**微信小程序**、**百度小程序**支持
+
+
+
+#### 属性
+
+|   属性名    |    类型     |  默认值  |                             说明                             |
+| :---------: | :---------: | :------: | :----------------------------------------------------------: |
+|     id      |   String    |          |                    audio 组件的唯一标识符                    |
+|     src     |   String    |          |                     要播放音频的资源地址                     |
+|    loop     |   Boolean   |  false   |                         是否循环播放                         |
+|  controls   |   Boolean   |  false   |                       是否显示默认控件                       |
+|   poster    |   String    |          | 默认控件上的音频封面的图片资源地址，如果 controls 属性值为 false 则设置 poster 无效 |
+|    name     |   String    | 未知音频 | 默认控件上的音频名字，如果 controls 属性值为 false 则设置 name 无效 |
+|   author    |   String    | 未知作者 | 默认控件上的作者名字，如果 controls 属性值为 false 则设置 author 无效 |
+|   @error    | EventHandle |          | 当发生错误时触发 error 事件，detail = {errMsg: MediaError.code} |
+|    @play    | EventHandle |          |                当开始/继续播放时触发play事件                 |
+|   @pause    | EventHandle |          |                 当暂停播放时触发 pause 事件                  |
+| @timeupdate | EventHandle |          | 当播放进度改变时触发 timeupdate 事件，detail = {currentTime, duration} |
+|   @ended    | EventHandle |          |                当播放到末尾时触发 ended 事件                 |
+
+
+
+
+
+**MediaError.code**
+
+| 返回错误码 |        描述        |
+| :--------: | :----------------: |
+|     1      | 获取资源被用户禁止 |
+|     2      |      网络错误      |
+|     3      |      解码错误      |
+|     4      |     不合适资源     |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<audio loop="true" 
+		controls="true" 
+		src="https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-hello-uniapp/2cc220e0-c27a-11ea-9dfb-6da8e309e0d8.mp3"
+		 @play="play"
+		 @pause="pause"></audio>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			play(e)
+			{
+				console.log(e);
+				console.log("开始/继续播放");
+			},
+			pause(e)
+			{
+				console.log("暂停播放");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+![image-20231207181219643](img/uniapp学习笔记/image-20231207181219643.png)
+
+
+
+
+
+
+
+
+
+### camera
+
+#### 概述
+
+页面内嵌的区域相机组件。注意这不是点击后全屏打开的相机
+
+**App**和**H5**不支持
+
+在 App 和 H5 端，可以使用API方式来调用全屏摄像头，而不是组件内嵌方式
+
+
+
+#### 属性
+
+|      属性名      |    类型     | 默认值 |                             说明                             |                         平台差异说明                         |
+| :--------------: | :---------: | :----: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|       mode       |   String    | normal | 应用模式，有效值为 normal(相机模式), scanCode(扫码模式)，不支持动态修改 |                                                              |
+|    resolution    |   string    | medium |      分辨率，有效值为low, medium, high，不支持动态修改       |           微信小程序2.10.0、抖音小程序、飞书小程序           |
+| device-position  |   String    |  back  |              前置或后置摄像头，值为front, back               |                                                              |
+|      flash       |   String    |  auto  |               闪光灯，值为auto, on, off, torch               |                                                              |
+|    frame-size    |   string    | medium |      指定期望的相机帧数据尺寸，值为small, medium, large      |      微信小程序2.7.0、快应用、支付宝小程序、抖音小程序       |
+| output-dimension |   String    |  720P  | 相机拍照，录制的分辨率。有效值为 360P、540P、720P、1080P、max。 |                      支付宝小程序1.23.0                      |
+|      @stop       | EventHandle |        |          摄像头在非正常终止时触发，如退出后台等情况          |                                                              |
+|      @error      | EventHandle |        |                  用户不允许使用摄像头时触发                  |                                                              |
+|    @initdone     | eventhandle |        |          相机初始化完成时触发，e.detail = {maxZoom}          |  微信小程序2.7.0、抖音小程序1.78.0、飞书小程序、快手小程序   |
+|      @ready      | EventHandle |        |        相机初始化成功时触发。event.detail = {maxZoom}        |                      支付宝小程序1.24.3                      |
+|    @scancode     | EventHandle |        |      在扫码识别成功时触发，仅在 mode="scanCode" 时生效       | 微信小程序、支付宝小程序、抖音小程序、飞书小程序、快手小程序 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<camera device-position="back" flash="off" @error="error" style="width: 100%; height: 300px;"></camera>
+		<button type="primary" @click="takePhoto">拍照</button>
+		<view>预览</view>
+		<image mode="widthFix" :src="src"></image>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				src: ""
+			}
+		},
+		methods: {
+			takePhoto() {
+				const ctx = uni.createCameraContext();
+				ctx.takePhoto({
+					quality: 'high',
+					success: (res) => {
+						this.src = res.tempImagePath
+					}
+				});
+			},
+			error(e) {
+				console.log(e.detail);
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+![image-20231207182009700](img/uniapp学习笔记/image-20231207182009700.png)
+
+
+
+
+
+
+
+
+
+### image
+
+#### 概述
+
+图片组件
+
+* 当使用浏览器/webview渲染时，支持哪些图片格式由webview决定
+
+- 当使用uvue原生渲染时支持的格式如下
+  -  bmp
+  -  gif
+  -  ico
+  -  jpg
+  -  png
+  -  webp
+  -  heic（Android10+支持）
+  -  avif
+  -  tif
+  -  svg
+
+- 小程序上只支持网络地址的svg图
+
+
+
+`<image>` 组件未设置宽高时，默认宽度320px、高度240px
+
+当图片加载失败时，widthFix模式指定宽度的图片，虽然图片空白，但其高度会变成240px
+
+`src` 仅支持相对路径、绝对路径，支持 base64 码
+
+
+
+
+
+#### 属性
+
+|         属性名         |    类型     |    默认值     |                             说明                             |                  平台差异说明                  |
+| :--------------------: | :---------: | :-----------: | :----------------------------------------------------------: | :--------------------------------------------: |
+|          src           |   String    |               |                         图片资源地址                         |                                                |
+|          mode          |   String    | 'scaleToFill' |                     图片裁剪、缩放的模式                     |                                                |
+|       lazy-load        |   Boolean   |     false     |       图片懒加载。只针对page与scroll-view下的image有效       | 微信小程序、百度小程序、抖音小程序、飞书小程序 |
+|       fade-show        |   Boolean   |     true      |                       图片显示动画效果                       |         仅App-nvue 2.3.4+ Android有效          |
+|          webp          |   boolean   |     false     | 在系统不支持webp的情况下是否单独启用webp。默认false，只支持网络资源。webp支持详见下面说明 |                微信小程序2.9.0                 |
+| show-menu-by-longpress |   boolean   |     false     |               开启长按图片显示识别小程序码菜单               |                微信小程序2.7.0                 |
+|       draggable        |   boolean   |     true      |                        是否能拖动图片                        |            H5 3.1.1+、App（iOS15+）            |
+|         @error         | HandleEvent |               | 当错误发生时，发布到 AppService 的事件名，事件对象event.detail = {errMsg: 'something wrong'} |                                                |
+|         @load          | HandleEvent |               | 当图片载入完毕时，发布到 AppService 的事件名，事件对象event.detail = {height:'图片高度px', width:'图片宽度px'} |                                                |
+
+
+
+
+
+mode 有 14 种模式，其中 5 种是缩放模式，9 种是裁剪模式
+
+| 模式 |      值      |                             说明                             |
+| :--: | :----------: | :----------------------------------------------------------: |
+| 缩放 | scaleToFill  | 不保持纵横比缩放图片，使图片的宽高完全拉伸至填满 image 元素  |
+| 缩放 |  aspectFit   | 保持纵横比缩放图片，使图片的长边能完全显示出来。也就是说，可以完整地将图片显示出来。 |
+| 缩放 |  aspectFill  | 保持纵横比缩放图片，只保证图片的短边能完全显示出来。也就是说，图片通常只在水平或垂直方向是完整的，另一个方向将会发生截取。 |
+| 缩放 |   widthFix   |          宽度不变，高度自动变化，保持原图宽高比不变          |
+| 缩放 |  heightFix   | 高度不变，宽度自动变化，保持原图宽高比不变 **App 和 H5 平台 HBuilderX 2.9.3+ 支持、微信小程序需要基础库 2.10.3** |
+| 裁剪 |     top      |               不缩放图片，只显示图片的顶部区域               |
+| 裁剪 |    bottom    |               不缩放图片，只显示图片的底部区域               |
+| 裁剪 |    center    |               不缩放图片，只显示图片的中间区域               |
+| 裁剪 |     left     |               不缩放图片，只显示图片的左边区域               |
+| 裁剪 |    right     |               不缩放图片，只显示图片的右边区域               |
+| 裁剪 |   top left   |              不缩放图片，只显示图片的左上边区域              |
+| 裁剪 |  top right   |              不缩放图片，只显示图片的右上边区域              |
+| 裁剪 | bottom left  |              不缩放图片，只显示图片的左下边区域              |
+| 裁剪 | bottom right |              不缩放图片，只显示图片的右下边区域              |
+
+
+
+
+
+
+
+#### 示例
+
