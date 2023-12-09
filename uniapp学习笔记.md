@@ -6379,3 +6379,919 @@ mode 有 14 种模式，其中 5 种是缩放模式，9 种是裁剪模式
 
 #### 示例
 
+```vue
+<template>
+	<view>
+		 <view class="page">
+		        <view class="image-list">
+		            <view class="image-item" v-for="(item,index) in array" :key="index">
+		                <view class="image-content">
+		                    <image style="width: 200px; height: 200px; background-color: #eeeeee;" :mode="item.mode" :src="src"
+		                        @error="imageError"></image>
+		                </view>
+		                <view class="image-title">{{item.text}}</view>
+		            </view>
+		        </view>
+		    </view>
+	</view>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            array: [{
+                mode: 'scaleToFill',
+                text: 'scaleToFill：不保持纵横比缩放图片，使图片完全适应'
+            }, {
+                mode: 'aspectFit',
+                text: 'aspectFit：保持纵横比缩放图片，使图片的长边能完全显示出来'
+            }, {
+                mode: 'aspectFill',
+                text: 'aspectFill：保持纵横比缩放图片，只保证图片的短边能完全显示出来'
+            }, {
+                mode: 'top',
+                text: 'top：不缩放图片，只显示图片的顶部区域'
+            }, {
+                mode: 'bottom',
+                text: 'bottom：不缩放图片，只显示图片的底部区域'
+            }, {
+                mode: 'center',
+                text: 'center：不缩放图片，只显示图片的中间区域'
+            }, {
+                mode: 'left',
+                text: 'left：不缩放图片，只显示图片的左边区域'
+            }, {
+                mode: 'right',
+                text: 'right：不缩放图片，只显示图片的右边边区域'
+            }, {
+                mode: 'top left',
+                text: 'top left：不缩放图片，只显示图片的左上边区域'
+            }, {
+                mode: 'top right',
+                text: 'top right：不缩放图片，只显示图片的右上边区域'
+            }, {
+                mode: 'bottom left',
+                text: 'bottom left：不缩放图片，只显示图片的左下边区域'
+            }, {
+                mode: 'bottom right',
+                text: 'bottom right：不缩放图片，只显示图片的右下边区域'
+            }],
+            src: 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/shuijiao.jpg'
+        }
+    },
+    methods: {
+        imageError: function(e) {
+            console.error('image发生error事件，携带值为' + e.detail.errMsg)
+        }
+    }
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+### video
+
+#### 概述
+
+视频播放组件
+
+
+
+#### 属性
+
+|            属性名            |     类型     |  默认值  |                             说明                             |                      平台差异说明                       |
+| :--------------------------: | :----------: | :------: | :----------------------------------------------------------: | :-----------------------------------------------------: |
+|             src              |    String    |          |                     要播放视频的资源地址                     |                                                         |
+|           autoplay           |   Boolean    |  false   |                         是否自动播放                         |                                                         |
+|             loop             |   Boolean    |  false   |                         是否循环播放                         |                                                         |
+|            muted             |   Boolean    |  false   |                         是否静音播放                         |                    飞书小程序不支持                     |
+|         initial-time         |    Number    |          |            指定视频初始播放位置，单位为秒（s）。             |                    飞书小程序不支持                     |
+|           duration           |    Number    |          |                指定视频时长，单位为秒（s）。                 |  抖音小程序、飞书小程序、快手小程序、京东小程序不支持   |
+|           controls           |   Boolean    |   true   |    是否显示默认播放控件（播放/暂停按钮、播放进度、时间）     |                    快手小程序不支持                     |
+|          danmu-list          | Object Array |          |                           弹幕列表                           |  抖音小程序、飞书小程序、快手小程序、京东小程序不支持   |
+|          danmu-btn           |   Boolean    |  false   |       是否显示弹幕按钮，只在初始化时有效，不能动态变更       |  抖音小程序、飞书小程序、快手小程序、京东小程序不支持   |
+|         enable-danmu         |   Boolean    |  false   |         是否展示弹幕，只在初始化时有效，不能动态变更         |  抖音小程序、飞书小程序、快手小程序、京东小程序不支持   |
+|         page-gesture         |   Boolean    |  false   |          在非全屏模式下，是否开启亮度与音量调节手势          |                     微信小程序、H5                      |
+|          direction           |    Number    |          | 设置全屏时视频的方向，不指定则根据宽高比自动判断。有效值为 0（正常竖向）, 90（屏幕逆时针90度）, -90（屏幕顺时针90度） |      H5、飞书小程序、快手小程序、京东小程序不支持       |
+|        show-progress         |   Boolean    |   true   |               若不设置，宽度大于240时才会显示                |  抖音小程序、飞书小程序、快手小程序、京东小程序不支持   |
+|     show-fullscreen-btn      |   Boolean    |   true   |                       是否显示全屏按钮                       |                    京东小程序不支持                     |
+|        show-play-btn         |   Boolean    |   true   |               是否显示视频底部控制栏的播放按钮               |                    京东小程序不支持                     |
+|     show-center-play-btn     |   Boolean    |   true   |                  是否显示视频中间的播放按钮                  |              抖音小程序、京东小程序不支持               |
+|         show-loading         |   Boolean    |   true   |                     是否显示loading控件                      |                      仅app 2.8.12+                      |
+|   enable-progress-gesture    |   Boolean    |   true   |                    是否开启控制进度的手势                    |              抖音小程序、京东小程序不支持               |
+|          object-fit          |    String    | contain  | 当视频大小与 video 容器大小不一致时，视频的表现形式。contain：包含，fill：填充，cover：覆盖 | App、微信小程序、抖音小程序、飞书小程序、H5、京东小程序 |
+|            poster            |    String    |          | 视频封面的图片网络资源地址，如果 controls 属性值为 false 则设置 poster 无效 |                                                         |
+|        show-mute-btn         |   Boolean    |  false   |                       是否显示静音按钮                       |            微信小程序、抖音小程序、App-nvue             |
+|            title             |    String    |          |                 视频的标题，全屏时在顶部展示                 |                微信小程序、App（3.6.7+）                |
+|      play-btn-position       |    String    |  bottom  |                        播放按钮的位置                        |           微信小程序、抖音小程序、飞书小程序            |
+|     mobilenet-hint-type      |    number    |    1     |       移动网络提醒样式：0是不提醒，1是提醒，默认值为1        |                       京东小程序                        |
+|     enable-play-gesture      |   Boolean    |  false   |            是否开启播放手势，即双击切换播放/暂停             |                 微信小程序、快手小程序                  |
+|    auto-pause-if-navigate    |   Boolean    |   true   |      当跳转到其它小程序页面时，是否自动暂停本页面的视频      |                       微信小程序                        |
+|  auto-pause-if-open-native   |   Boolean    |   true   |     当跳转到其它微信原生页面时，是否自动暂停本页面的视频     |                       微信小程序                        |
+|        vslide-gesture        |   Boolean    |  false   | 在非全屏模式下，是否开启亮度与音量调节手势（同 page-gesture） |          微信小程序、App（3.4.0+）、快手小程序          |
+| vslide-gesture-in-fullscreen |   Boolean    |   true   |           在全屏模式下，是否开启亮度与音量调节手势           |          微信小程序、App（3.4.0+）、快手小程序          |
+|          ad-unit-id          |    String    |          |                      视频前贴广告单元ID                      |                       微信小程序                        |
+|      poster-for-crawler      |    String    |          | 用于给搜索等场景作为视频封面展示，建议使用无播放 icon 的视频封面图，只支持网络地址 |                       微信小程序                        |
+|            codec             |    String    | hardware | 解码器选择，hardware：硬解码（硬解码可以增加解码算力，提高视频清晰度。少部分老旧硬件可能存在兼容性问题）；software：ffmpeg 软解码； |                   App-Android 3.1.0+                    |
+|          http-cache          |   Boolean    |   true   | 是否对 http、https 视频源开启本地缓存。缓存策略:开启了此开关的视频源，在视频播放时会在本地保存缓存文件，如果本地缓存池已超过100M，在进行缓存前会清空之前的缓存（不适用于m3u8等流媒体协议） |                   App-Android 3.1.0+                    |
+|        play-strategy         |    Number    |    0     | 播放策略，0：普通模式，适合绝大部分视频播放场景；1：平滑播放模式（降级），增加缓冲区大小，采用open sl解码音频，避免音视频脱轨的问题，可能会降低首屏展现速度、视频帧率，出现开屏音频延迟等。 适用于高码率视频的极端场景；2： M3U8优化模式，增加缓冲区大小，提升视频加载速度和流畅度，可能会降低首屏展现速度。 适用于M3U8在线播放的场景 |                   App-Android 3.1.0+                    |
+|            header            |    Object    |          |                       HTTP 请求 Header                       |                       App 3.1.19+                       |
+|           is-live            |   Boolean    |  false   |                         是否为直播源                         |            App 3.7.2+、微信小程序（2.28.1+）            |
+|            @play             | EventHandle  |          |                当开始/继续播放时触发play事件                 |                    飞书小程序不支持                     |
+|            @pause            | EventHandle  |          |                 当暂停播放时触发 pause 事件                  |                    飞书小程序不支持                     |
+|            @ended            | EventHandle  |          |                当播放到末尾时触发 ended 事件                 |                    飞书小程序不支持                     |
+|         @timeupdate          | EventHandle  |          | 播放进度变化时触发，event.detail = {currentTime, duration} 。触发频率 250ms 一次 |                    飞书小程序不支持                     |
+|      @fullscreenchange       | EventHandle  |          | 当视频进入和退出全屏时触发，event.detail = {fullScreen, direction}，direction取为 vertical 或 horizontal |                    飞书小程序不支持                     |
+|           @waiting           | EventHandle  |          |                      视频出现缓冲时触发                      |              飞书小程序、快手小程序不支持               |
+|            @error            | EventHandle  |          |                      视频播放出错时触发                      |                    飞书小程序不支持                     |
+|          @progress           | EventHandle  |          | 加载进度变化时触发，只支持一段加载。event.detail = {buffered}，百分比 |               微信小程序、抖音小程序、H5                |
+|         @loadeddata          | EventHandle  |          |                    视频资源开始加载时触发                    |                       京东小程序                        |
+|          @loadstart          | EventHandle  |          |                         开始加载数据                         |                       京东小程序                        |
+|           @seeked            | EventHandle  |          |                        拖动进度条结束                        |                       京东小程序                        |
+|           @seeking           | EventHandle  |          |                        正在拖动进度条                        |                       京东小程序                        |
+|       @loadedmetadata        | EventHandle  |          | 视频元数据加载完成时触发。event.detail = {width, height, duration} |         微信小程序、H5、抖音小程序、京东小程序          |
+|       @fullscreenclick       | EventHandle  |          | 视频播放全屏播放时点击事件。event.detail = { screenX:"Number类型，点击点相对于屏幕左侧边缘的 X 轴坐标", screenY:"Number类型，点击点相对于屏幕顶部边缘的 Y 轴坐标", screenWidth:"Number类型，屏幕总宽度", screenHeight:"Number类型，屏幕总高度"} |                       App 2.6.3+                        |
+|       @controlstoggle        | EventHandle  |          |     切换 controls 显示隐藏时触发。event.detail = {show}      |                     微信小程序2.9.5                     |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view>
+			<video id="myVideo" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/2minute-demo.mp4"
+				 enable-danmu danmu-btn controls></video>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+![image-20231208160216156](img/uniapp学习笔记/image-20231208160216156.png)
+
+
+
+
+
+
+
+
+
+
+
+## 地图
+
+### map
+
+#### 概述
+
+地图组件用于展示地图
+
+
+
+| 地图服务商 |       App       |   H5    | 微信小程序 |
+| :--------: | :-------------: | :-----: | :--------: |
+|    高德    |        √        | 3.6.0+  |            |
+|   Goolge   | 3.4+ 仅nvue页面 | 3.2.10+ |            |
+|    腾讯    |                 |    √    |     √      |
+
+
+
+
+
+#### 属性
+
+|            属性名             |       类型        | 默认值 |                             说明                             |                         平台差异说明                         |
+| :---------------------------: | :---------------: | :----: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|           longitude           |      Number       |        |                           中心经度                           |                                                              |
+|           latitude            |      Number       |        |                           中心纬度                           |                                                              |
+|             scale             |      Number       |   16   |                   缩放级别，取值范围为3-20                   |               高德地图缩放比例与微信小程序不同               |
+|             theme             |      String       | normal | 主题（satellite 或 normal）只在初始化时有效，不能动态变更（仅Android支持） |                          京东小程序                          |
+|           min-scale           |      Number       |   3    |                         最小缩放级别                         |               App-nvue 3.1.0+、微信小程序2.13+               |
+|           max-scale           |      Number       |   20   |                         最大缩放级别                         |               App-nvue 3.1.0+、微信小程序2.13+               |
+|          layer-style          |   Number/String   |   1    |                          个性化地图                          |               App-nvue 3.1.0+、微信小程序2.13+               |
+|            markers            |       Array       |        |                            标记点                            |                                                              |
+|           polyline            |       Array       |        |                             路线                             |                       飞书小程序不支持                       |
+|            circles            |       Array       |        |                              圆                              |                                                              |
+|           controls            |       Array       |        |                             控件                             |                                                              |
+|        include-points         |       Array       |        |                缩放视野以包含所有给定的坐标点                | App-nvue 2.1.5+、微信小程序、H5、百度小程序、支付宝小程序、京东小程序 |
+|           enable-3D           |      Boolean      | false  |                        是否显示3D楼块                        |               App-nvue 2.1.5+、微信小程序2.3.0               |
+|         show-compass          |      Boolean      | false  |                        是否显示指南针                        |               App-nvue 2.1.5+、微信小程序2.3.0               |
+|          enable-zoom          |      Boolean      |  true  |                         是否支持缩放                         |               App-nvue 2.1.5+、微信小程序2.3.0               |
+|         enable-scroll         |      Boolean      |  true  |                         是否支持拖动                         |               App-nvue 2.1.5+、微信小程序2.3.0               |
+|         enable-rotate         |      Boolean      | false  |                         是否支持旋转                         |               App-nvue 2.1.5+、微信小程序2.3.0               |
+|      enable-overlooking       |      Boolean      | false  |                         是否开启俯视                         |               App-nvue 2.1.5+、微信小程序2.3.0               |
+|       enable-satellite        |      Boolean      | false  |                        是否开启卫星图                        |               App-nvue 2.1.5+、微信小程序2.7.0               |
+|        enable-traffic         |      Boolean      | false  |                       是否开启实时路况                       |               App-nvue 2.1.5+、微信小程序2.7.0               |
+|          enable-poi           |      Boolean      | false  |                       是否展示 POI 点                        |                       App-nvue 3.1.0+                        |
+|        enable-building        |      Boolean      | false  |                        是否展示建筑物                        | App-nvue 3.1.0+ 支持 (**废除原enable-3D属性 高德地图默认开启建筑物就是3D无法设置**) |
+|         show-location         |      Boolean      |        |                   显示带有方向的当前定位点                   |     微信小程序、H5、百度小程序、支付宝小程序、京东小程序     |
+| polygons（支付宝为: polygon） | Array.`<polygon>` |        |                            多边形                            | App-nvue 2.1.5+、App-vue 3.4.3+、H5 3.4.3+、微信小程序、百度小程序、支付宝小程序 |
+|       enable-indoorMap        |      Boolean      | false  |                       是否展示室内地图                       |                       App-nvue 3.1.0+                        |
+|          @markertap           |    EventHandle    |        |           点击标记点时触发，e.detail = {markerId}            | App-nvue 2.3.3+、H5、微信小程序、支付宝小程序 （App和H5平台需要指定 marker 对象属性 id） |
+|           @labeltap           |    EventHandle    |        |            点击label时触发，e.detail = {markerId}            |                       微信小程序2.9.0                        |
+|          @callouttap          |    EventHandle    |        |      点击标记点对应的气泡时触发，e.detail = {markerId}       |                                                              |
+|          @controltap          |    EventHandle    |        |            点击控件时触发，e.detail = {controlId}            |                                                              |
+|         @regionchange         |    EventHandle    |        |                      视野发生变化时触发                      |     微信小程序、H5、百度小程序、支付宝小程序、京东小程序     |
+|             @tap              |    EventHandle    |        |    点击地图时触发; App-nvue、微信小程序2.9支持返回经纬度     |                                                              |
+|           @updated            |    EventHandle    |        |                   在地图渲染更新完成时触发                   |                  微信小程序、H5、百度小程序                  |
+|        @anchorpointtap        |    EventHandle    |        |      点击定位标时触发，e.detail = {longitude, latitude}      |               App-nvue 3.1.0+、微信小程序2.13+               |
+|            @poitap            |    EventHandle    |        | 点击地图poi点时触发，e.detail = {name, longitude, latitude}  |                       微信小程序2.3.0+                       |
+
+
+
+
+
+https://uniapp.dcloud.net.cn/component/map.html#map
+
+
+
+
+
+
+
+
+
+
+
+## 画布
+
+### canvas
+
+#### 属性
+
+|     属性名     |    类型     | 默认值 |                             说明                             |                    平台差异说明                     |
+| :------------: | :---------: | :----: | :----------------------------------------------------------: | :-------------------------------------------------: |
+|      type      |   String    |        |          指定 canvas 类型，支持 2d (2.9.0) 和 webgl          |         微信小程序 2.7.0+ 抖音小程序1.78.0+         |
+|   canvas-id    |   String    |        |                   canvas 组件的唯一标识符                    |                                                     |
+| disable-scroll |   Boolean   | false  | 当在 canvas 中移动时且有绑定手势事件时，禁止屏幕滚动以及下拉刷新 |            抖音小程序与飞书小程序不支持             |
+|     hidpi      |   Boolean   |  true  |                       是否启用高清处理                       | H5 (HBuilder X 3.4.0+)、App-vue (HBuilder X 3.4.0+) |
+|  @touchstart   | EventHandle |        |                       手指触摸动作开始                       |                  抖音小程序1.78.0+                  |
+|   @touchmove   | EventHandle |        |                        手指触摸后移动                        |                  抖音小程序1.78.0+                  |
+|   @touchend    | EventHandle |        |                       手指触摸动作结束                       |                  抖音小程序1.78.0+                  |
+|  @touchcancel  | EventHandle |        |             手指触摸动作被打断，如来电提醒，弹窗             |                  抖音小程序1.78.0+                  |
+|    @longtap    | EventHandle |        | 手指长按 500ms 之后触发，触发了长按事件后进行移动不会触发屏幕的滚动 |            抖音小程序与飞书小程序不支持             |
+|     @error     | EventHandle |        | 当发生错误时触发 error 事件，detail = {errMsg: 'something wrong'} |            抖音小程序与飞书小程序不支持             |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<canvas style="width: 300px; height: 200px;" canvas-id="firstCanvas" id="firstCanvas"></canvas>
+	</view>
+</template>
+
+<script>
+	export default {
+		onReady: function(e) {
+			var context = uni.createCanvasContext('firstCanvas')
+			context.setStrokeStyle("#00ff00")
+			context.setLineWidth(5)
+			context.rect(0, 0, 200, 200)
+			context.stroke()
+			context.setStrokeStyle("#ff0000")
+			context.setLineWidth(2)
+			context.moveTo(160, 100)
+			context.arc(100, 100, 60, 0, 2 * Math.PI, true)
+			context.moveTo(140, 100)
+			context.arc(100, 100, 40, 0, Math.PI, false)
+			context.moveTo(85, 80)
+			context.arc(80, 80, 5, 0, 2 * Math.PI, true)
+			context.moveTo(125, 80)
+			context.arc(120, 80, 5, 0, 2 * Math.PI, true)
+			context.stroke()
+			context.draw()
+		},
+		methods: {
+			canvasIdErrorCallback: function(e) {
+				console.error(e.detail.errMsg)
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+## web-view
+
+### web-view
+
+#### 概述
+
+`web-view` 是一个 web 浏览器组件，可以用来承载网页的容器，会自动铺满整个页面（nvue 使用需要手动指定宽高）
+
+各小程序平台，web-view 加载的 url 需要在后台配置域名白名单，包括内部再次 iframe 内嵌的其他 url 
+
+
+
+#### 属性
+
+|     属性名     |     类型     |                             说明                             |                         平台差异说明                         |
+| :------------: | :----------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|      src       |    String    |                    webview 指向网页的链接                    |                                                              |
+|     allow      |    String    | 用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征) |                              H5                              |
+|    sandbox     |    String    | 该属性对呈现在 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 框架中的内容启用一些额外的限制条件。 |                              H5                              |
+|   fullscreen   |   Boolean    |              是否铺满整个页面，默认值：`true`。              |                    H5 (HBuilder X 3.5.4+)                    |
+| webview-styles |    Object    |                        webview 的样式                        |                           App-vue                            |
+|  update-title  |   Boolean    |           是否自动更新当前页面标题。默认值：`true`           |                 App-vue (HBuilder X 3.3.8+)                  |
+|    @message    | EventHandler | 网页向应用 `postMessage` 时，会在特定时机（后退、组件销毁、分享）触发并收到消息。 | H5 暂不支持（可以直接使用 [window.postMessage](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage)） |
+| @onPostMessage | EventHandler |                 网页向应用实时 `postMessage`                 |                           App-nvue                           |
+|     @load      | EventHandler |                 网页加载成功时候触发此事件。                 |        微信小程序、支付宝小程序、抖音小程序、QQ小程序        |
+|     @error     | EventHandler |                网页加载失败的时候触发此事件。                |        微信小程序、支付宝小程序、抖音小程序、QQ小程序        |
+
+
+
+
+
+`update-title` 仅支持 `App-vue` 。`小程序` 恒为 `true`，`H5、nvue` 恒为 `false`
+
+
+
+**src**
+
+| 来源 | App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快应用 | 360小程序 | 快手小程序 | 京东小程序 |
+| :--- | :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :----: | :-------: | :--------: | :--------: |
+| 网络 |  √   |  √   |     √      |      √       |     √      |           √            |    √     |   √    |     √     |     √      |     √      |
+| 本地 |  √   |  √   |     x      |      x       |     x      |           x            |    x     |   x    |     x     |     x      |     x      |
+
+
+
+**webview-styles**
+
+|   属性   |      类型      |                             说明                             |
+| :------: | :------------: | :----------------------------------------------------------: |
+| progress | Object/Boolean | 进度条样式。仅加载网络 HTML 时生效，设置为 `false` 时禁用进度条。 |
+|  width   |     String     |                    web-view 组件的宽度。                     |
+|  height  |     String     |                    web-view 组件的高度。                     |
+
+
+
+**progress**
+
+| 属性  |  类型  | 默认值  |    说明    |
+| :---: | :----: | :-----: | :--------: |
+| color | String | #00FF00 | 进度条颜色 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<web-view src="https://www.bilibili.com/" @loaded="loadWeb"></web-view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			loadWeb(e)
+			{
+				console.log('加载完成',e);
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+![image-20231208164528959](img/uniapp学习笔记/image-20231208164528959.png)
+
+
+
+
+
+
+
+
+
+# 常用API
+
+## 基础
+
+### base64
+
+### uni.base64ToArrayBuffer(base64)
+
+将 Base64 字符串转成 ArrayBuffer 对象
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :--------: | :--------: |
+|  √   |  √   |     √      |      x       |     x      |           x            |     √      |     √      |
+
+
+
+| 参数   | 类型   | 必填 | 说明                                      |
+| :----- | :----- | :--- | :---------------------------------------- |
+| base64 | String | 是   | 要转化成 ArrayBuffer 对象的 Base64 字符串 |
+
+
+
+```vue
+<template>
+	<view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				test:'123456789',
+			}
+		},
+		methods: {
+			
+		},
+		onShow() {
+			const arrayBuffer=uni.base64ToArrayBuffer(this.test);
+			console.log(arrayBuffer);
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+### uni.arrayBufferToBase64(arrayBuffer)
+
+将 ArrayBuffer 对象转成 Base64 字符串
+
+
+
+| 参数        | 类型        | 必填 | 说明                                      |
+| :---------- | :---------- | :--- | :---------------------------------------- |
+| arrayBuffer | ArrayBuffer | 是   | 要转换成 Base64 字符串的 ArrayBuffer 对象 |
+
+
+
+示例：
+
+```vue
+<template>
+	<view>
+		{{base64}}
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				base64: '',
+			}
+		},
+		methods: {
+
+		},
+		onShow() {
+			const arrayBuffer = new Uint8Array([55, 55, 55])
+			this.base64 = uni.arrayBufferToBase64(arrayBuffer)
+			console.log(this.base64);
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+
+
+### 启动
+
+#### uni.getLaunchOptionsSync()
+
+获取启动时的参数。返回值与App.onLaunch的回调参数一致
+
+**百度小程序**和**京东小程序**不支持
+
+
+
+**返回参数**
+
+|      参数名      |          类型           |                             说明                             |                         平台差异说明                         |
+| :--------------: | :---------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|       path       |         String          | 启动的路径(代码包路径，注意：App 端开发过程中热更新会直达当前页面，此时启动路径为当前页面路径) |            其他平台均支持，`抖音小程序(1.12.0+)`             |
+|      scene       |         Number          | 启动时的场景值，具体值含义请查看各平台文档说明。App、web端恒为 1001。钉钉小程序在 IDE 恒为0000，真机不支持。 |            其他平台均支持，`抖音小程序(1.12.0+)`             |
+|      query       |         Object          |                     启动时的 query 参数                      |            其他平台均支持，`抖音小程序(1.12.0+)`             |
+|   referrerInfo   |         Object          |                来源信息。如果没有则返回 `{}`                 | 其他平台均支持，`抖音小程序(1.15.0+)`，`飞书小程序不支持`，`钉钉小程序不支持` |
+|     channel      |         String          |      如果应用没有设置渠道标识，则返回空字符串。取值如下      |                        `仅 App 支持`                         |
+|     launcher     |         String          |                    应用启动来源。取值如下                    |                        `仅 App 支持`                         |
+| forwardMaterials |      Array<Object>      | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数 |                   `微信小程序`、`QQ小程序`                   |
+|  entryDataHash   |         string          | 群入口信息，通过群应用商店打开、群分享卡片打开的小程序可获得 |                         `仅QQ小程序`                         |
+|     chatType     |         number          | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数 |                        `仅微信小程序`                        |
+|   apiCategory    |         string          |                           API 类别                           |                   `仅微信小程序(2.20.0+)`                    |
+|     showFrom     |         number          |  唤起小程序的方式，目前取值固定为 10，表示通过 schema 唤起   |                   `仅抖音小程序(1.90.0+)`                    |
+|       mode       | 'default' \| 'halfPage' |                       启动小程序的模式                       |                        `仅快手小程序`                        |
+|     subScene     |         string          |                     子场景值(定义待补充)                     |                        `仅飞书小程序`                        |
+
+
+
+
+
+**channel 取值**
+
+|   默认渠道   | 渠道标识ID |
+| :----------: | :--------: |
+|  GooglePlay  |   google   |
+|    应用宝    |    yyb     |
+| 360应用市场  |    360     |
+| 华为应用商店 |   huawei   |
+| 小米应用商店 |   xiaomi   |
+| vivo应用商店 |    vivo    |
+| oppo应用商店 |    oppo    |
+
+
+
+**launcher 取值**
+
+|     值      |                             说明                             |
+| :---------: | :----------------------------------------------------------: |
+|   default   |   默认启动方式，通常表示应用列表启动（360手助中搜索启动）    |
+|   scheme    |                  通过urlscheme方式触发启动                   |
+|    push     |                 通过点击系统通知方式触发启动                 |
+|   uniLink   |            通过通用链接（universal link）启动应用            |
+| miniProgram |                    通过微信小程序启动应用                    |
+|  shortcut   | 通过快捷方式启动，iOS平台表示通过3D Touch快捷方式，Android平台表示通过桌面快捷方式启动 |
+|   barcode   |                      通过二维码扫描启动                      |
+
+
+
+
+
+
+
+示例：
+
+```vue
+<template>
+	<view>
+		
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			
+		},
+		onShow() {
+			const ops= uni.getLaunchOptionsSync();
+			console.log(ops);
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+```json
+{
+	"path": "pages/index/test3/test3",
+	"query": {},
+	"referrerInfo": {},
+	"scene": 1001
+}
+```
+
+
+
+
+
+#### uni.getEnterOptionsSync()
+
+获取启动时的参数。
+
+| App           | web          | 微信小程序 | 支付宝小程序 | 抖音小程序 | 快手小程序 | QQ小程序 | 百度小程序 | 京东小程序 | 钉钉小程序 | 飞书小程序 |
+| :------------ | :----------- | :--------- | :----------- | :--------- | :--------- | :------- | :--------- | :--------- | :--------- | :--------: |
+| √ `(3.4.10+)` | √ `(3.5.1+)` | √          | √            | √          | √          | x        | x          | x          | x          |     x      |
+
+
+
+**返回参数**
+
+|      参数名      |          类型           |                             说明                             |             平台差异说明              |
+| :--------------: | :---------------------: | :----------------------------------------------------------: | :-----------------------------------: |
+|       path       |         String          |                    启动的路径(代码包路径)                    | 其他平台均支持，`抖音小程序(1.12.0+)` |
+|      scene       |         Number          | 启动时的场景值，具体值含义请查看各平台文档说明。App、web端恒为 1001。 | 其他平台均支持，`抖音小程序(1.12.0+)` |
+|      query       |         Object          |                     启动时的 query 参数                      | 其他平台均支持，`抖音小程序(1.12.0+)` |
+|   referrerInfo   |         Object          |                来源信息。如果没有则返回 `{}`                 | 其他平台均支持，`抖音小程序(1.15.0+)` |
+|     channel      |         String          |      如果应用没有设置渠道标识，则返回空字符串。取值如下      |             `仅 App 支持`             |
+|     launcher     |         String          |                    应用启动来源。取值如下                    |             `仅 App 支持`             |
+| forwardMaterials |      Array<Object>      | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数 |             `微信小程序`              |
+|     chatType     |         number          | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数 |            `仅微信小程序`             |
+|   apiCategory    |         string          |                           API 类别                           |        `仅微信小程序(2.20.0+)`        |
+|     showFrom     |         number          |  唤起小程序的方式，目前取值固定为 10，表示通过 schema 唤起   |        `仅抖音小程序(1.90.0+)`        |
+|       mode       | 'default' \| 'halfPage' |                       启动小程序的模式                       |            `仅快手小程序`             |
+
+
+
+
+
+示例：
+
+```vue
+<template>
+	<view>
+		
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			
+		},
+		onShow() {
+			const ops= uni.getEnterOptionsSync()
+			console.log(ops);
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+```json
+{
+	"path": "pages/index/test4/test4",
+	"query": {},
+	"referrerInfo": {},
+	"scene": 1001
+}
+```
+
+
+
+
+
+
+
+
+
+### 拦截器
+
+#### 概述
+
+* 添加拦截器：`uni.addInterceptor(STRING, OBJECT)`
+* 删除拦截器：`uni.removeInterceptor(STRING)`
+
+
+
+#### 参数
+
+**STRING 参数说明**
+
+需要拦截的`api`名称，如：`uni.addInterceptor('request', OBJECT)` ，将拦截 `uni.request()`
+
+仅支持异步接口，如：`uni.setStorage(OBJECT)`，暂不支持同步接口
+
+
+
+**OBJECT 参数**
+
+|   参数名    |   类型   | 必填 | 默认值 |            说明            | 平台差异说明 |
+| :---------: | :------: | :--: | :----: | :------------------------: | :----------: |
+|   invoke    | Function |  否  |        |         拦截前触发         |              |
+| returnValue | Function |  否  |        | 方法调用后触发，处理返回值 |              |
+|   success   | Function |  否  |        |        成功回调拦截        |              |
+|    fail     | Function |  否  |        |        失败回调拦截        |              |
+|  complete   | Function |  否  |        |        完成回调拦截        |              |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view>
+			<button @click="requset" type="primary">发送请求</button>
+		</view>
+		<view>
+			<button @click="add" type="primary">添加拦截器请求</button>
+		</view>
+		<view>
+			<button @click="remove" type="warn">删除拦截器请求</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			requset() {
+				console.log("发送请求");
+				uni.request({
+					url: '/api/test',
+					method: 'POST',
+					timeout: 500,
+					success: (resp) => {
+						console.log("requset 成功的回调", resp);
+					},
+					fail: (resp) => {
+						console.log("requset 失败的回调", resp);
+					}
+				})
+			},
+			add() {
+				console.log("添加拦截器");
+				uni.addInterceptor('request', {
+					invoke: (e) => {
+						console.log('拦截前触发 ', e);
+						//return false;
+					},
+					returnValue: (e) => {
+						console.log('方法调用后触发，处理返回值 ', e);
+					},
+					success: (e) => {
+						console.log('成功回调拦截 ', e);
+					},
+					fail: (e) => {
+						console.log('失败回调拦截 ', e);
+					},
+					complete: (e) => {
+						console.log('完成回调拦截 ', e);
+					},
+				})
+			},
+			remove() {
+				console.log("删除拦截器");
+				uni.removeInterceptor('request');
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+![image-20231208180204746](img/uniapp学习笔记/image-20231208180204746.png)
+
+
+
+
+
+![image-20231208180238120](img/uniapp学习笔记/image-20231208180238120.png)
+
+
+
+
+
+
+
+
+
+
+
+### uni.canIUse(String)
+
+#### 概述
+
+判断应用的 API，回调，参数，组件等是否在当前版本可用
+
+
+
+| App  |         Web         | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ程序 |
+| :--: | :-----------------: | :--------: | :----------: | :--------: | :--------------------: | :----: |
+|  √   | √ (uni-app 3.4.13+) |     √      |      √       |     √      |           √            |   √    |
+
+
+
+
+
+#### 参数
+
+使用 `${API}.${method}.${param}.${options}` 或者 `${component}.${attribute}.${option}` 方式来调用
+
+- `${API}` 代表 API 名字
+- `${method}` 代表调用方式，有效值为return, success, object, callback
+- `${param}` 代表参数或者返回值
+- `${options}` 代表参数的可选值
+- `${component}` 代表组件名字
+- `${attribute}` 代表组件属性
+- `${option}` 代表组件属性的可选值
+
+
+
