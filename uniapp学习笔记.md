@@ -7458,6 +7458,58 @@ method有效值必须大写，每个平台支持的method有效值不同
 后端程序(端口9091)如下：
 
 ```java
+package mao.uniappnetworkrequestserver.entity;
+
+import lombok.*;
+import lombok.experimental.Accessors;
+
+import java.util.Map;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
+@Accessors(chain = true)
+public class R<T>
+{
+    private boolean status;
+
+    private String msg;
+
+    private T data;
+
+    private Map<String, Object> extData;
+
+    /**
+     * 成功
+     *
+     * @param data 数据
+     * @return {@link R}<{@link T}>
+     */
+    public static <T> R<T> success(T data)
+    {
+        return new R<T>().setStatus(true).setData(data);
+    }
+
+    /**
+     * 失败
+     *
+     * @param message 消息
+     * @return {@link R}<{@link T}>
+     */
+    public static <T> R<T> fail(String message)
+    {
+        return new R<T>().setStatus(false).setMsg(message);
+    }
+}
+
+```
+
+
+
+```java
 package mao.uniappnetworkrequestserver.contrller;
 
 import lombok.extern.slf4j.Slf4j;
@@ -7510,7 +7562,7 @@ public class TestController
 
 
 
-
+前端：
 
 ```vue
 <template>
@@ -7782,9 +7834,240 @@ post请求：
 
 
 
+files 参数是一个 file 对象的数组
+
 
 
 
 
 #### 示例
+
+后端：
+
+```java
+    @PostMapping("/test/upload")
+    public R<String> test5(MultipartFile file)
+    {
+        String originalFilename = file.getOriginalFilename();
+        log.info(originalFilename);
+        return R.success(originalFilename);
+    }
+```
+
+
+
+前端：
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="upload">上传图片</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			upload() {
+				uni.chooseImage({
+					success: (chooseImageRes) => {
+						const tempFilePaths = chooseImageRes.tempFilePaths;
+						uni.uploadFile({
+							url: 'http://localhost:9091/api/test/upload',
+							timeout:1000,
+							filePath: tempFilePaths[0],
+							name: 'file',
+							success: (uploadFileRes) => {
+								console.log(uploadFileRes.data);
+							},
+							fail: (err) => {
+								console.log("上传失败", err);
+							}
+						});
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+![image-20231213110158961](img/uniapp学习笔记/image-20231213110158961.png)
+
+
+
+选择一个图片
+
+前端：
+
+```json
+{"status":true,"msg":null,"data":"image-20230911142147129.png","extData":null}
+```
+
+
+
+后端：
+
+```sh
+2023-12-13 11:01:47.162  INFO 6072 --- [nio-9091-exec-3] m.u.contrller.TestController             : image-20230911142147129.png
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+### uni.downloadFile(OBJECT)
+
+#### 概述
+
+下载文件资源到本地，客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径
+
+
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                             说明                             |                         平台差异说明                         |
+| :------: | :------: | :--: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|   url    |  String  |  是  |                        下载资源的 url                        |                                                              |
+|  header  |  Object  |  否  |        HTTP 请求 Header, header 中不能设置 Referer。         |                                                              |
+| timeout  |  Number  |  否  |                      超时时间，单位 ms                       |  H5、APP、微信小程序、支付宝小程序、抖音小程序、快手小程序   |
+| filePath |  string  |  否  |             指定文件下载后存储的路径 (本地路径)              | 小程序端支持（微信IOS小程序保存到相册需要添加此字段才可以正常保存） |
+| success  | Function |  否  | 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'} |                                                              |
+|   fail   | Function |  否  |                    接口调用失败的回调函数                    |                                                              |
+| complete | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                                              |
+
+
+
+
+
+**success 返回参数**
+
+|     参数     |  类型  |                             说明                             |                         平台差异说明                         |
+| :----------: | :----: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| tempFilePath | String |        临时文件路径，下载后的文件会存储到一个临时文件        | 微信小程序、支付宝小程序、百度小程序、抖音小程序、飞书小程序 |
+|  statusCode  | Number |                开发者服务器返回的 HTTP 状态码                |   微信小程序、QQ小程序、百度小程序、抖音小程序、飞书小程序   |
+|  apFilePath  | String | 下载文件保存的路径（本地临时文件）。入参未指定 filePath 的情况下可用 |                         支付宝小程序                         |
+|   filePath   | String | 用户文件路径 (本地路径)。传入 filePath 时会返回，跟传入的 filePath 一致 |       微信小程序、支付宝小程序、抖音小程序、飞书小程序       |
+| fileContent  | Buffer |                           文件内容                           |                           QQ小程序                           |
+
+
+
+
+
+**文件的临时路径，在应用本次启动期间可以正常使用，如需持久保存，需在主动调用 [uni.saveFile](https://uniapp.dcloud.net.cn/api/file/file#savefile)，才能在应用下次启动时访问得到**
+
+
+
+
+
+
+
+#### 示例
+
+后端：
+
+```java
+    @SneakyThrows
+    @GetMapping("/test/download")
+    public void test6(HttpServletResponse response)
+    {
+        log.info("下载文件");
+        response.getOutputStream().write("1".repeat(10000000).getBytes(StandardCharsets.UTF_8));
+    }
+```
+
+
+
+前端：
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="download">下载文件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			download() {
+				uni.downloadFile({
+					url: 'http://localhost:9091/api/test/download',
+					timeout: 1000,
+					success: (resp) => {
+						console.log(resp);
+						console.log("文件下载成功，位于临时目录", resp.tempFilePath);
+					},
+					fail: (err) => {
+						console.log(err);
+						console.log("下载失败");
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+![image-20231213112359314](img/uniapp学习笔记/image-20231213112359314.png)
+
+
+
+前端：
+
+![image-20231213112438553](img/uniapp学习笔记/image-20231213112438553.png)
+
+
+
+后端：
+
+```sh
+2023-12-13 11:24:17.108  INFO 40016 --- [nio-9091-exec-3] m.u.contrller.TestController             : 下载文件
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+### uni.connectSocket(OBJECT)
 
