@@ -8071,3 +8071,578 @@ files 参数是一个 file 对象的数组
 
 ### uni.connectSocket(OBJECT)
 
+#### 概述
+
+创建一个 WebSocket 连接
+
+
+
+#### 参数
+
+|  参数名   |      类型      | 必填 |                             说明                             |                      平台差异说明                       |
+| :-------: | :------------: | :--: | :----------------------------------------------------------: | :-----------------------------------------------------: |
+|    url    |     String     |  是  |                        服务器接口地址                        |              小程序中必须是 `wss://` 协议               |
+| multiple  |    Boolean     |  否  |  是否多实例。传入 true 时，将返回一个包含 SocketTask 实例。  |                   仅支付宝小程序支持                    |
+|  header   |     Object     |  否  |           HTTP Header , header 中不能设置 Referer            |                   小程序、App 2.9.6+                    |
+|  method   |     String     |  否  | 默认是GET，有效值：OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT |                    仅微信小程序支持                     |
+| protocols | Array\<String> |  否  |                          子协议数组                          | App、H5、微信小程序、百度小程序、抖音小程序、飞书小程序 |
+|  success  |    Function    |  否  |                    接口调用成功的回调函数                    |                                                         |
+|   fail    |    Function    |  否  |                    接口调用失败的回调函数                    |                                                         |
+| complete  |    Function    |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                           、                            |
+
+
+
+
+
+
+
+#### 后端准备
+
+添加依赖：
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
+</dependency>
+```
+
+
+
+
+
+编写配置类：
+
+```java
+package mao.uniappnetworkrequestserver.config;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
+
+import javax.annotation.PostConstruct;
+
+/**
+ * Project name(项目名称)：uniapp-network-request-server
+ * Package(包名): mao.uniappnetworkrequestserver.config
+ * Class(类名): WebSocketConfig
+ * Author(作者）: mao
+ * Author QQ：1296193245
+ * GitHub：https://github.com/maomao124/
+ * Date(创建日期)： 2023/12/13
+ * Time(创建时间)： 11:47
+ * Version(版本): 1.0
+ * Description(描述)： websocket配置
+ */
+
+@Slf4j
+@Configuration
+@EnableWebSocket
+public class WebSocketConfig
+{
+
+
+    /**
+     * ServerEndpointExporter
+     *
+     * @return {@link ServerEndpointExporter}
+     */
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter()
+    {
+        return new ServerEndpointExporter();
+    }
+
+    @PostConstruct
+    public void init()
+    {
+        log.info("初始化 WebSocketConfig");
+    }
+}
+
+```
+
+
+
+
+
+编写处理方法
+
+```java
+package mao.uniappnetworkrequestserver.handler;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import javax.websocket.*;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+import java.net.http.WebSocket;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+/**
+ * Project name(项目名称)：uniapp-network-request-server
+ * Package(包名): mao.uniappnetworkrequestserver.handler
+ * Class(类名): WebSocketHandler
+ * Author(作者）: mao
+ * Author QQ：1296193245
+ * GitHub：https://github.com/maomao124/
+ * Date(创建日期)： 2023/12/13
+ * Time(创建时间)： 11:50
+ * Version(版本): 1.0
+ * Description(描述)： websocket接口
+ * 接口路径 ws://localhost:9091/websocket/userId;
+ */
+
+@Component
+@Slf4j
+@ServerEndpoint("/websocket/{userId}")
+public class WebSocketHandler
+{
+    /**
+     * 与某个客户端的连接会话，需要通过它来给客户端发送数据
+     */
+    private Session session;
+
+    /**
+     * 用户ID
+     */
+    private String userId;
+
+    /**
+     * concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
+     * 虽然@Component默认是单例模式的，但springboot还是会为每个websocket连接初始化一个bean，所以可以用一个静态set保存起来。
+     */
+    private static final CopyOnWriteArraySet<WebSocketHandler> webSockets = new CopyOnWriteArraySet<>();
+
+    /**
+     * 用来存在线连接用户信息
+     */
+    private static final ConcurrentHashMap<String, Session> sessionPool = new ConcurrentHashMap<>();
+
+    /**
+     * 链接成功调用的方法
+     *
+     * @param session {@link Session}
+     * @param userId  用户id 路径变量
+     */
+    @OnOpen
+    public void onOpen(Session session, @PathParam(value = "userId") String userId)
+    {
+        try
+        {
+            synchronized (("lock:WebSocketHandler:onOpen" + userId).intern())
+            {
+                this.session = session;
+                this.userId = userId;
+                webSockets.add(this);
+                sessionPool.put(userId, session);
+                log.info("【websocket消息】有新的连接，当前连接总数为:" + webSockets.size());
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("连接时发生错误：", e);
+        }
+    }
+
+    /**
+     * 链接关闭调用的方法
+     */
+    @OnClose
+    public void onClose()
+    {
+        try
+        {
+            synchronized (("lock:WebSocketHandler:onClose" + userId).intern())
+            {
+                webSockets.remove(this);
+                sessionPool.remove(this.userId);
+                log.info("【websocket消息】连接断开，当前连接总数为:" + webSockets.size());
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("断开连接时发生错误：", e);
+        }
+    }
+
+    /**
+     * 收到客户端消息后调用的方法
+     *
+     * @param message {@link Session}
+     */
+    @OnMessage
+    public void onMessage(String message)
+    {
+        log.info("【websocket消息】收到客户端[" + this.userId + "]的消息:" + message);
+    }
+
+    /**
+     * 发送错误时的处理
+     *
+     * @param session {@link Session}
+     * @param error   {@link Throwable}
+     */
+    @OnError
+    public void onError(Session session, Throwable error)
+    {
+        log.error("用户错误,原因:" + error.getMessage());
+        error.printStackTrace();
+    }
+
+
+    /**
+     * 发送广播消息
+     *
+     * @param message 消息内容
+     */
+    public void sendAllMessage(String message)
+    {
+        log.info("【websocket消息】广播消息:" + message);
+        for (WebSocketHandler webSocketHandler : webSockets)
+        {
+            try
+            {
+                if (webSocketHandler.session.isOpen())
+                {
+                    webSocketHandler.session.getAsyncRemote().sendText(message);
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * 发送单点消息
+     *
+     * @param userId  要发送的用户id（发给谁？）
+     * @param message 消息内容
+     */
+    public void sendOneMessage(String userId, String message)
+    {
+        Session session = sessionPool.get(userId);
+        if (session != null && session.isOpen())
+        {
+            try
+            {
+                log.info("【websocket消息】 单点消息:" + message);
+                session.getAsyncRemote().sendText(message);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * 发送消息给多个人
+     *
+     * @param userIds 用户id列表
+     * @param message 消息内容
+     */
+    public void sendMoreMessage(String[] userIds, String message)
+    {
+        for (String userId : userIds)
+        {
+            Session session = sessionPool.get(userId);
+            if (session != null && session.isOpen())
+            {
+                try
+                {
+                    log.info("【websocket消息】 单点消息:" + message);
+                    session.getAsyncRemote().sendText(message);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+}
+```
+
+
+
+
+
+```java
+package mao.uniappnetworkrequestserver.contrller;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import mao.uniappnetworkrequestserver.entity.R;
+import mao.uniappnetworkrequestserver.handler.WebSocketHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * TestController
+ */
+
+@Slf4j
+@RestController
+@RequestMapping("/api")
+public class TestController
+{
+    @Autowired
+    private WebSocketHandler webSocketHandler;
+
+    @GetMapping("/test/get")
+    public R<String> test1(@RequestParam String key)
+    {
+        log.info("key:" + key);
+        return R.success("hello get");
+    }
+
+    @PostMapping("/test/post")
+    public R<String> test2(@RequestParam String key)
+    {
+        log.info("key:" + key);
+        return R.success("hello post");
+    }
+
+    @PostMapping("/test/post2")
+    public R<String> test3(@RequestParam String key)
+    {
+        log.info("key:" + key);
+        return R.fail("hello post");
+    }
+
+    @PostMapping("/test/post3")
+    public R<String> test4(HttpServletResponse response)
+    {
+        response.setStatus(403);
+        return R.fail("错误");
+    }
+
+    @PostMapping("/test/upload")
+    public R<String> test5(MultipartFile file)
+    {
+        String originalFilename = file.getOriginalFilename();
+        log.info(originalFilename);
+        return R.success(originalFilename);
+    }
+
+    @SneakyThrows
+    @GetMapping("/test/download")
+    public void test6(HttpServletResponse response)
+    {
+        log.info("下载文件");
+        response.getOutputStream().write("1".repeat(10000000).getBytes(StandardCharsets.UTF_8));
+    }
+
+    @PostMapping("/websocket/sendAll")
+    public R<Boolean> test7(@RequestParam String message)
+    {
+        webSocketHandler.sendAllMessage(message);
+        return R.success(null);
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="conn">发起websocket连接</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			conn() {
+				const userId = "10000001";
+				uni.connectSocket({
+					url: 'ws://localhost:9091/websocket/' + userId,
+					method: 'GET',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '连接成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '连接失败',
+							icon: 'error'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+![image-20231213144908925](img/uniapp学习笔记/image-20231213144908925.png)
+
+
+
+
+
+```sh
+2023-12-13 14:49:07.746  INFO 6612 --- [nio-9091-exec-3] m.u.handler.WebSocketHandler             : 【websocket消息】有新的连接，当前连接总数为:1
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+### uni.onSocketOpen(CALLBACK)
+
+#### 概述
+
+监听WebSocket连接打开事件
+
+
+
+#### 参数
+
+**CALLBACK 返回参数**
+
+|  属性  |  类型  |            说明             |
+| :----: | :----: | :-------------------------: |
+| header | Object | 连接成功的 HTTP 响应 Header |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="conn">发起websocket连接</button>
+		<button type="primary" @click="onConn">注册websocket连接打开事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			conn() {
+				const userId = "10000001";
+				uni.connectSocket({
+					url: 'ws://localhost:9091/websocket/' + userId,
+					method: 'GET',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '连接成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '连接失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			onConn()
+			{
+				console.log("注册websocket连接打开事件");
+				uni.onSocketOpen(function(res)
+				{
+					console.log("连接已打开");
+					console.log(res);
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button
+{
+	margin: 10px;
+}
+</style>
+```
+
+
+
+
+
+![image-20231213165153283](img/uniapp学习笔记/image-20231213165153283.png)
+
+
+
+![image-20231213165200953](img/uniapp学习笔记/image-20231213165200953.png)
+
+
+
+
+
+```sh
+2023-12-13 16:51:41.312  INFO 14836 --- [io-9091-exec-16] m.u.handler.WebSocketHandler             : 【websocket消息】有新的连接，当前连接总数为:1
+```
+
+
+
+
+
+
+
+
+
+### uni.onSocketError(CALLBACK)
