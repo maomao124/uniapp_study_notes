@@ -8646,3 +8646,746 @@ button
 
 
 ### uni.onSocketError(CALLBACK)
+
+#### 概述
+
+监听WebSocket错误。抖音小程序不支持。
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="conn">发起websocket连接</button>
+		<button type="primary" @click="onConn">注册websocket连接打开事件</button>
+		<button type="primary" @click="onConnError">注册websocket连接错误事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			conn() {
+				const userId = "10000001";
+				uni.connectSocket({
+					url: 'ws://localhost:9091/websocket/' + userId,
+					method: 'GET',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '连接成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '连接失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			onConn()
+			{
+				console.log("注册websocket连接打开事件");
+				uni.onSocketOpen(function(res)
+				{
+					console.log("连接已打开");
+					console.log(res);
+				})
+			},
+			onConnError()
+			{
+				console.log("注册websocket连接错误事件");
+				uni.onSocketError(function(err)
+				{
+					console.log('连接错误');
+					console.log(err);
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+button
+{
+	margin: 10px;
+}
+</style>
+```
+
+
+
+关闭服务器：
+
+![image-20231213170033295](img/uniapp学习笔记/image-20231213170033295.png)
+
+
+
+
+
+
+
+
+
+### uni.sendSocketMessage(OBJECT)
+
+#### 概述
+
+通过 WebSocket 连接发送数据
+
+需要先 uni.connectSocket，并在 uni.onSocketOpen 回调之后才能发送
+
+
+
+#### 参数
+
+|  参数名  |        类型        | 必填 |                       说明                       |
+| :------: | :----------------: | :--: | :----------------------------------------------: |
+|   data   | String/ArrayBuffer |  是  |                  需要发送的内容                  |
+| success  |      Function      |  否  |              接口调用成功的回调函数              |
+|   fail   |      Function      |  否  |              接口调用失败的回调函数              |
+| complete |      Function      |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="conn">发起websocket连接</button>
+		<button type="primary" @click="onConn">注册websocket连接打开事件</button>
+		<button type="primary" @click="onConnError">注册websocket连接错误事件</button>
+		<button type="primary" @click="send()">发送消息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			conn() {
+				const userId = "10000001";
+				uni.connectSocket({
+					url: 'ws://localhost:9091/websocket/' + userId,
+					method: 'GET',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '连接成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '连接失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			onConn()
+			{
+				console.log("注册websocket连接打开事件");
+				uni.onSocketOpen(function(res)
+				{
+					console.log("连接已打开");
+					console.log(res);
+				})
+			},
+			onConnError()
+			{
+				console.log("注册websocket连接错误事件");
+				uni.onSocketError(function(err)
+				{
+					console.log('连接错误');
+					console.log(err);
+				});
+			},
+			send()
+			{
+				console.log("发送消息");
+				uni.sendSocketMessage({
+					data:'hello',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '发送成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '发送失败',
+							icon: 'error'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button
+{
+	margin: 10px;
+}
+</style>
+```
+
+
+
+
+
+![image-20231213170734165](img/uniapp学习笔记/image-20231213170734165.png)
+
+
+
+![image-20231213170828792](img/uniapp学习笔记/image-20231213170828792.png)
+
+
+
+
+
+```sh
+2023-12-13 17:08:05.507  INFO 17552 --- [nio-9091-exec-1] m.u.handler.WebSocketHandler             : 【websocket消息】有新的连接，当前连接总数为:1
+2023-12-13 17:08:11.015  INFO 17552 --- [nio-9091-exec-2] m.u.handler.WebSocketHandler             : 【websocket消息】收到客户端[10000001]的消息:hello
+```
+
+
+
+
+
+
+
+
+
+
+
+### uni.closeSocket(OBJECT)
+
+#### 概述
+
+关闭 WebSocket 连接
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                             说明                             |
+| :------: | :------: | :--- | :----------------------------------------------------------: |
+|   code   |  Number  | 否   | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
+|  reason  |  String  | 否   | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
+| success  | Function | 否   |                    接口调用成功的回调函数                    |
+|   fail   | Function | 否   |                    接口调用失败的回调函数                    |
+| complete | Function | 否   |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="conn">发起websocket连接</button>
+		<button type="primary" @click="onConn">注册websocket连接打开事件</button>
+		<button type="primary" @click="onConnError">注册websocket连接错误事件</button>
+		<button type="primary" @click="send()">发送消息</button>
+		<button type="primary" @click="closeConn()">关闭websocket连接</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			conn() {
+				const userId = "10000001";
+				uni.connectSocket({
+					url: 'ws://localhost:9091/websocket/' + userId,
+					method: 'GET',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '连接成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '连接失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			onConn()
+			{
+				console.log("注册websocket连接打开事件");
+				uni.onSocketOpen(function(res)
+				{
+					console.log("连接已打开");
+					console.log(res);
+				})
+			},
+			onConnError()
+			{
+				console.log("注册websocket连接错误事件");
+				uni.onSocketError(function(err)
+				{
+					console.log('连接错误');
+					console.log(err);
+				});
+			},
+			send()
+			{
+				console.log("发送消息");
+				uni.sendSocketMessage({
+					data:'hello',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '发送成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '发送失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			closeConn()
+			{
+				console.log("关闭连接");
+				uni.closeSocket({
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '关闭成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '关闭失败',
+							icon: 'error'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button
+{
+	margin: 10px;
+}
+</style>
+```
+
+
+
+
+
+![image-20231213171439723](img/uniapp学习笔记/image-20231213171439723.png)
+
+
+
+
+
+```sh
+2023-12-13 17:13:47.282  INFO 17552 --- [nio-9091-exec-4] m.u.handler.WebSocketHandler             : 【websocket消息】有新的连接，当前连接总数为:1
+2023-12-13 17:13:47.679  INFO 17552 --- [nio-9091-exec-5] m.u.handler.WebSocketHandler             : 【websocket消息】有新的连接，当前连接总数为:2
+2023-12-13 17:13:48.031  INFO 17552 --- [nio-9091-exec-6] m.u.handler.WebSocketHandler             : 【websocket消息】有新的连接，当前连接总数为:3
+2023-12-13 17:13:49.728  INFO 17552 --- [nio-9091-exec-3] m.u.handler.WebSocketHandler             : 【websocket消息】连接断开，当前连接总数为:2
+2023-12-13 17:13:51.898  INFO 17552 --- [nio-9091-exec-8] m.u.handler.WebSocketHandler             : 【websocket消息】连接断开，当前连接总数为:1
+2023-12-13 17:13:53.913  INFO 17552 --- [nio-9091-exec-9] m.u.handler.WebSocketHandler             : 【websocket消息】连接断开，当前连接总数为:0
+2023-12-13 17:14:10.750  INFO 17552 --- [io-9091-exec-10] m.u.handler.WebSocketHandler             : 【websocket消息】有新的连接，当前连接总数为:1
+2023-12-13 17:14:13.602  INFO 17552 --- [nio-9091-exec-1] m.u.handler.WebSocketHandler             : 【websocket消息】连接断开，当前连接总数为:0
+2023-12-13 17:14:18.151  INFO 17552 --- [nio-9091-exec-2] m.u.handler.WebSocketHandler             : 【websocket消息】有新的连接，当前连接总数为:1
+2023-12-13 17:14:18.858  INFO 17552 --- [nio-9091-exec-7] m.u.handler.WebSocketHandler             : 【websocket消息】收到客户端[10000001]的消息:hello
+2023-12-13 17:14:19.443  INFO 17552 --- [nio-9091-exec-4] m.u.handler.WebSocketHandler             : 【websocket消息】连接断开，当前连接总数为:0
+
+```
+
+
+
+![image-20231213171551114](img/uniapp学习笔记/image-20231213171551114.png)
+
+
+
+
+
+
+
+
+
+### uni.onSocketClose(CALLBACK)
+
+#### 概述
+
+监听WebSocket关闭，抖音小程序不支持
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="conn">发起websocket连接</button>
+		<button type="primary" @click="onConn">注册websocket连接打开事件</button>
+		<button type="primary" @click="onConnError">注册websocket连接错误事件</button>
+		<button type="primary" @click="send()">发送消息</button>
+		<button type="primary" @click="closeConn()">关闭websocket连接</button>
+		<button type="primary" @click="onConnClose()">注册websocket连接关闭事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			conn() {
+				const userId = "10000001";
+				uni.connectSocket({
+					url: 'ws://localhost:9091/websocket/' + userId,
+					method: 'GET',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '连接成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '连接失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			onConn()
+			{
+				console.log("注册websocket连接打开事件");
+				uni.onSocketOpen(function(res)
+				{
+					console.log("连接已打开");
+					console.log(res);
+				})
+			},
+			onConnError()
+			{
+				console.log("注册websocket连接错误事件");
+				uni.onSocketError(function(err)
+				{
+					console.log('连接错误');
+					console.log(err);
+				});
+			},
+			send()
+			{
+				console.log("发送消息");
+				uni.sendSocketMessage({
+					data:'hello',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '发送成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '发送失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			closeConn()
+			{
+				console.log("关闭连接");
+				uni.closeSocket({
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '关闭成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '关闭失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			onConnClose()
+			{
+				console.log("注册连接关闭事件");
+				uni.onSocketClose(function(res)
+				{
+					console.log("连接已关闭");
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+button
+{
+	margin: 10px;
+}
+</style>
+```
+
+
+
+
+
+
+
+### uni.onSocketMessage(CALLBACK)
+
+监听WebSocket接受到服务器的消息事件
+
+
+
+#### 参数
+
+| 参数 |        类型        |       说明       |
+| :--: | :----------------: | :--------------: |
+| data | String/ArrayBuffer | 服务器返回的消息 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="conn">发起websocket连接</button>
+		<button type="primary" @click="onConn">注册websocket连接打开事件</button>
+		<button type="primary" @click="onConnError">注册websocket连接错误事件</button>
+		<button type="primary" @click="send()">发送消息</button>
+		<button type="primary" @click="closeConn()">关闭websocket连接</button>
+		<button type="primary" @click="onConnClose()">注册websocket连接关闭事件</button>
+		<button type="primary" @click="onMessage()">注册websocket消息事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			conn() {
+				const userId = "10000001";
+				uni.connectSocket({
+					url: 'ws://localhost:9091/websocket/' + userId,
+					method: 'GET',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '连接成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '连接失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			onConn()
+			{
+				console.log("注册websocket连接打开事件");
+				uni.onSocketOpen(function(res)
+				{
+					console.log("连接已打开");
+					console.log(res);
+				})
+			},
+			onConnError()
+			{
+				console.log("注册websocket连接错误事件");
+				uni.onSocketError(function(err)
+				{
+					console.log('连接错误');
+					console.log(err);
+				});
+			},
+			send()
+			{
+				console.log("发送消息");
+				uni.sendSocketMessage({
+					data:'hello',
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '发送成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '发送失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			closeConn()
+			{
+				console.log("关闭连接");
+				uni.closeSocket({
+					success: (resp) => {
+						console.log(resp);
+						uni.showToast({
+							title: '关闭成功',
+							icon: 'success'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							title: '关闭失败',
+							icon: 'error'
+						})
+					}
+				})
+			},
+			onConnClose()
+			{
+				console.log("注册连接关闭事件");
+				uni.onSocketClose(function(res)
+				{
+					console.log("连接已关闭");
+				});
+			},
+			onMessage()
+			{
+				console.log("注册消息事件");
+				uni.onSocketMessage(function(data)
+				{
+					console.log('收到消息：',data.data);
+					uni.showToast({
+						title: '收到消息'+data.data,
+						icon: 'none'
+					})
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button
+{
+	margin: 10px;
+}
+</style>
+```
+
+
+
+![image-20231213172549051](img/uniapp学习笔记/image-20231213172549051.png)
+
+
+
+连接，再注册消息事件
+
+
+
+使用postman发送请求：http://localhost:9091/api/websocket/sendAll?message=1222222
+
+
+
+![image-20231213172933088](img/uniapp学习笔记/image-20231213172933088.png)
+
+
+
+
+
+```sh
+2023-12-13 17:29:11.924  INFO 17552 --- [nio-9091-exec-1] m.u.handler.WebSocketHandler             : 【websocket消息】广播消息:1222222
+2023-12-13 17:29:15.869  INFO 17552 --- [nio-9091-exec-2] m.u.handler.WebSocketHandler             : 【websocket消息】广播消息:1222222
+```
+
+
+
+![image-20231213172957766](img/uniapp学习笔记/image-20231213172957766.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
