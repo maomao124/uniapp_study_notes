@@ -9708,3 +9708,399 @@ test2
 
 ### uni.switchTab(OBJECT)
 
+#### 概述
+
+跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                             说明                             |
+| :------: | :------: | :--: | :----------------------------------------------------------: |
+|   url    |  String  |  是  | 需要跳转的 tabBar 页面的路径（需在 pages.json 的 tabBar 字段定义的页面），路径后不能带参数 |
+| success  | Function |  否  |                    接口调用成功的回调函数                    |
+|   fail   | Function |  否  |                    接口调用失败的回调函数                    |
+| complete | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+
+
+#### 示例
+
+添加页面test3：
+
+```vue
+<template>
+	<view>
+		<view>
+			<button @click="to1" type="primary">点击跳转 - test1</button>
+			<button @click="to2" type="primary">点击跳转 - test2</button>
+			<button @click="toindex" type="primary">点击跳转 - index</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			to1()
+			{
+				uni.switchTab({
+					url:'/pages/index/test1/test1',
+				})
+			},
+			to2()
+			{
+				uni.switchTab({
+					url:'/pages/index/test2/test2',
+				})
+			},
+			toindex()
+			{
+				uni.switchTab({
+					url:'/pages/index/index',
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+修改pages.json
+
+```json
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/index/test1/test1",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/index/test2/test2",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/index/test3/test3",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {},
+	"tabBar": {
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/index/test1/test1",
+				"text": "test1"
+			},
+			{
+				"pagePath": "pages/index/test2/test2",
+				"text": "test2"
+			},
+			{
+				"pagePath": "pages/index/test3/test3",
+				"text": "test3"
+			}
+		]
+	}
+}
+```
+
+
+
+
+
+![image-20231215111126614](img/uniapp学习笔记/image-20231215111126614.png)
+
+
+
+点击第一个按钮
+
+![image-20231215111152791](img/uniapp学习笔记/image-20231215111152791.png)
+
+
+
+
+
+
+
+### uni.navigateBack(OBJECT)
+
+#### 概述
+
+关闭当前页面，返回上一页面或多级页面
+
+可通过 `getCurrentPages()` 获取当前的页面栈，决定需要返回几层
+
+
+
+#### 参数
+
+|       参数        |   类型   | 必填 | 默认值  |                          说明                           |      平台差异说明       |
+| :---------------: | :------: | :--: | :-----: | :-----------------------------------------------------: | :---------------------: |
+|       delta       |  Number  |  否  |    1    | 返回的页面数，如果 delta 大于现有页面数，则返回到首页。 |                         |
+|   animationType   |  String  |  否  | pop-out |                   窗口关闭的动画效果                    | App（uni-app x 不支持） |
+| animationDuration |  Number  |  否  |   300   |            窗口关闭动画的持续时间，单位为 ms            | App（uni-app x 不支持） |
+|      success      | Function |  否  |         |                 接口调用成功的回调函数                  |                         |
+|       fail        | Function |  否  |         |                 接口调用失败的回调函数                  |                         |
+|     complete      | Function |  否  |         |    接口调用结束的回调函数（调用成功、失败都会执行）     |                         |
+
+
+
+
+
+#### 示例
+
+修改test3
+
+```vue
+<template>
+	<view>
+		<view>
+			<button @click="to1" type="primary">点击跳转 - test1</button>
+			<button @click="to2" type="primary">点击跳转 - test2</button>
+			<button @click="toindex" type="primary">点击跳转 - index</button>
+			<button @click="to4()" type="primary">点击跳转 - test4</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			to1()
+			{
+				uni.switchTab({
+					url:'/pages/index/test1/test1',
+				})
+			},
+			to2()
+			{
+				uni.switchTab({
+					url:'/pages/index/test2/test2',
+				})
+			},
+			toindex()
+			{
+				uni.switchTab({
+					url:'/pages/index/index',
+				})
+			},
+			to4()
+			{
+				uni.navigateTo({
+					url:'/pages/index/test4/test4'
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+添加test4
+
+```vue
+<template>
+	<view>
+		<button @click="to1" type="primary">返回</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			to1()
+			{
+				uni.navigateBack({
+					delta:1
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+### getCurrentPages()
+
+#### 概述
+
+`getCurrentPages()` 函数用于获取当前页面栈的实例，以数组形式按栈的顺序给出，第一个元素为首页，最后一个元素为当前页面
+
+`getCurrentPages()`仅用于展示页面栈的情况
+
+
+
+- `navigateTo`, `redirectTo` 只能打开非 tabBar 页面。
+- `switchTab` 只能打开 `tabBar` 页面。
+- `reLaunch` 可以打开任意页面。
+- 页面底部的 `tabBar` 由页面决定，即只要是定义为 `tabBar` 的页面，底部都有 `tabBar`。
+- 不能在首页 `onReady` 之前进行页面跳转
+
+
+
+
+
+每个页面实例的方法属性列表：
+
+|         方法          |             描述              | 平台说明 |
+| :-------------------: | :---------------------------: | :------: |
+| page.$getAppWebview() | 获取当前页面的webview对象实例 |   App    |
+|       page.$vm        |      当前页面的 Vue 实例      |          |
+|      page.route       |      获取当前页面的路由       |          |
+
+
+
+**getAppWebview**：`uni-app` 在 `getCurrentPages()`获得的页面里内置了一个方法 `$getAppWebview()` 可以得到当前webview的对象实例，从而实现对 webview 更强大的控制。在 html5Plus 中，plus.webview具有强大的控制能力
+
+**vm**：当前页面的 Vue 实例。通过页面的 Vue 实例可以获取页面的数据、调用页面上的方法以及监听页面的生命周期等
+
+
+
+
+
+#### 示例
+
+修改test4
+
+```vue
+<template>
+	<view>
+		<button @click="to1" type="primary">返回</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			to1()
+			{
+				uni.navigateBack({
+					delta:1
+				})
+			},
+			test()
+			{
+				console.log("方法test被调用");
+			}
+		},
+		onLoad() {
+			var pages = getCurrentPages();
+			console.log(pages);
+			var page = pages[pages.length - 1];
+			const vm = page.$vm;
+			console.log("vm:",vm);
+			// 获取页面数据
+			console.log(vm.$data.title);
+			// 调用页面方法
+			vm.test()
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+![image-20231215114102754](img/uniapp学习笔记/image-20231215114102754.png)
+
+
+
+
+
+![image-20231215114155003](img/uniapp学习笔记/image-20231215114155003.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 数据缓存
+
+### uni.setStorage(OBJECT)
+
+#### 概述
+
