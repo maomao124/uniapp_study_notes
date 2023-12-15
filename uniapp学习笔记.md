@@ -9389,3 +9389,322 @@ button
 
 
 
+
+
+
+
+
+
+## 页面与路由
+
+### uni.navigateTo(OBJECT)
+
+#### 概述
+
+保留当前页面，跳转到应用内的某个页面
+
+
+
+#### 参数
+
+|       参数        |   类型   | 必填 | 默认值 |                             说明                             |      平台差异说明       |
+| :---------------: | :------: | :--: | :----: | :----------------------------------------------------------: | :---------------------: |
+|        url        |  String  |  是  |        | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，path为下一个页面的路径，下一个页面的onLoad函数可得到传递的参数 |                         |
+|   animationType   |  String  |  否  | pop-in |                      窗口显示的动画效果                      | App（uni-app x 不支持） |
+| animationDuration |  Number  |  否  |  300   |                 窗口动画持续时间，单位为 ms                  | App（uni-app x 不支持） |
+|      events       |  Object  |  否  |        | 页面间通信接口，用于监听被打开页面发送到当前页面的数据。2.8.9+ 开始支持。 |    uni-app x 不支持     |
+|      success      | Function |  否  |        |                    接口调用成功的回调函数                    |                         |
+|       fail        | Function |  否  |        |                    接口调用失败的回调函数                    |                         |
+|     complete      | Function |  否  |        |       接口调用结束的回调函数（调用成功、失败都会执行）       |                         |
+
+
+
+
+
+
+
+**object.success 回调函数**
+
+|     属性     | 类型                                                         |         说明         |
+| :----------: | :----------------------------------------------------------- | :------------------: |
+| eventChannel | [EventChannel](https://uniapp.dcloud.net.cn/api/router#event-channel) | 和被打开页面进行通信 |
+
+
+
+url有长度限制，太长的字符串会传递失败
+
+
+
+
+
+
+
+#### 示例
+
+test1
+
+```vue
+<template>
+	<view>
+		<button @click="to" type="primary">点击跳转</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			to()
+			{
+				uni.navigateTo({
+					url:'/pages/index/test2/test2?a=1&b=2',
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+test2
+
+```vue
+<template>
+	<view>
+		<h1>a={{a}}</h1>
+		<h1>b={{b}}</h1>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				a:'',
+				b:''
+			}
+		},
+		methods: {
+			
+		},
+		onLoad(option) {
+			this.a=option.a;
+			this.b=option.b;
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+![image-20231214163412790](img/uniapp学习笔记/image-20231214163412790.png)
+
+点击按钮
+
+![image-20231214163430990](img/uniapp学习笔记/image-20231214163430990.png)
+
+
+
+
+
+点击返回按钮
+
+![image-20231214163442572](img/uniapp学习笔记/image-20231214163442572.png)
+
+
+
+
+
+
+
+
+
+
+
+### uni.redirectTo(OBJECT)
+
+#### 概述
+
+关闭当前页面，跳转到应用内的某个页面
+
+
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                             说明                             |
+| :------: | :------: | :--: | :----------------------------------------------------------: |
+|   url    |  String  |  是  | 需要跳转的应用内非 tabBar 的页面的路径，路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2' |
+| success  | Function |  否  |                    接口调用成功的回调函数                    |
+|   fail   | Function |  否  |                    接口调用失败的回调函数                    |
+| complete | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+
+
+
+
+#### 示例
+
+test1
+
+```vue
+<template>
+	<view>
+		<button @click="to" type="primary">点击跳转 - navigateTo</button>
+		<button @click="to2" type="primary">点击跳转 - redirectTo</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			to()
+			{
+				uni.navigateTo({
+					url:'/pages/index/test2/test2?a=1&b=2',
+				})
+			},
+			to2()
+			{
+				uni.redirectTo({
+					url:'/pages/index/test2/test2?a=3&b=4',
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+![image-20231214163725251](img/uniapp学习笔记/image-20231214163725251.png)
+
+
+
+点击第二个
+
+![image-20231214163754014](img/uniapp学习笔记/image-20231214163754014.png)
+
+
+
+点击返回按钮
+
+![image-20231214163805575](img/uniapp学习笔记/image-20231214163805575.png)
+
+
+
+
+
+
+
+
+
+
+
+### uni.reLaunch(OBJECT)
+
+#### 概述
+
+关闭所有页面，打开到应用内的某个页面
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                             说明                             |
+| :------: | :------: | :--: | :----------------------------------------------------------: |
+|   url    |  String  |  是  | 需要跳转的应用内页面路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，如果跳转的页面路径是 tabBar 页面则不能带参数 |
+| success  | Function |  否  |                    接口调用成功的回调函数                    |
+|   fail   | Function |  否  |                    接口调用失败的回调函数                    |
+| complete | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+
+
+#### 示例
+
+test2
+
+```vue
+<template>
+	<view>
+		<h1>a={{a}}</h1>
+		<h1>b={{b}}</h1>
+		<view>
+			<button @click="to3" type="primary">点击跳转 - reLaunch</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				a:'',
+				b:''
+			}
+		},
+		methods: {
+			to3()
+			{
+				uni.reLaunch({
+					url:'/pages/index/index'
+				})
+			}
+		},
+		onLoad(option) {
+			this.a=option.a;
+			this.b=option.b;
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+### uni.switchTab(OBJECT)
+
