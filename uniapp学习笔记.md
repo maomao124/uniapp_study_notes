@@ -10100,7 +10100,709 @@ button{
 
 ## 数据缓存
 
+### 概述
+
+- H5端为localStorage，浏览器限制5M大小，是缓存概念，可能会被清理
+- App端为原生的plus.storage，无大小限制，不是缓存，是持久化的
+- 各个小程序端为其自带的storage api，数据存储生命周期跟小程序本身一致，即除用户主动删除或超过一定时间被自动清理，否则数据都一直可用。
+- 微信小程序单个 key 允许存储的最大数据长度为 1MB，所有数据存储上限为 10MB。
+- 支付宝小程序单条数据转换成字符串后，字符串长度最大200*1024。同一个支付宝用户，同一个小程序缓存总上限为10MB
+
+
+
+`uni-`、`uni_`、`dcloud-`、`dcloud_`为前缀的key，为系统保留关键前缀
+
+
+
 ### uni.setStorage(OBJECT)
 
 #### 概述
+
+将数据存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个异步接口
+
+
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                             说明                             |
+| :------: | :------: | :--: | :----------------------------------------------------------: |
+|   key    |  String  |  是  |                    本地缓存中的指定的 key                    |
+|   data   |   Any    |  是  | 需要存储的内容，只支持原生类型、及能够通过 JSON.stringify 序列化的对象 |
+| success  | Function |  否  |                    接口调用成功的回调函数                    |
+|   fail   | Function |  否  |                    接口调用失败的回调函数                    |
+| complete | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="set" type="primary">setStorage</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set() {
+				uni.setStorage({
+					key: 'a',
+					data: 'abc',
+					success() {
+						console.log("1");
+						uni.showToast({
+							icon: 'success',
+							title: "写入成功",
+						})
+					}
+				})
+				console.log("2");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+### uni.setStorageSync(KEY,DATA)
+
+#### 概述
+
+将 data 存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个同步接口
+
+
+
+#### 参数
+
+| 参数 |  类型  | 必填 |                             说明                             |
+| :--: | :----: | :--: | :----------------------------------------------------------: |
+| key  | String |  是  |                    本地缓存中的指定的 key                    |
+| data |  Any   |  是  | 需要存储的内容，只支持原生类型、及能够通过 JSON.stringify 序列化的对象 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="set" type="primary">setStorageSync</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set() {
+				try{
+					uni.setStorageSync('b','222');
+					console.log('1');
+					uni.showToast({
+						icon: 'success',
+						title: "写入成功",
+					})
+				}catch(e){
+					console.log("写入错误");
+				}
+				console.log("2");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+### uni.getStorage(OBJECT)
+
+#### 概述
+
+从本地缓存中异步获取指定 key 对应的内容
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+|   key    |  String  |  是  |              本地缓存中的指定的 key              |
+| success  | Function |  是  | 接口调用的回调函数，res = {data: key对应的内容}  |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+**success 返回参数说明**
+
+| 参数 | 类型 |      说明      |
+| :--: | :--: | :------------: |
+| data | Any  | key 对应的内容 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="set" type="primary">setStorageSync</button>
+		<button @click="get" type="primary">getStorage</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set() {
+				try{
+					uni.setStorageSync('b','222');
+					console.log('1');
+					uni.showToast({
+						icon: 'success',
+						title: "写入成功",
+					})
+				}catch(e){
+					console.log("写入错误");
+				}
+				console.log("2");
+			},
+			get()
+			{
+				uni.getStorage({
+					key:'b',
+					success: (data) => {
+						console.log(data);
+						uni.showToast({
+							icon: 'success',
+							title: "读取成功："+data.data,
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'success',
+							title: "读取失败"
+						})
+					}
+				})
+				console.log(2);
+			}
+		}
+	}
+</script>
+
+<style>
+button
+{
+	margin: 10px;
+}
+</style>
+```
+
+
+
+
+
+![image-20231215171356813](img/uniapp学习笔记/image-20231215171356813.png)
+
+
+
+
+
+
+
+
+
+### uni.getStorageSync(KEY)
+
+#### 概述
+
+从本地缓存中同步获取指定 key 对应的内容
+
+
+
+#### 参数
+
+| 参数 |  类型  | 必填 |          说明          |
+| :--: | :----: | :--: | :--------------------: |
+| key  | String |  是  | 本地缓存中的指定的 key |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="set" type="primary">setStorageSync</button>
+		<button @click="get" type="primary">getStorageSync</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set() {
+				try {
+					uni.setStorageSync('b', '222');
+					console.log('1');
+					uni.showToast({
+						icon: 'success',
+						title: "写入成功",
+					})
+				} catch (e) {
+					console.log("写入错误");
+				}
+				console.log("2");
+			},
+			get() {
+				try {
+					const data = uni.getStorageSync("b");
+					console.log(data);
+					uni.showToast({
+						icon: 'success',
+						title: "读取成功：" + data,
+					})
+				} catch (e) {
+					uni.showToast({
+						icon: 'success',
+						title: "读取失败"
+					})
+				}
+				console.log(2);
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+### uni.getStorageInfo(OBJECT)
+
+#### 概述
+
+异步获取当前 storage 的相关信息
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+| success  | Function |  是  |       接口调用的回调函数，详见返回参数说明       |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+**success 返回参数**
+
+|    参数     |      类型       |             说明             |
+| :---------: | :-------------: | :--------------------------: |
+|    keys     | Array＜String＞ |  当前 storage 中所有的 key   |
+| currentSize |     Number      | 当前占用的空间大小, 单位：kb |
+|  limitSize  |     Number      |   限制的空间大小, 单位：kb   |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="get" type="primary">getStorageInfo</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			get() {
+				uni.getStorageInfo({
+					success: (data) => {
+						console.log(data);
+						uni.showToast({
+							icon: 'success',
+							title: "读取成功"
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+结果：
+
+```json
+{
+	"currentSize": 1,
+	"errMsg": "getStorageInfo:ok",
+	"keys": ["b", "__DC_STAT_UUID", "loglevel:webpack-dev-server", "a"],
+	"limitSize": 1.7976931348623157e+308
+}
+```
+
+
+
+
+
+
+
+
+
+### uni.getStorageInfoSync()
+
+#### 概述
+
+同步获取当前 storage 的相关信息
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="get" type="primary">getStorageInfoSync</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			get() {
+				const data = uni.getStorageInfoSync()
+				console.log(data);
+				uni.showToast({
+					icon: 'success',
+					title: "读取成功"
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+### uni.removeStorage(OBJECT)
+
+#### 概述
+
+从本地缓存中异步移除指定 key
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+|   key    |  String  |  是  |              本地缓存中的指定的 key              |
+| success  | Function |  是  |                接口调用的回调函数                |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="set" type="primary">setStorageSync</button>
+		<button @click="get" type="primary">getStorageSync</button>
+		<button @click="remove" type="primary">removeStorage</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set() {
+				try {
+					uni.setStorageSync('b', '222');
+					console.log('1');
+					uni.showToast({
+						icon: 'success',
+						title: "写入成功",
+					})
+				} catch (e) {
+					console.log("写入错误");
+				}
+				console.log("2");
+			},
+			get() {
+				try {
+					const data = uni.getStorageSync("b");
+					console.log(data);
+					uni.showToast({
+						icon: 'success',
+						title: "读取成功：" + data,
+					})
+				} catch (e) {
+					uni.showToast({
+						icon: 'success',
+						title: "读取失败"
+					})
+				}
+				console.log(2);
+			},
+			remove() {
+				uni.removeStorage({
+					key: 'b',
+					success: (res) => {
+						console.log(res);
+						uni.showToast({
+							icon: 'success',
+							title: "删除成功"
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'fail',
+							title: "删除失败"
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+### uni.removeStorageSync(KEY)
+
+#### 概述
+
+从本地缓存中同步移除指定 key
+
+
+
+#### 参数
+
+| 参数名 |  类型  | 必填 |          说明          |
+| :----: | :----: | :--: | :--------------------: |
+|  key   | String |  是  | 本地缓存中的指定的 key |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="set" type="primary">setStorageSync</button>
+		<button @click="get" type="primary">getStorageSync</button>
+		<button @click="remove" type="primary">removeStorage</button>
+		<button @click="removeSync" type="primary">removeStorageSync</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set() {
+				try {
+					uni.setStorageSync('b', '222');
+					console.log('1');
+					uni.showToast({
+						icon: 'success',
+						title: "写入成功",
+					})
+				} catch (e) {
+					console.log("写入错误");
+				}
+				console.log("2");
+			},
+			get() {
+				try {
+					const data = uni.getStorageSync("b");
+					console.log(data);
+					uni.showToast({
+						icon: 'success',
+						title: "读取成功：" + data,
+					})
+				} catch (e) {
+					uni.showToast({
+						icon: 'success',
+						title: "读取失败"
+					})
+				}
+				console.log(2);
+			},
+			remove() {
+				uni.removeStorage({
+					key: 'b',
+					success: (res) => {
+						console.log(res);
+						uni.showToast({
+							icon: 'success',
+							title: "删除成功"
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'fail',
+							title: "删除失败"
+						})
+					}
+				})
+			},
+			removeSync() {
+				try {
+					uni.removeStorageSync("b");
+					uni.showToast({
+						icon: 'success',
+						title: "删除成功"
+					})
+				} catch (e) {
+					console.log(err);
+					uni.showToast({
+						icon: 'fail',
+						title: "删除失败"
+					})
+				}
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+### uni.clearStorage()
 
