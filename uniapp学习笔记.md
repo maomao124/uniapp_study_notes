@@ -10806,3 +10806,435 @@ button
 
 ### uni.clearStorage()
 
+#### 概述
+
+清理本地数据缓存
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="set" type="primary">setStorageSync</button>
+		<button @click="get" type="primary">getStorageSync</button>
+		<button @click="clear" type="primary">clearStorage</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set() {
+				try {
+					uni.setStorageSync('b', '222');
+					console.log('1');
+					uni.showToast({
+						icon: 'success',
+						title: "写入成功",
+					})
+				} catch (e) {
+					console.log("写入错误");
+				}
+				console.log("2");
+			},
+			get() {
+				try {
+					const data = uni.getStorageSync("b");
+					console.log(data);
+					uni.showToast({
+						icon: 'success',
+						title: "读取成功：" + data,
+					})
+				} catch (e) {
+					uni.showToast({
+						icon: 'success',
+						title: "读取失败"
+					})
+				}
+				console.log(2);
+			},
+			clear()
+			{
+				console.log('执行clearStorage');
+				uni.clearStorage();
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+### uni.clearStorageSync()
+
+#### 概述
+
+同步清理本地数据缓存
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button @click="set" type="primary">setStorageSync</button>
+		<button @click="get" type="primary">getStorageSync</button>
+		<button @click="clear" type="primary">clearStorage</button>
+		<button @click="clearSync" type="primary">clearStorageSync</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set() {
+				try {
+					uni.setStorageSync('b', '222');
+					console.log('1');
+					uni.showToast({
+						icon: 'success',
+						title: "写入成功",
+					})
+				} catch (e) {
+					console.log("写入错误");
+				}
+				console.log("2");
+			},
+			get() {
+				try {
+					const data = uni.getStorageSync("b");
+					console.log(data);
+					uni.showToast({
+						icon: 'success',
+						title: "读取成功：" + data,
+					})
+				} catch (e) {
+					uni.showToast({
+						icon: 'success',
+						title: "读取失败"
+					})
+				}
+				console.log(2);
+			},
+			clear()
+			{
+				console.log('执行clearStorage');
+				uni.clearStorage();
+			},
+			clearSync()
+			{
+				console.log('执行clearStorageSync');
+				uni.clearStorageSync();
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 界面-交互反馈
+
+### uni.showToast(OBJECT)
+
+#### 概述
+
+显示消息提示框
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                             说明                             |                      平台差异说明                      |
+| :------: | :------: | :--: | :----------------------------------------------------------: | :----------------------------------------------------: |
+|  title   |  String  |  是  |              提示的内容，长度与 icon 取值有关。              |                                                        |
+|   icon   |  String  |  否  |          图标，有效值详见下方说明，默认：success。           |                                                        |
+|  image   |  String  |  否  |           自定义图标的本地路径（app端暂不支持gif）           | App、H5、微信小程序、百度小程序、抖音小程序（2.62.0+） |
+|   mask   | Boolean  |  否  |         是否显示透明蒙层，防止触摸穿透，默认：false          |         App、微信小程序、抖音小程序（2.47.0+）         |
+| duration |  Number  |  否  |             提示的延迟时间，单位毫秒，默认：1500             |                                                        |
+| position |  String  |  否  | 纯文本轻提示显示位置，填写有效值后只有 `title` 属性生效，且不支持通过 uni.hideToast 隐藏。 |                          App                           |
+| success  | Function |  否  |                    接口调用成功的回调函数                    |                                                        |
+|   fail   | Function |  否  |                    接口调用失败的回调函数                    |                                                        |
+| complete | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                                        |
+
+
+
+
+
+**icon 值说明**
+
+|    值     |                             说明                             |                         平台差异说明                         |
+| :-------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|  success  | 显示成功图标，此时 title 文本在`小程序`平台最多显示 7 个汉字长度，`App`仅支持单行显示。 |                   支付宝小程序无长度无限制                   |
+|   error   | 显示错误图标，此时 title 文本在`小程序`平台最多显示 7 个汉字长度，`App`仅支持单行显示。 | 支付宝小程序、快手小程序、抖音小程序、百度小程序、京东小程序、QQ小程序不支持 |
+|   fail    |          显示错误图标，此时 title 文本无长度显示。           |                   支付宝小程序、抖音小程序                   |
+| exception |          显示异常图标。此时 title 文本无长度显示。           |                         支付宝小程序                         |
+|  loading  | 显示加载图标，此时 title 文本在`小程序`平台最多显示 7 个汉字长度。 |                      支付宝小程序不支持                      |
+|   none    |    不显示图标，此时 title 文本在`小程序`最多可显示两行。     |                                                              |
+
+
+
+
+
+**position 值说明**
+
+|   值   |   说明   |
+| :----: | :------: |
+|  top   | 居上显示 |
+| center | 居中显示 |
+| bottom | 居底显示 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="toast1">普通toast</button>
+		<button type="primary" @click="toast2">success toast</button>
+		<button type="primary" @click="toast3">error toast</button>
+		<button type="primary" @click="toast4">fail toast</button>
+		<button type="primary" @click="toast5">exception toast</button>
+		<button type="primary" @click="toast6">loading toast</button>
+		<button type="primary" @click="toast7">none toast</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			toast1()
+			{
+				uni.showToast({
+					title:'测试'
+				})
+			},
+			toast2()
+			{
+				uni.showToast({
+					icon:'success',
+					title:'测试'
+				})
+			},
+			toast3()
+			{
+				uni.showToast({
+					icon:'error',
+					title:'测试'
+				})
+			},
+			toast4()
+			{
+				uni.showToast({
+					icon:'fail',
+					title:'测试'
+				})
+			},
+			toast5()
+			{
+				uni.showToast({
+					icon:'exception',
+					title:'测试'
+				})
+			},
+			toast6()
+			{
+				uni.showToast({
+					icon:'loading',
+					title:'测试'
+				})
+			},
+			toast7()
+			{
+				uni.showToast({
+					icon:'none',
+					title:'测试'
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+![image-20231217130918490](img/uniapp学习笔记/image-20231217130918490.png)
+
+
+
+success
+
+![image-20231217130928772](img/uniapp学习笔记/image-20231217130928772.png)
+
+
+
+error
+
+![image-20231217130938638](img/uniapp学习笔记/image-20231217130938638.png)
+
+
+
+loading
+
+![image-20231217131005498](img/uniapp学习笔记/image-20231217131005498.png)
+
+
+
+none
+
+![image-20231217131012431](img/uniapp学习笔记/image-20231217131012431.png)
+
+
+
+
+
+
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="toast1">普通toast</button>
+		<button type="primary" @click="toast2">image toast</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			toast1()
+			{
+				uni.showToast({
+					title:'测试'
+				})
+			},
+			toast2()
+			{
+				uni.showToast({
+					image:'/static/logo.png',
+					title:'测试'
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+![image-20231217131329676](img/uniapp学习笔记/image-20231217131329676.png)
+
+
+
+
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="toast1">普通toast</button>
+		<button type="primary" @click="toast2">透明蒙层 toast</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			toast1()
+			{
+				uni.showToast({
+					title:'测试'
+				})
+			},
+			toast2()
+			{
+				uni.showToast({
+					mask: true,
+					title:'测试'
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
