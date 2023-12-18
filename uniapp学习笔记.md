@@ -11195,6 +11195,8 @@ button{
 
 
 
+透明蒙层
+
 ```vue
 <template>
 	<view>
@@ -11238,3 +11240,316 @@ button{
 
 
 
+
+
+
+
+duration
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="toast1">普通toast</button>
+		<button type="primary" @click="toast2">duration 3000 toast</button>
+		<button type="primary" @click="toast3">duration 5000 toast</button>
+		<button type="primary" @click="toast4">duration 500 toast</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			toast1()
+			{
+				uni.showToast({
+					title:'测试'
+				})
+			},
+			toast2()
+			{
+				uni.showToast({
+					duration:3000,
+					title:'测试'
+				})
+			},
+			toast3()
+			{
+				uni.showToast({
+					duration:5000,
+					title:'测试'
+				})
+			},
+			toast4()
+			{
+				uni.showToast({
+					duration:500,
+					title:'测试'
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+position，**仅App生效**
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="toast1">普通toast</button>
+		<button type="primary" @click="toast2">position top toast</button>
+		<button type="primary" @click="toast3">position center toast</button>
+		<button type="primary" @click="toast4">position bottom toast</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			toast1()
+			{
+				uni.showToast({
+					title:'测试'
+				})
+			},
+			toast2()
+			{
+				uni.showToast({
+					position:'top',
+					title:'测试'
+				})
+			},
+			toast3()
+			{
+				uni.showToast({
+					position:'center',
+					title:'测试'
+				})
+			},
+			toast4()
+			{
+				uni.showToast({
+					position:'bottom',
+					title:'测试'
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+### uni.hideToast()
+
+#### 概述
+
+隐藏消息提示框
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="toast1">显示toast</button>
+		<button type="primary" @click="toast2">隐藏toast</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			toast1()
+			{
+				uni.showToast({
+					duration:5000,
+					title:'测试'
+				})
+			},
+			toast2()
+			{
+				uni.hideToast();
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.showLoading(OBJECT)
+
+#### 概述
+
+显示 loading 提示框, 需主动调用` uni.hideLoading `才能关闭提示框
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                       说明                       |                      平台差异说明                      |
+| :------: | :------: | :--: | :----------------------------------------------: | :----------------------------------------------------: |
+|  title   |  String  |  是  |       提示的文字内容，显示在loading的下方        |                                                        |
+|   mask   | Boolean  |  否  |   是否显示透明蒙层，防止触摸穿透，默认：false    | H5、App、微信小程序、百度小程序、抖音小程序（2.47.0+） |
+| success  | Function |  否  |              接口调用成功的回调函数              |                                                        |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |                                                        |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |                                                        |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="loading1">showLoading</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			loading1()
+			{
+				uni.showLoading({
+					title:'加载中，请稍后...'
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+![image-20231217141411444](img/uniapp学习笔记/image-20231217141411444.png)
+
+
+
+
+
+
+
+### uni.hideLoading()
+
+#### 概述
+
+隐藏 loading 提示框
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="loading1">showLoading</button>
+		<button type="primary" @click="hide">hideLoading</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			loading1()
+			{
+				uni.showLoading({
+					title:'加载中，请稍后...'
+				})
+			},
+			hide()
+			{
+				uni.hideLoading();
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.showModal(OBJECT)
