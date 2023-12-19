@@ -11552,4 +11552,328 @@ button{
 
 
 
+
+
 ### uni.showModal(OBJECT)
+
+#### 概述
+
+显示模态弹窗，可以只有一个确定按钮，也可以同时有确定和取消按钮。类似于一个API整合了 html 中：alert、confirm
+
+小程序平台，`cancelText`和`confirmText`有长度限制，最多允许 4 个字符
+
+
+
+
+
+#### 参数
+
+|      参数       |   类型   | 必填 |                             说明                             |                         平台差异说明                         |
+| :-------------: | :------: | :--: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|      title      |  String  |  否  |                          提示的标题                          |                                                              |
+|     content     |  String  |  否  |                          提示的内容                          |                                                              |
+|   showCancel    | Boolean  |  否  |                是否显示取消按钮，默认为 true                 |                                                              |
+|   cancelText    |  String  |  否  |                 取消按钮的文字，默认为"取消"                 |                                                              |
+|   cancelColor   | HexColor |  否  |             取消按钮的文字颜色，默认为"#000000"              |      H5、微信小程序、百度小程序、抖音小程序（2.62.0+）       |
+|   confirmText   |  String  |  否  |                 确定按钮的文字，默认为"确定"                 |                                                              |
+|  confirmColor   | HexColor |  否  | 确定按钮的文字颜色，H5平台默认为"#007aff"，微信小程序平台默认为"#576B95"，百度小程序平台默认为"#3c76ff" |      H5、微信小程序、百度小程序、抖音小程序（2.62.0+）       |
+|    editable     | Boolean  |  否  |                        是否显示输入框                        | H5 (3.2.10+)、App (3.2.10+)、微信小程序 (2.17.1+)、抖音小程序（2.62.0+） |
+| placeholderText |  String  |  否  |                    显示输入框时的提示文本                    | H5 (3.2.10+)、App (3.2.10+)、微信小程序 (2.17.1+)、抖音小程序（2.62.0+） |
+|     success     | Function |  否  |                    接口调用成功的回调函数                    |                                                              |
+|      fail       | Function |  否  |                    接口调用失败的回调函数                    |                                                              |
+|    complete     | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                                              |
+
+
+
+**success返回参数**
+
+|  参数   |  类型   |                             说明                             |                         平台差异说明                         |
+| :-----: | :-----: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| confirm | Boolean |              为 true 时，表示用户点击了确定按钮              |                                                              |
+| cancel  | Boolean | 为 true 时，表示用户点击了取消（用于 Android 系统区分点击蒙层关闭还是点击取消按钮关闭） |                                                              |
+| content | String  |            `editable` 为 true 时，用户输入的文本             | H5 (3.2.10+)、App (3.2.10+)、微信小程序 (2.17.1+)、抖音小程序（2.62.0+） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="showModal1">showModal</button>
+		<button type="primary" @click="showModal2">showModal 无取消按钮</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			showModal1()
+			{
+				uni.showModal({
+					title:'提示',
+					content:'提示内容。。。。。。。。。。。。。'
+				})
+			},
+			showModal2()
+			{
+				uni.showModal({
+					showCancel:false,
+					title:'提示',
+					content:'提示内容。。。。。。。。。。。。。'
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+![image-20231218173751229](img/uniapp学习笔记/image-20231218173751229.png)
+
+
+
+![image-20231218173800142](img/uniapp学习笔记/image-20231218173800142.png)
+
+
+
+
+
+文本和颜色
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="showModal1">showModal</button>
+		<button type="primary" @click="showModal2">showModal 自定义按钮文字</button>
+		<button type="primary" @click="showModal3">showModal 自定义按钮颜色</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			showModal1()
+			{
+				uni.showModal({
+					title:'提示',
+					content:'提示内容。。。。。。。。。。。。。'
+				})
+			},
+			showModal2()
+			{
+				uni.showModal({
+					cancelText:'否',
+					confirmText:'是',
+					title:'提示',
+					content:'提示内容。。。。。。。。。。。。。'
+				})
+			},
+			showModal3()
+			{
+				uni.showModal({
+					cancelText:'否',
+					confirmText:'是',
+					cancelColor:'#dd524d',
+					confirmColor:'#00ff00',
+					title:'提示',
+					content:'提示内容。。。。。。。。。。。。。'
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+![image-20231218174157789](img/uniapp学习笔记/image-20231218174157789.png)
+
+
+
+![image-20231218174206507](img/uniapp学习笔记/image-20231218174206507.png)
+
+
+
+
+
+事件：
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="showModal1">showModal</button>
+		<button type="primary" @click="showModal2">showModal 事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			showModal1()
+			{
+				uni.showModal({
+					title:'提示',
+					content:'提示内容。。。。。。。。。。。。。'
+				})
+			},
+			showModal2()
+			{
+				uni.showModal({
+					title:'提示',
+					content:'提示内容。。。。。。。。。。。。。',
+					success: (data) => {
+						console.log(data);
+						if(data.confirm)
+						{
+							console.log("选择了确定");
+						}
+						if(data.cancel)
+						{
+							console.log("选择了取消");
+						}
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+输入框：
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="showModal1">showModal</button>
+		<button type="primary" @click="showModal2">showModal 输入框</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			showModal1()
+			{
+				uni.showModal({
+					title:'提示',
+					content:'提示内容。。。。。。。。。。。。。'
+				})
+			},
+			showModal2()
+			{
+				uni.showModal({
+					editable:true,
+					placeholderText:'请输入文字',
+					title:'提示',
+					//content:'提示内容。。。。。。。。。。。。。',
+					success: (data) => {
+						console.log(data);
+						if(data.confirm)
+						{
+							console.log("选择了确定");
+							console.log("文字内容：",data.content);
+						}
+						if(data.cancel)
+						{
+							console.log("选择了取消");
+						}
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+![image-20231218174828061](img/uniapp学习笔记/image-20231218174828061.png)
+
+
+
+![image-20231218174839855](img/uniapp学习笔记/image-20231218174839855.png)
+
+
+
+![image-20231218174850996](img/uniapp学习笔记/image-20231218174850996.png)
+
+
+
+
+
+
+
+
+
+
+
+### uni.showActionSheet(OBJECT)
+
