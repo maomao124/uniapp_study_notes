@@ -12336,3 +12336,518 @@ button{
 
 ### uni.showNavigationBarLoading(OBJECT)
 
+#### 概述
+
+在当前页面显示导航条加载动画
+
+**抖音小程序、飞书小程序**不支持
+
+App平台调用此API时会在屏幕中间悬浮显示loading
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+| success  | Function |  否  |              接口调用成功的回调函数              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">showNavigationBarLoading</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			set1()
+			{
+				uni.showNavigationBarLoading({});
+			},
+		},
+		onReady: () => {
+			uni.setNavigationBarTitle({
+				title:'标题'
+			})
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+![image-20231220112339341](img/uniapp学习笔记/image-20231220112339341.png)
+
+
+
+![image-20231220112345862](img/uniapp学习笔记/image-20231220112345862.png)
+
+
+
+
+
+
+
+### uni.hideNavigationBarLoading(OBJECT)
+
+#### 概述
+
+在当前页面隐藏导航条加载动画
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">showNavigationBarLoading</button>
+		<button type="primary" @click="set2">hideNavigationBarLoading</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			set1()
+			{
+				uni.showNavigationBarLoading({});
+			},
+			set2()
+			{
+				uni.hideNavigationBarLoading();
+			},
+		},
+		onReady: () => {
+			uni.setNavigationBarTitle({
+				title:'标题'
+			})
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 界面-TabBar
+
+### uni.setTabBarItem(OBJECT)
+
+#### 概述
+
+动态设置 tabBar 某一项的内容
+
+
+
+#### 参数
+
+|       属性       |  类型   | 默认值 | 必填 |                             说明                             |           平台差异            |
+| :--------------: | :-----: | :----: | :--: | :----------------------------------------------------------: | :---------------------------: |
+|      index       | number  |        |  是  |                 tabBar 的哪一项，从左边算起                  |                               |
+|       text       | String  |        |  否  |                       tab 上的按钮文字                       |                               |
+|     iconPath     | String  |        |  否  | 图片路径，icon 大小限制为 40kb，建议尺寸为 81px * 81px，当 position 为 top 时，此参数无效。微信小程序 2.7.0+、支付宝小程序支持网络图片，其他平台暂不支持网络图片 |                               |
+| selectedIconPath | String  |        |  否  | 选中时的图片路径，icon 大小限制为 40kb，建议尺寸为 81px * 81px ，当 position 为 top 时，此参数无效 |                               |
+|     pagePath     | String  |        |  否  | 页面绝对路径，必须在 [pages](https://uniapp.dcloud.net.cn/collocation/pages#pages) 中先定义，被替换掉的 pagePath 不会变成普通页面（仍然需要使用 uni.switchTab 跳转） |  App（2.8.4+）、H5（2.8.4+）  |
+|     visible      | Boolean |  true  |  否  |                         该项是否显示                         | App（3.2.10+）、H5（3.2.10+） |
+|     iconfont     | Object  |        |  否  |                字体图标，优先级高于 iconPath                 |         App（3.4.4+）         |
+|     success      | Funtion |        |  否  |                    接口调用成功的回调函数                    |                               |
+|       fail       | Funtion |        |  否  |                    接口调用失败的回调函数                    |                               |
+|     complete     | Funtion |        |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                               |
+
+
+
+
+
+#### 示例
+
+配置如下：
+
+```json
+"tabBar": {
+		"list": [
+			{
+				"text": "首页",
+				"pagePath": "pages/index/index"
+			},
+			{
+				"text": "test1",
+				"pagePath": "pages/index/test1/test1"
+			}
+		]
+	},
+```
+
+
+
+
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">setTabBarItem</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			set1()
+			{
+				console.log('setTabBarItem');
+				uni.setTabBarItem({
+				  index: 0,
+				  text: '首页(index)',
+				  iconPath: '/static/logo.png',
+				  pagePath:'/pages/index/index',
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+![image-20231220152309862](img/uniapp学习笔记/image-20231220152309862.png)
+
+
+
+![image-20231220152319245](img/uniapp学习笔记/image-20231220152319245.png)
+
+
+
+
+
+### uni.setTabBarStyle(OBJECT)
+
+#### 概述
+
+动态设置 tabBar 的整体样式
+
+
+
+#### 参数
+
+|       属性       |  类型   | 默认值 | 必填 |                             说明                             |
+| :--------------: | :-----: | :----: | :--: | :----------------------------------------------------------: |
+|      color       | String  |        |  否  |                tab 上的文字默认颜色，HexColor                |
+|  selectedColor   | String  |        |  否  |              tab 上的文字选中时的颜色，HexColor              |
+| backgroundColor  | String  |        |  否  |                    tab 的背景色，HexColor                    |
+| backgroundImage  | String  |        |  否  | 图片背景。支持设置本地图片或创建线性渐变如，优先级高于 backgroundColor，仅 App 2.7.1+ 支持 |
+| backgroundRepeat | String  |        |  否  | 背景图平铺方式。repeat：背景图片在垂直方向和水平方向平铺；repeat-x：背景图片在水平方向平铺，垂直方向拉伸；repeat-y：背景图片在垂直方向平铺，水平方向拉伸；no-repeat：背景图片在垂直方向和水平方向都拉伸。 默认使用 no-repeat。仅 App 2.7.1+ 支持 |
+|   borderStyle    | String  |        |  否  |           tabBar上边框的颜色， 仅支持 black/white            |
+|    midButton     | Object  |        |  否  |              中间按钮 仅在 list 项为偶数时有效               |
+|     success      | Funtion |        |  否  |                    接口调用成功的回调函数                    |
+|       fail       | Funtion |        |  否  |                    接口调用失败的回调函数                    |
+|     complete     | Funtion |        |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+
+
+
+
+#### 示例
+
+```json
+"tabBar": {
+		"list": [
+			{
+				"text": "首页",
+				"pagePath": "pages/index/index"
+			},
+			{
+				"text": "test1",
+				"pagePath": "pages/index/test1/test1"
+			},
+			{
+				"text": "test2",
+				"pagePath": "pages/index/test2/test2"
+			}
+		]
+	},
+```
+
+
+
+
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">setTabBarItem</button>
+		<button type="primary" @click="set2">setTabBarStyle</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set1() {
+				console.log('setTabBarItem');
+				uni.setTabBarItem({
+					index: 0,
+					text: '首页(index)',
+					iconPath: '/static/logo.png',
+					pagePath: '/pages/index/index',
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			},
+			set2() {
+				console.log('setTabBarStyle');
+				uni.setTabBarStyle({
+					color: '#FF0000',
+					selectedColor: '#00FF00',
+					backgroundColor: '#0000FF',
+					borderStyle: 'white',
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+![image-20231220153856166](img/uniapp学习笔记/image-20231220153856166.png)
+
+
+
+![image-20231220153903923](img/uniapp学习笔记/image-20231220153903923.png)
+
+
+
+
+
+
+
+### uni.hideTabBar(OBJECT)
+
+#### 概述
+
+隐藏 tabBar
+
+
+
+#### 参数
+
+|   属性    |  类型   | 默认值 | 必填 |                             说明                             |
+| :-------: | :-----: | :----: | :--: | :----------------------------------------------------------: |
+| animation | boolean | false  |  否  | 是否需要动画效果，仅微信小程序、支付宝小程序、百度小程序、抖音小程序、飞书小程序、QQ小程序、快手小程序、京东小程序支持 |
+|  success  | Funtion |        |  否  |                    接口调用成功的回调函数                    |
+|   fail    | Funtion |        |  否  |                    接口调用失败的回调函数                    |
+| complete  | Funtion |        |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">setTabBarItem</button>
+		<button type="primary" @click="set2">setTabBarStyle</button>
+		<button type="primary" @click="set3">hideTabBar</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set1() {
+				console.log('setTabBarItem');
+				uni.setTabBarItem({
+					index: 0,
+					text: '首页(index)',
+					iconPath: '/static/logo.png',
+					pagePath: '/pages/index/index',
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			},
+			set2() {
+				console.log('setTabBarStyle');
+				uni.setTabBarStyle({
+					color: '#FF0000',
+					selectedColor: '#00FF00',
+					backgroundColor: '#0000FF',
+					borderStyle: 'white',
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			},
+			set3() {
+				console.log('hideTabBar');
+				uni.hideTabBar({
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+![image-20231220154259057](img/uniapp学习笔记/image-20231220154259057.png)
+
+
+
+![image-20231220154306979](img/uniapp学习笔记/image-20231220154306979.png)
+
+
+
+
+
+
+
+### uni.showTabBar(OBJECT)
+
