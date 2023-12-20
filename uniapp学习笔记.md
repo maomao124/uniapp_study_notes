@@ -11877,3 +11877,462 @@ button{
 
 ### uni.showActionSheet(OBJECT)
 
+#### 概述
+
+从底部向上弹出操作菜单
+
+
+
+#### 参数
+
+|   参数    |     类型      | 必填 |                        说明                        |                         平台差异说明                         |
+| :-------: | :-----------: | :--: | :------------------------------------------------: | :----------------------------------------------------------: |
+|   title   |    String     |  否  |                      菜单标题                      | App、H5、支付宝小程序、钉钉小程序、微信小程序 3.4.5+（仅真机有效） |
+| alertText |    String     |  否  |               警示文案（同菜单标题）               |                   微信小程序（仅真机有效）                   |
+| itemList  | Array<String> |  是  |                   按钮的文字数组                   |           微信、百度、抖音小程序数组长度最大为6个            |
+| itemColor |   HexColor    |  否  |    按钮的文字颜色，字符串格式，默认为"#000000"     |                  App-iOS、飞书小程序不支持                   |
+|  popover  |    Object     |  否  | 大屏设备弹出原生选择按钮框的指示区域，默认居中显示 |               App-iPad（2.6.6+）、H5（2.9.2）                |
+|  success  |   Function    |  否  |      接口调用成功的回调函数，详见返回参数说明      |                                                              |
+|   fail    |   Function    |  否  |               接口调用失败的回调函数               |                                                              |
+| complete  |   Function    |  否  |  接口调用结束的回调函数（调用成功、失败都会执行）  |                                                              |
+
+
+
+
+
+**popover 值**
+
+|   值   |  类型  |                             说明                             |
+| :----: | :----: | :----------------------------------------------------------: |
+|  top   | Number | 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度 |
+|  left  | Number |                         指示区域坐标                         |
+| width  | Number |                         指示区域宽度                         |
+| height | Number |                         指示区域高度                         |
+
+
+
+
+
+**success返回参数**
+
+|   参数   |  类型  |                  说明                   |
+| :------: | :----: | :-------------------------------------: |
+| tapIndex | Number | 用户点击的按钮，从上到下的顺序，从0开始 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="showActionSheet1()">点击显示操作菜单1</button>
+		<button type="primary" @click="showActionSheet2()">点击显示操作菜单2</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			showActionSheet1() {
+				uni.showActionSheet({
+					itemList: ['a', 'b', 'c'],
+				})
+			},
+			showActionSheet2() {
+				uni.showActionSheet({
+					itemList: (function() {
+						const data = [];
+						for (var i = 0; i < 100; i++) {
+							data.push('按钮' + (i + 1));
+						}
+						return data;
+					}())
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+![image-20231220103947337](img/uniapp学习笔记/image-20231220103947337.png)
+
+
+
+![image-20231220103956412](img/uniapp学习笔记/image-20231220103956412.png)
+
+
+
+![image-20231220104006289](img/uniapp学习笔记/image-20231220104006289.png)
+
+
+
+
+
+颜色
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="showActionSheet1()">点击显示操作菜单1</button>
+		<button type="primary" @click="showActionSheet2()">点击显示操作菜单2 - 红色</button>
+		<button type="primary" @click="showActionSheet3()">点击显示操作菜单2 - 蓝色</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			showActionSheet1() {
+				uni.showActionSheet({
+					itemList: ['a', 'b', 'c'],
+				})
+			},
+			showActionSheet2() {
+				uni.showActionSheet({
+					itemList: ['a', 'b', 'c'],
+					itemColor:'#ff0000'
+				})
+			},
+			showActionSheet3() {
+				uni.showActionSheet({
+					itemList: ['a', 'b', 'c'],
+					itemColor:'#00aaff'
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+![image-20231220104406932](img/uniapp学习笔记/image-20231220104406932.png)
+
+
+
+![image-20231220104417532](img/uniapp学习笔记/image-20231220104417532.png)
+
+
+
+
+
+事件
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="showActionSheet1()">点击显示操作菜单1 - 事件</button>
+		
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			showActionSheet1() {
+				uni.showActionSheet({
+					itemList: ['a', 'b', 'c'],
+					success: (data) => {
+						console.log('点击了第'+(data.tapIndex+1)+'个按钮');
+					},
+					fail: (err) => {
+						console.log("失败的回调");
+					},
+					complete: () => {
+						console.log("调用完成");
+					}
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+
+
+## 界面-导航条
+
+### uni.setNavigationBarTitle(OBJECT)
+
+#### 概述
+
+动态设置当前页面的标题
+
+如果需要在页面进入时设置标题，可以在`onReady`内执行，以避免被框架内的修改所覆盖。如果必须在`onShow`内执行需要延迟一小段时间
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+|  title   |  String  |  是  |                     页面标题                     |
+| success  | Function |  否  |              接口调用成功的回调函数              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">设置标题1</button>
+		<button type="primary" @click="set2">设置标题2</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			set1()
+			{
+				uni.setNavigationBarTitle({
+					title:'标题1',
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							icon:'fail',
+							title:'设置失败'
+						})
+					}
+				})
+			},
+			set2()
+			{
+				uni.setNavigationBarTitle({
+					title:'标题2',
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							icon:'fail',
+							title:'设置失败'
+						})
+					}
+				})
+			},
+			
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+![image-20231220110737271](img/uniapp学习笔记/image-20231220110737271.png)
+
+
+
+![image-20231220110744876](img/uniapp学习笔记/image-20231220110744876.png)
+
+
+
+
+
+### uni.setNavigationBarColor(OBJECT)
+
+设置页面导航条颜色
+
+如果需要进入页面就设置颜色，请延迟执行，防止被框架内设置颜色逻辑覆盖
+
+
+
+**支付宝小程序**不支持
+
+
+
+#### 参数
+
+|      参数       |   类型   | 必填 |                             说明                             |                         平台差异说明                         |
+| :-------------: | :------: | :--: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|   frontColor    |  String  |  是  | 前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000 | App、H5、微信小程序、百度小程序、抖音小程序、QQ小程序、快手小程序、京东小程序 |
+| backgroundColor |  String  |  是  |               背景颜色值，有效值为十六进制颜色               |                                                              |
+|    animation    |  Object  |  否  |               动画效果，{duration,timingFunc}                |   微信小程序、百度小程序、QQ小程序、快手小程序、京东小程序   |
+|     success     | Function |  否  |                    接口调用成功的回调函数                    |                                                              |
+|      fail       | Function |  否  |                    接口调用失败的回调函数                    |                                                              |
+|    complete     | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                                              |
+
+
+
+**animation**
+
+|    属性    |  类型  |  默认值  | 必填 |         说明          |
+| :--------: | :----: | :------: | :--: | :-------------------: |
+|  duration  | number |    0     |  否  | 动画变化时间，单位 ms |
+| timingFunc | String | 'linear' |  否  |     动画变化方式      |
+
+
+
+**animation.timingFunc 有效值**
+
+|    值     |             说明             |
+| :-------: | :--------------------------: |
+|  linear   | 动画从头到尾的速度是相同的。 |
+|  easeIn   |        动画以低速开始        |
+|  easeOut  |       动画以低速结束。       |
+| easeInOut |    动画以低速开始和结束。    |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">设置标题颜色1</button>
+		<button type="primary" @click="set2">设置标题颜色2</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			set1()
+			{
+				uni.setNavigationBarTitle({
+					title:'标题1',
+				})
+				uni.setNavigationBarColor({
+					backgroundColor:'#ff0000',
+					frontColor:'#000000',
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							icon:'error',
+							title:'设置失败'
+						})
+					}
+				})
+			},
+			set2()
+			{
+				uni.setNavigationBarTitle({
+					title:'标题2',
+				})
+				uni.setNavigationBarColor({
+					backgroundColor:'#00ccaa',
+					frontColor:'#ffffff',
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							icon:'error',
+							title:'设置失败'
+						})
+					}
+				})
+			},
+			
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+![image-20231220111600788](img/uniapp学习笔记/image-20231220111600788.png)
+
+
+
+![image-20231220111608191](img/uniapp学习笔记/image-20231220111608191.png)
+
+
+
+
+
+
+
+
+
+### uni.showNavigationBarLoading(OBJECT)
+
