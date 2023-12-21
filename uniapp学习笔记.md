@@ -12851,3 +12851,942 @@ button{
 
 ### uni.showTabBar(OBJECT)
 
+#### 概述
+
+显示 tabBar
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">setTabBarItem</button>
+		<button type="primary" @click="set2">setTabBarStyle</button>
+		<button type="primary" @click="set3">hideTabBar</button>
+		<button type="primary" @click="set4">showTabBar</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set1() {
+				console.log('setTabBarItem');
+				uni.setTabBarItem({
+					index: 0,
+					text: '首页(index)',
+					iconPath: '/static/logo.png',
+					pagePath: '/pages/index/index',
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			},
+			set2() {
+				console.log('setTabBarStyle');
+				uni.setTabBarStyle({
+					color: '#FF0000',
+					selectedColor: '#00FF00',
+					backgroundColor: '#0000FF',
+					borderStyle: 'white',
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			},
+			set3() {
+				console.log('hideTabBar');
+				uni.hideTabBar({
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			},
+			set4() {
+				console.log('showTabBar');
+				uni.showTabBar({
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+### uni.setTabBarBadge(OBJECT)
+
+#### 概述
+
+为 tabBar 某一项的右上角添加文本
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+|  index   |  Number  |  是  |            tabBar的哪一项，从左边算起            |
+|   text   |  String  |  是  |         显示的文本，不超过 3 个半角字符          |
+| success  | Function |  否  |              接口调用成功的回调函数              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">setTabBarBadge 1</button>
+		<button type="primary" @click="set2">setTabBarBadge 2</button>
+		<button type="primary" @click="set3">setTabBarBadge 3</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				index1:0,
+				index2:0,
+				index3:0,
+			}
+		},
+		methods: {
+			set1()
+			{
+				console.log('setTabBarItem');
+				uni.setTabBarBadge({
+				  index: 0,
+				  text: ''+(++this.index1),
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set2()
+			{
+				console.log('setTabBarItem');
+				uni.setTabBarBadge({
+				  index: 1,
+				  text: ''+(++this.index2),
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set3()
+			{
+				console.log('setTabBarItem');
+				uni.setTabBarBadge({
+				  index: 2,
+				  text: ''+(++this.index3),
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+![image-20231220161927772](img/uniapp学习笔记/image-20231220161927772.png)
+
+
+
+![image-20231220161940969](img/uniapp学习笔记/image-20231220161940969.png)
+
+
+
+
+
+
+
+### uni.removeTabBarBadge(OBJECT)
+
+#### 概述
+
+移除 tabBar 某一项右上角的文本
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+|  index   |  Number  |  是  |            tabBar的哪一项，从左边算起            |
+| success  | Function |  否  |              接口调用成功的回调函数              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">setTabBarBadge 1</button>
+		<button type="primary" @click="set2">setTabBarBadge 2</button>
+		<button type="primary" @click="set3">setTabBarBadge 3</button>
+		<button type="primary" @click="set4">removeTabBarBadge 1</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				index1:0,
+				index2:0,
+				index3:0,
+			}
+		},
+		methods: {
+			set1()
+			{
+				console.log('setTabBarItem');
+				uni.setTabBarBadge({
+				  index: 0,
+				  text: ''+(++this.index1),
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set2()
+			{
+				console.log('setTabBarItem');
+				uni.setTabBarBadge({
+				  index: 1,
+				  text: ''+(++this.index2),
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set3()
+			{
+				console.log('setTabBarItem');
+				uni.setTabBarBadge({
+				  index: 2,
+				  text: ''+(++this.index3),
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set4()
+			{
+				uni.removeTabBarBadge({
+				  index: 0,
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.showTabBarRedDot(OBJECT)
+
+#### 概述
+
+显示 tabBar 某一项的右上角的红点
+
+
+
+#### 参数
+
+|   参数   |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+|  index   |  Number  |  是  |            tabBar的哪一项，从左边算起            |
+| success  | Function |  否  |              接口调用成功的回调函数              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">showTabBarRedDot 1</button>
+		<button type="primary" @click="set2">showTabBarRedDot 2</button>
+		<button type="primary" @click="set3">showTabBarRedDot 3</button>
+		<!-- <button type="primary" @click="set4">removeTabBarBadge 1</button> -->
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		methods: {
+			set1()
+			{
+				console.log('showTabBarRedDot');
+				uni.showTabBarRedDot({
+				  index: 0,
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set2()
+			{
+				console.log('setTabBarItem');
+				uni.showTabBarRedDot({
+				  index: 1,
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set3()
+			{
+				console.log('setTabBarItem');
+				uni.showTabBarRedDot({
+				  index: 2,
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			// set4()
+			// {
+			// 	uni.removeTabBarBadge({
+			// 	  index: 0,
+			// 	  success: () => {
+			// 	  	uni.showToast({
+			// 	  		title:'设置成功'
+			// 	  	})
+			// 	  },
+			// 	  fail: (err) => {
+			// 		  console.log(err);
+			// 	  	uni.showToast({
+			// 	  		icon:'error',
+			// 	  		title:'设置失败'
+			// 	  	})
+			// 	  }
+			// 	})
+			// }
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+![image-20231220162823724](img/uniapp学习笔记/image-20231220162823724.png)
+
+
+
+
+
+![image-20231220162834082](img/uniapp学习笔记/image-20231220162834082.png)
+
+
+
+
+
+
+
+### uni.hideTabBarRedDot(OBJECT)
+
+#### 概述
+
+隐藏 tabBar 某一项的右上角的红点
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">showTabBarRedDot 1</button>
+		<button type="primary" @click="set2">showTabBarRedDot 2</button>
+		<button type="primary" @click="set3">showTabBarRedDot 3</button>
+		<button type="primary" @click="set4">hideTabBarRedDot 1</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		methods: {
+			set1()
+			{
+				console.log('showTabBarRedDot');
+				uni.showTabBarRedDot({
+				  index: 0,
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set2()
+			{
+				console.log('setTabBarItem');
+				uni.showTabBarRedDot({
+				  index: 1,
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set3()
+			{
+				console.log('setTabBarItem');
+				uni.showTabBarRedDot({
+				  index: 2,
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			},
+			set4()
+			{
+				uni.hideTabBarRedDot({
+				  index: 0,
+				  success: () => {
+				  	uni.showToast({
+				  		title:'设置成功'
+				  	})
+				  },
+				  fail: (err) => {
+					  console.log(err);
+				  	uni.showToast({
+				  		icon:'error',
+				  		title:'设置失败'
+				  	})
+				  }
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 10px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+
+
+## 界面-背景
+
+### uni.setBackgroundColor(OBJECT)
+
+#### 概述
+
+动态设置窗口的背景色
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  x   |  x   |     √      |      x       |     √      |           x            |    √     |     √      |     √      |
+
+
+
+#### 参数
+
+|         属性          |   类型   | 默认值 | 必填 |                        说明                         |
+| :-------------------: | :------: | :----: | :--: | :-------------------------------------------------: |
+|    backgroundColor    |  String  |        |  否  |         窗口的背景色，必须为十六进制颜色值          |
+|  backgroundColorTop   |  String  |        |  否  | 顶部窗口的背景色，必须为十六进制颜色值，仅 iOS 支持 |
+| backgroundColorBottom |  String  |        |  否  | 底部窗口的背景色，必须为十六进制颜色值，仅 iOS 支持 |
+|        success        | Function |        |  否  |               接口调用成功的回调函数                |
+|         fail          | Function |        |  否  |               接口调用失败的回调函数                |
+|       complete        | Function |        |  否  |  接口调用结束的回调函数（调用成功、失败都会执行）   |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">setBackgroundColor</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set1() {
+				uni.setBackgroundColor({
+					backgroundColor: '#ff00cc',
+					backgroundColorTop: '#222222',
+					backgroundColorBottom: '#333333',
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				});
+			},
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+### uni.setBackgroundTextStyle(OBJECT)
+
+#### 概述
+
+动态设置下拉背景字体、loading 图的样式
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  x   |  x   |     √      |      x       |     √      |           x            |    √     |     √      |     √      |
+
+
+
+
+
+#### 属性
+
+|   属性    |   类型   | 必填 |                       说明                        |
+| :-------: | :------: | :--: | :-----------------------------------------------: |
+| textStyle |  String  |  是  | 下拉背景字体、loading 图的样式，值为：dark、light |
+|  success  | Function |  否  |              接口调用成功的回调函数               |
+|   fail    | Function |  否  |              接口调用失败的回调函数               |
+| complete  | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行）  |
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set1">setBackgroundTextStyle</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			set1() {
+				uni.setBackgroundTextStyle({
+					textStyle: 'dark',
+					success: () => {
+						uni.showToast({
+							title: '设置成功'
+						})
+					},
+					fail: (err) => {
+						console.log(err);
+						uni.showToast({
+							icon: 'error',
+							title: '设置失败'
+						})
+					}
+				});
+			},
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+## 界面-滚动
+
+### uni.pageScrollTo(OBJECT)
+
+#### 概述
+
+将页面滚动到目标位置。可以指定滚动到具体的scrollTop数值，也可以指定滚动到某个元素的位置
+
+
+
+#### 参数
+
+|  参数名   |   类型   | 必填 |                             说明                             |
+| :-------: | :------: | :--: | :----------------------------------------------------------: |
+| scrollTop |  Number  |  否  |                滚动到页面的目标位置（单位px）                |
+| selector  |  String  |  否  | 元素选择器，用于指定要滚动到的元素位置，App、H5、微信小程序2.7.3+ 、支付宝小程序1.20.0+支持 |
+| duration  |  Number  |  否  |              滚动动画的时长，默认300ms，单位 ms              |
+|  success  | function |  否  |                    接口调用成功的回调函数                    |
+|   fail    | function |  否  |                    接口调用失败的回调函数                    |
+| complete  | function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+
+
+selector类似于 CSS 的选择器，但仅支持下列语法
+
+- ID选择器：#the-id
+- class选择器（可以连续指定多个）：`.a-class.another-class`
+- 子元素选择器：`.the-parent > .the-child`
+- 后代选择器：`.the-ancestor .the-descendant`
+- 跨自定义组件的后代选择器：`.the-ancestor >>> .the-descendant`
+- 多选择器的并集：`#a-node, .some-other-nodes`
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<view>
+			<button type="primary" @click="set1">滚动到 2000px</button>
+			<button type="primary" @click="set2">滚动到 5000px</button>
+			<button type="primary" @click="set3">滚动到 9000px</button>
+			<button type="primary" @click="set4">滚动到 9000px 5000ms</button>
+			<button type="primary" @click="set5">滚动到 id为last的元素位置</button>
+		</view>
+		<view>
+			<view v-for="item of list" :key="item">{{item}}</view>
+		</view>
+		<view id="last">底部元素</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				list:(function(){
+					const data=[];
+					for (var i = 0; i < 500; i++) {
+						data.push('元素'+(i+1));
+					}
+					return data;
+				}())
+			}
+		},
+		methods: {
+			set1() {
+				uni.pageScrollTo({
+					scrollTop:2000
+				})
+			},
+			set2() {
+				uni.pageScrollTo({
+					scrollTop:5000
+				})
+			},
+			set3() {
+				uni.pageScrollTo({
+					scrollTop:9000
+				})
+			},
+			set4() {
+				uni.pageScrollTo({
+					scrollTop:9000,
+					duration:5000
+				})
+			},
+			set5() {
+				uni.pageScrollTo({
+					selector:'#last',
+					duration:2000
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 10px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+
+
+## 界面-下拉刷新
+
