@@ -13790,3 +13790,229 @@ selector类似于 CSS 的选择器，但仅支持下列语法
 
 ## 界面-下拉刷新
 
+### onPullDownRefresh
+
+在 js 中定义 onPullDownRefresh 处理函数（和onLoad等生命周期函数同级），监听该页面用户下拉刷新事件
+
+需要在 `pages.json` 里，找到的当前页面的pages节点，并在 `style` 选项中开启 `enablePullDownRefresh`
+
+
+
+```json
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path" : "pages/index/test1/test1",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : true
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}
+
+```
+
+
+
+
+
+```vue
+<template>
+	<view>
+		<h1>{{num}}</h1>
+		<button @click="num++" type="primary">数字+1</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				num:0,
+			}
+		},
+		methods: {
+			
+		},
+		onPullDownRefresh: () => {
+			console.log("用户下拉刷新");
+			//this.num=0;
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+![image-20231222220828640](img/uniapp学习笔记/image-20231222220828640.png)
+
+
+
+
+
+
+
+
+
+### uni.startPullDownRefresh(OBJECT)
+
+#### 概述
+
+开始下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致
+
+
+
+#### 参数
+
+| 参数名   | 类型     | 必填 | 说明                                             |
+| :------- | :------- | :--- | :----------------------------------------------- |
+| success  | Function | 否   | 接口调用成功的回调                               |
+| fail     | Function | 否   | 接口调用失败的回调函数                           |
+| complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h1>{{num}}</h1>
+		<button @click="num++" type="primary">数字+1</button>
+		<button @click="refresh()" type="primary">手动刷新</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				num:0,
+			}
+		},
+		methods: {
+			refresh()
+			{
+				console.log("手动刷新");
+				uni.startPullDownRefresh({
+					success: () => {
+						console.log("手动刷新成功");
+					},
+					fail: () => {
+						console.log("手动刷新失败");
+					}
+				})
+			}
+		},
+		onPullDownRefresh: () => {
+			console.log("用户下拉刷新");
+			//this.num=0;
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+### uni.stopPullDownRefresh()
+
+#### 概述
+
+停止当前页面下拉刷新
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h1>{{num}}</h1>
+		<button @click="num++" type="primary">数字+1</button>
+		<button @click="refresh()" type="primary">手动刷新</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				num:0,
+			}
+		},
+		methods: {
+			refresh()
+			{
+				console.log("手动刷新");
+				uni.startPullDownRefresh({
+					success: () => {
+						console.log("手动刷新成功");
+					},
+					fail: () => {
+						console.log("手动刷新失败");
+					}
+				})
+			},
+			reset()
+			{
+				this.num=0;
+			}
+		},
+		onPullDownRefresh: () => {
+			console.log("用户下拉刷新");
+			this.reset();
+			setTimeout(function()
+			{
+				console.log("停止刷新");
+				uni.stopPullDownRefresh();
+			},500)
+			
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
