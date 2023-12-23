@@ -14016,3 +14016,232 @@ button{
 
 
 
+
+
+
+
+
+
+
+
+## 位置
+
+### uni.getLocation(OBJECT)
+
+#### 概述
+
+获取当前的地理位置、速度
+
+
+
+#### 参数
+
+|         参数名         |   类型   | 必填 |                             说明                             |                        平台差异说明                         |
+| :--------------------: | :------: | :--: | :----------------------------------------------------------: | :---------------------------------------------------------: |
+|          type          |  String  |  否  | 默认为 wgs84 返回 gps 坐标，gcj02 返回国测局坐标，可用于 `uni.openLocation` 和 map 组件坐标，App 和 H5 需配置定位 SDK 信息才可支持 gcj02。 |                                                             |
+|        altitude        | Boolean  |  否  | 传入 true 会返回高度信息，由于获取高度需要较高精确度，会减慢接口返回速度 |         抖音小程序、飞书小程序、支付宝小程序不支持          |
+|        geocode         | Boolean  |  否  |                 默认false，是否解析地址信息                  | 仅App平台支持（安卓需指定 type 为 gcj02 并配置三方定位SDK） |
+| highAccuracyExpireTime |  Number  |  否  | 高精度定位超时时间(ms)，指定时间内返回最高精度，该值3000ms以上高精度定位才有效果 |   App (3.2.11+)、H5 (3.2.11+)、微信小程序 (基础库 2.9.0+)   |
+|        timeout         |  String  |  否  |                默认为 5，定位超时时间，单位秒                |                      仅飞书小程序支持                       |
+|      cacheTimeout      |  Number  |  否  | 定位缓存超时时间，单位秒；每次定位缓存当前定位数据，并记下时间戳，当下次调用在cacheTimeout之内时，返回缓存数据 |               仅飞书小程序、支付宝小程序支持                |
+|        accuracy        |  String  |  否  | 默认为 high，指定期望精度，支持 high，best。当指定 high 时，期望精度值为100m，当指定 best 时期望精度值为20m。当定位得到的精度不符合条件时，在timeout之前会继续定位，尝试拿到符合要求的定位结果 |                      仅飞书小程序支持                       |
+|     isHighAccuracy     | Boolean  |  否  |                        开启高精度定位                        |    App (3.4.0+)、H5 (3.4.0+)、微信小程序 (基础库 2.9.0+)    |
+|        success         | Function |  是  |                    接口调用成功的回调函数                    |                                                             |
+|          fail          | Function |  否  |                    接口调用失败的回调函数                    |                                                             |
+|        complete        | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                                             |
+
+
+
+
+
+**success 返回参数**
+
+|        参数        |                     说明                     |
+| :----------------: | :------------------------------------------: |
+|      latitude      |   纬度，浮点数，范围为-90~90，负数表示南纬   |
+|     longitude      |  经度，浮点数，范围为-180~180，负数表示西经  |
+|       speed        |            速度，浮点数，单位m/s             |
+|      accuracy      |                 位置的精确度                 |
+|      altitude      |                 高度，单位 m                 |
+|  verticalAccuracy  | 垂直精度，单位 m（Android 无法获取，返回 0） |
+| horizontalAccuracy |               水平精度，单位 m               |
+|      address       | 地址信息（仅App端支持，需配置geocode为true） |
+
+
+
+
+
+**address 地址信息**
+
+|    属性    |  类型  |        描述        |                            说明                             |
+| :--------: | :----: | :----------------: | :---------------------------------------------------------: |
+|  country   | String |        国家        |         如“中国”，如果无法获取此信息则返回undefined         |
+|  province  | String |      省份名称      |        如“北京市”，如果无法获取此信息则返回undefined        |
+|    city    | String |      城市名称      |        如“北京市”，如果无法获取此信息则返回undefined        |
+|  district  | String |    区（县）名称    |        如“朝阳区”，如果无法获取此信息则返回undefined        |
+|   street   | String |      街道信息      |       如“酒仙桥路”，如果无法获取此信息则返回undefined       |
+| streetNum  | String | 获取街道门牌号信息 |         如“3号”，如果无法获取此信息则返回undefined          |
+|  poiName   | String |      POI信息       | 如“电子城．国际电子总部”，如果无法获取此信息则返回undefined |
+| postalCode | String |      邮政编码      |        如“100016”，如果无法获取此信息则返回undefined        |
+|  cityCode  | String |      城市代码      |         如“010”，如果无法获取此信息则返回undefined          |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="get">获取地址</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			get() {
+				uni.getLocation({
+					success: (res) => {
+						console.log("返回数据：",res);
+						console.log('当前位置的经度：' + res.longitude);
+						console.log('当前位置的纬度：' + res.latitude);
+						this.longitude = res.longitude
+						this.latitude = res.latitude
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+![image-20231223200549117](img/uniapp学习笔记/image-20231223200549117.png)
+
+
+
+
+
+![image-20231223200651950](img/uniapp学习笔记/image-20231223200651950.png)
+
+
+
+![image-20231223200701595](img/uniapp学习笔记/image-20231223200701595.png)
+
+
+
+
+
+
+
+
+
+
+
+### uni.chooseLocation(OBJECT)
+
+#### 概述
+
+打开地图选择位置
+
+
+
+#### 参数
+
+| 参数名    |   类型   | 必填 |                             说明                             |               平台差异说明               |
+| :-------- | :------: | :--- | :----------------------------------------------------------: | :--------------------------------------: |
+| latitude  |  Number  | 否   |                          目标地纬度                          | 微信小程序（2.9.0+）、H5-Vue3（3.2.10+） |
+| longitude |  Number  | 否   |                          目标地经度                          | 微信小程序（2.9.0+）、H5-Vue3（3.2.10+） |
+| keyword   |  String  | 否   |                  搜索关键字，仅App平台支持                   |                                          |
+| success   | Function | 是   |      接口调用成功的回调函数，返回内容详见返回参数说明。      |                                          |
+| fail      | Function | 否   | 接口调用失败的回调函数（获取定位失败、用户取消等情况下触发） |                                          |
+| complete  | Function | 否   |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                          |
+
+
+
+
+
+**success 返回参数**
+
+|   参数    |                             说明                             |
+| :-------: | :----------------------------------------------------------: |
+|   name    |                           位置名称                           |
+|  address  |                           详细地址                           |
+| latitude  | 纬度，浮点数，范围为-90~90，负数表示南纬，使用 gcj02 国测局坐标系。 |
+| longitude | 经度，浮点数，范围为-180~180，负数表示西经，使用 gcj02 国测局坐标系。 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="get">选择城市</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			get() {
+				uni.chooseLocation({
+					success: (res) => {
+						console.log(res);
+						console.log('位置名称：' + res.name);
+						console.log('详细地址：' + res.address);
+						console.log('纬度：' + res.latitude);
+						console.log('经度：' + res.longitude);
+						this.longitude = res.longitude
+						this.latitude = res.latitude
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+### uni.openLocation(OBJECT)
+
