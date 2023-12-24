@@ -14245,3 +14245,315 @@ button{
 
 ### uni.openLocation(OBJECT)
 
+#### 概述
+
+使用应用内置地图查看位置
+
+
+
+#### 参数
+
+|  参数名   |   类型   | 必填 |                            说明                             | 平台差异说明 |
+| :-------: | :------: | :--: | :---------------------------------------------------------: | :----------: |
+| latitude  |  Float   |  是  |  纬度，范围为-90~90，负数表示南纬，使用 gcj02 国测局坐标系  |              |
+| longitude |  Float   |  是  | 经度，范围为-180~180，负数表示西经，使用 gcj02 国测局坐标系 |              |
+|   scale   |   Int    |  否  |                缩放比例，范围5~18，默认为18                 |  微信小程序  |
+|   name    |  String  |  否  |                           位置名                            |  支付宝必填  |
+|  address  |  String  |  否  |                       地址的详细说明                        |  支付宝必填  |
+|  success  | Function |  否  |                   接口调用成功的回调函数                    |              |
+|   fail    | Function |  否  |                   接口调用失败的回调函数                    |              |
+| complete  | Function |  否  |      接口调用结束的回调函数（调用成功、失败都会执行）       |              |
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="get">打开当前位置</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			get() {
+				uni.getLocation({
+					type: 'gcj02',
+					success: function(res) {
+						const latitude = res.latitude;
+						const longitude = res.longitude;
+						uni.openLocation({
+							latitude: latitude,
+							longitude: longitude,
+							success: function() {
+								console.log('success');
+							}
+						});
+					},
+					fail: (err) => {
+						console.log(err);
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+
+
+### uni.onLocationChange(FUNCTION CALLBACK)
+
+#### 概述
+
+监听实时地理位置变化事件，需结合 `uni.startLocationUpdate` 或 `uni.startLocationUpdateBackground` 使用
+
+该方法会持续监听地理位置信息的变化，建议在不需要监听地理位置信息变化后，直接调用 `uni.stopLocationUpdate` 方法取消监听
+
+
+
+#### 参数
+
+|       参数名       |  类型   |                 说明                  |                  平台差异说明                   |
+| :----------------: | :-----: | :-----------------------------------: | :---------------------------------------------: |
+|      latitude      | Number  |  纬度，范围为 -90~90，负数表示南纬。  |                                                 |
+|     longitude      | Number  | 经度，范围为 -180~180，负数表示西经。 |                                                 |
+|       speed        | Number  |              速度 (m/s)               |                    H5不支持                     |
+|      accuracy      | number  |             位置的精确度              |                                                 |
+|      altitude      | number  |               高度 (m)                |                    H5不支持                     |
+|  verticalAccuracy  | number  |             垂直精度 (m)              | 抖音小程序、快手小程序 Android 无法获取，返回 0 |
+| horizontalAccuracy | number  |             水平精度 (m)              |                抖音小程序不支持                 |
+|        city        | string  |           定位到的城市信息            |      百度小程序、抖音小程序（iOS 不支持）       |
+|      cityCode      | String  |               城市编码                |                   百度小程序                    |
+|        city        | String  |               城市名称                |                   百度小程序                    |
+|      country       | String  |                 国家                  |                   百度小程序                    |
+|    countryCode     | String  |               国家代码                |                   百度小程序                    |
+|      province      | String  |                 省份                  |                   百度小程序                    |
+|    streetNumber    | String  |               街道号码                |                   百度小程序                    |
+|      district      | String  |                  区                   |                   百度小程序                    |
+|   isFullAccuracy   | Boolean |          是不是精确定位信息           |                   百度小程序                    |
+|  altitudeAccuracy  | Number  |           海拔的精确度信息            |                       App                       |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="button1">监听实时地理位置变化事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			button1() {
+				uni.onLocationChange((res) => {
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+					this.longitude = res.longitude;
+					this.latitude = res.latitude;
+				})
+				console.log("设置完成");
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+### uni.offLocationChange(FUNCTION CALLBACK)
+
+#### 概述
+
+关闭监听实时位置变化，前后台都停止消息接收
+
+
+
+#### 参数
+
+|       参数名       |  类型  |                   说明                   | 平台差异说明 |
+| :----------------: | :----: | :--------------------------------------: | :----------: |
+|      latitude      | number |    纬度，范围 [-90, 90]，负数表示南纬    |  快手小程序  |
+|     longitude      | number |   经度，范围 [-180, 180]，负数表示西经   |  快手小程序  |
+|       speed        | number |                速度 (m/s)                |  快手小程序  |
+|      accuracy      | number |               位置的精确度               |  快手小程序  |
+|      altitude      | number |                 高度 (m)                 |  快手小程序  |
+|  verticalAccuracy  | number | 垂直精度 (m)（Android 无法获取，返回 0） |  快手小程序  |
+| horizontalAccuracy | number |               水平精度 (m)               |  快手小程序  |
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="button1">监听实时地理位置变化事件</button>
+		<button type="primary" @click="button2">关闭监听实时位置变化</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			button1() {
+				uni.onLocationChange((res) => {
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+					this.longitude = res.longitude;
+					this.latitude = res.latitude;
+				})
+				console.log("设置完成");
+			},
+			button2() {
+				uni.offLocationChange((res) => {
+					console.log("关闭完成");
+				})
+				
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+### uni.onLocationChangeError(FUNCTION CALLBACK)
+
+#### 概述
+
+监听持续定位接口返回失败时触发
+
+
+
+#### 参数
+
+| 参数名  |  类型  |   说明   | 平台差异说明 |
+| :-----: | :----: | :------: | :----------: |
+| errCode | Number |   错误   |  微信小程序  |
+| errMsg  | String | 错误信息 |  抖音小程序  |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="button1">监听实时地理位置变化事件</button>
+		<button type="primary" @click="button2">关闭监听实时位置变化</button>
+		<button type="primary" @click="button3">监听实时位置失败事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			button1() {
+				uni.onLocationChange((res) => {
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+					this.longitude = res.longitude;
+					this.latitude = res.latitude;
+				})
+				console.log("设置完成");
+			},
+			button2() {
+				uni.offLocationChange((res) => {
+					console.log("关闭完成");
+				})
+
+			},
+			button3() {
+				uni.onLocationChangeError((res) => {
+					console.log("失败：", res.errMsg);
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
