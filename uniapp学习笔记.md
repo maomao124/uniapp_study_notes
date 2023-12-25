@@ -14557,3 +14557,414 @@ button{
 
 
 
+
+
+### uni.offLocationChangeError(FUNCTION CALLBACK)
+
+取消注册位置更新错误回调
+
+
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="button1">监听实时地理位置变化事件</button>
+		<button type="primary" @click="button2">关闭监听实时位置变化</button>
+		<button type="primary" @click="button3">监听实时位置失败事件</button>
+		<button type="primary" @click="button4">关闭监听实时位置失败事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			button1() {
+				uni.onLocationChange((res) => {
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+					this.longitude = res.longitude;
+					this.latitude = res.latitude;
+				})
+				console.log("设置完成");
+			},
+			button2() {
+				uni.offLocationChange((res) => {
+					console.log("关闭完成");
+				})
+
+			},
+			button3() {
+				uni.onLocationChangeError((res) => {
+					console.log("失败：", res.errMsg);
+				})
+			},
+			button4() {
+				uni.offLocationChangeError(() => {
+					console.log("关闭");
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+### uni.startLocationUpdate(OBJECT)
+
+#### 概述
+
+开启小程序进入前台时接收位置消息
+
+
+
+#### 参数
+
+|      参数名      |   类型   | 必填 |                             说明                             |      平台差异说明      |
+| :--------------: | :------: | :--: | :----------------------------------------------------------: | :--------------------: |
+|       type       |  String  |  否  |            指定坐标系类型，可以是 wgs84 或 gcj02             | 微信小程序、抖音小程序 |
+|     success      | Function |  否  |                    接口调用成功的回调函数                    |                        |
+|       fail       | Function |  否  |                    接口调用失败的回调函数                    |                        |
+|     complete     | function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                        |
+| needFullAccuracy | Boolean  |  否  | 针对 iOS14/Android12 及以上的新特性，其他情况本参数忽略。默认情况宿主是精确定位就返回精确定位信息。传入 true 会强制使用精确定位信息，iOS14/Android12 及以上如果没有精确定位权限，会弹出精确定位授权弹框。 |       百度小程序       |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="button1">监听实时地理位置变化事件</button>
+		<button type="primary" @click="button2">关闭监听实时位置变化</button>
+		<button type="primary" @click="button3">监听实时位置失败事件</button>
+		<button type="primary" @click="button4">关闭监听实时位置失败事件</button>
+		<button type="primary" @click="button5">开启小程序进入前台时接收位置消息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			button1() {
+				uni.onLocationChange((res) => {
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+					this.longitude = res.longitude;
+					this.latitude = res.latitude;
+				})
+				console.log("设置完成");
+			},
+			button2() {
+				uni.offLocationChange((res) => {
+					console.log("关闭完成");
+				})
+
+			},
+			button3() {
+				uni.onLocationChangeError((res) => {
+					console.log("失败：", res.errMsg);
+				})
+			},
+			button4() {
+				uni.offLocationChangeError(() => {
+					console.log("关闭");
+				})
+			},
+			button5() {
+				uni.startLocationUpdate({
+					success: () => {
+						console.log('开启小程序接收位置消息成功')
+					},
+					fail: (err) => {
+						console.log('开启小程序接收位置消息失败',err)
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+### uni.stopLocationUpdate(OBJECT)
+
+#### 概述
+
+关闭监听实时位置变化，前后台都停止消息接收
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                       说明                       | 平台差异说明 |
+| :------: | :------: | :--: | :----------------------------------------------: | :----------: |
+| success  | Function |  否  |              接口调用成功的回调函数              |              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |              |
+| complete | function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |              |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="button1">监听实时地理位置变化事件</button>
+		<button type="primary" @click="button2">关闭监听实时位置变化</button>
+		<button type="primary" @click="button3">监听实时位置失败事件</button>
+		<button type="primary" @click="button4">关闭监听实时位置失败事件</button>
+		<button type="primary" @click="button5">开启小程序进入前台时接收位置消息</button>
+		<button type="primary" @click="button6">关闭小程序进入前台时接收位置消息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			button1() {
+				uni.onLocationChange((res) => {
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+					this.longitude = res.longitude;
+					this.latitude = res.latitude;
+				})
+				console.log("设置完成");
+			},
+			button2() {
+				uni.offLocationChange((res) => {
+					console.log("关闭完成");
+				})
+
+			},
+			button3() {
+				uni.onLocationChangeError((res) => {
+					console.log("失败：", res.errMsg);
+				})
+			},
+			button4() {
+				uni.offLocationChangeError(() => {
+					console.log("关闭");
+				})
+			},
+			button5() {
+				uni.startLocationUpdate({
+					success: () => {
+						console.log('开启小程序接收位置消息成功')
+					},
+					fail: (err) => {
+						console.log('开启小程序接收位置消息失败',err)
+					}
+				})
+			},
+			button6() {
+				uni.stopLocationUpdate({
+					success: () => {
+						console.log('关闭小程序接收位置消息成功')
+					},
+					fail: (err) => {
+						console.log('关闭小程序接收位置消息失败',err)
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+### uni.startLocationUpdateBackground(OBJECT)
+
+#### 参数
+
+开始监听实时地理位置信息变化事件，小程序进入前后台时均接收实时地理位置信息
+
+
+
+|  参数名  |   类型   | 必填 |                       说明                       |      平台差异说明      |
+| :------: | :------: | :--: | :----------------------------------------------: | :--------------------: |
+|   type   |  String  |  否  |      指定坐标系类型，可以是 wgs84 或 gcj02       | 微信小程序、抖音小程序 |
+| success  | Function |  否  |              接口调用成功的回调函数              |                        |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |                        |
+| complete | function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |                        |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<text>
+			<h1>{{longitude}}</h1>
+			<h1>{{latitude}}</h1>
+		</text>
+		<button type="primary" @click="button1">监听实时地理位置变化事件</button>
+		<button type="primary" @click="button2">关闭监听实时位置变化</button>
+		<button type="primary" @click="button3">监听实时位置失败事件</button>
+		<button type="primary" @click="button4">关闭监听实时位置失败事件</button>
+		<button type="primary" @click="button5">开启小程序进入前台时接收位置消息</button>
+		<button type="primary" @click="button6">关闭小程序进入前台时接收位置消息</button>
+		<button type="primary" @click="button7">开始监听实时地理位置信息变化事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				longitude: 0,
+				latitude: 0,
+			}
+		},
+		methods: {
+			button1() {
+				uni.onLocationChange((res) => {
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+					this.longitude = res.longitude;
+					this.latitude = res.latitude;
+				})
+				console.log("设置完成");
+			},
+			button2() {
+				uni.offLocationChange((res) => {
+					console.log("关闭完成");
+				})
+
+			},
+			button3() {
+				uni.onLocationChangeError((res) => {
+					console.log("失败：", res.errMsg);
+				})
+			},
+			button4() {
+				uni.offLocationChangeError(() => {
+					console.log("关闭");
+				})
+			},
+			button5() {
+				uni.startLocationUpdate({
+					success: () => {
+						console.log('开启小程序接收位置消息成功')
+					},
+					fail: (err) => {
+						console.log('开启小程序接收位置消息失败',err)
+					}
+				})
+			},
+			button6() {
+				uni.stopLocationUpdate({
+					success: () => {
+						console.log('关闭小程序接收位置消息成功')
+					},
+					fail: (err) => {
+						console.log('关闭小程序接收位置消息失败',err)
+					}
+				})
+			},
+			button7() {
+				uni.startLocationUpdateBackground({
+					success: () => {
+						console.log('开始监听实时地理位置信息变化事件成功')
+					},
+					fail: (err) => {
+						console.log('开始监听实时地理位置信息变化事件失败',err)
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 媒体-图片
+
+### uni.chooseImage(OBJECT)
+
+
+
