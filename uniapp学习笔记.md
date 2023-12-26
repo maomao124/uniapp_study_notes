@@ -14966,5 +14966,400 @@ button{
 
 ### uni.chooseImage(OBJECT)
 
+#### 概述
 
+从本地相册选择图片或使用相机拍照
+
+
+
+#### 参数
+
+|   参数名   |      类型      | 必填 |                             说明                             |               平台差异说明                |
+| :--------: | :------------: | :--: | :----------------------------------------------------------: | :---------------------------------------: |
+|   count    |     Number     |  否  |                最多可以选择的图片张数，默认9                 |                                           |
+|  sizeType  | Array\<String> |  否  |        original 原图，compressed 压缩图，默认二者都有        | App、微信小程序、支付宝小程序、百度小程序 |
+| extension  | Array\<String> |  否  |   根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。   |           H5(HBuilder X2.9.9+)            |
+| sourceType | Array\<String> |  否  | album 从相册选图，camera 使用相机，默认二者都有。如需直接开相机或直接选相册，请只使用一个选项 |                                           |
+|    crop    |     Object     |  否  |              图像裁剪参数，设置后 sizeType 失效              |                App 3.1.19+                |
+|  success   |    Function    |  是  |        成功则返回图片的本地文件路径列表 tempFilePaths        |                                           |
+|    fail    |    Function    |  否  |                    接口调用失败的回调函数                    |                小程序、App                |
+|  complete  |    Function    |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                           |
+
+
+
+**crop 参数**
+
+| 参数名  |  类型   | 必填 |                             说明                             | 平台差异说明 |
+| :-----: | :-----: | :--: | :----------------------------------------------------------: | :----------: |
+| quality | Number  |  否  | 取值范围为1-100，数值越小，质量越低（仅对jpg格式有效）。默认值为80。 |              |
+|  width  | Number  |  是  |          裁剪的宽度，单位为px，用于计算裁剪宽高比。          |              |
+| height  | Number  |  是  |          裁剪的高度，单位为px，用于计算裁剪宽高比。          |              |
+| resize  | Boolean |  否  | 是否将width和height作为裁剪保存图片真实的像素值。默认值为true。注：设置为false时在裁剪编辑界面显示图片的像素值，设置为true时不显示 |              |
+
+
+
+**success 返回参数说明**
+
+|     参数      | 类型                         |                    说明                    |
+| :-----------: | :--------------------------- | :----------------------------------------: |
+| tempFilePaths | Array\<String>               |           图片的本地文件路径列表           |
+|   tempFiles   | Array\<Object>、Array\<File> | 图片的本地文件列表，每一项是一个 File 对象 |
+
+
+
+**File 对象结构**
+
+| 参数 |  类型  |              说明              |
+| :--: | :----: | :----------------------------: |
+| path | String |          本地文件路径          |
+| size | Number |     本地文件大小，单位：B      |
+| name | String | 包含扩展名的文件名称，仅H5支持 |
+| type | String |       文件类型，仅H5支持       |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button  type="primary" @click="button1">选择图片</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.chooseImage({
+					count: 8,
+					sizeType: ['original', 'compressed'],
+					sourceType: ['album'], //从相册选择
+					success: function (res) {
+						console.log(JSON.stringify(res.tempFilePaths));
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+![image-20231225175013194](img/uniapp学习笔记/image-20231225175013194.png)
+
+
+
+
+
+```json
+["blob:http://localhost:8081/a18079dc-414a-4deb-aad8-1c47e38a810d","blob:http://localhost:8081/fc29def8-4a5f-49a8-b808-1365fa3fd167"]
+```
+
+
+
+
+
+
+
+
+
+### uni.previewImage(OBJECT)
+
+#### 概述
+
+预览图片
+
+
+
+#### 参数
+
+|      参数名      |      类型      | 必填 |                             说明                             | 平台差异说明 |
+| :--------------: | :------------: | :--: | :----------------------------------------------------------: | :----------: |
+|     current      | String/Number  |      |                                                              |              |
+|       urls       | Array\<String> |  是  |                    需要预览的图片链接列表                    |              |
+|    indicator     |     String     |  否  | 图片指示器样式，可取值："default" - 底部圆点指示器； "number" - 顶部数字指示器； "none" - 不显示指示器。 |     App      |
+|       loop       |    Boolean     |  否  |                是否可循环预览，默认值为 false                |     App      |
+| longPressActions |     Object     |  否  |        长按图片显示操作菜单，如不填默认为**保存相册**        |  App 1.9.5+  |
+|     success      |    Function    |  否  |                    接口调用成功的回调函数                    |              |
+|       fail       |    Function    |  否  |                    接口调用失败的回调函数                    |              |
+|     complete     |    Function    |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |              |
+
+
+
+
+
+current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张
+
+当 urls 中有重复的图片链接时：
+
+- 传链接，预览结果始终显示该链接在 urls 中第一次出现的位置
+- 传索引值，在微信/百度/抖音小程序平台，会过滤掉传入的 urls 中该索引值之前与其对应图片链接重复的值。其它平台会保留原始的 urls 不会做去重处理
+
+
+
+
+
+一组图片 `[A, B1, C, B2, D]`，其中 B1 与 B2 的图片链接是一样的。
+
+- 传 B2 的链接，预览的结果是 B1，前一张是 A，下一张是 C。
+- 传 B2 的索引值 3，预览的结果是 B2，前一张是 C，下一张是 D。此时在微信/百度/抖音小程序平台，最终传入的 urls 是 `[A, C, B2, D]`，过滤掉了与 B2 重复的 B1
+
+
+
+
+
+**longPressActions 参数**
+
+|   参数    |      类型      | 必填 |                       说明                       |
+| :-------: | :------------: | :--- | :----------------------------------------------: |
+| itemList  | Array\<String> | 是   |                  按钮的文字数组                  |
+| itemColor |     String     | 否   |   按钮的文字颜色，字符串格式，默认为"#000000"    |
+|  success  |    Function    | 否   |     接口调用成功的回调函数，详见返回参数说明     |
+|   fail    |    Function    | 否   |              接口调用失败的回调函数              |
+| complete  |    Function    | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+**success 返回参数**
+
+|   参数   |  类型  |           说明           |
+| :------: | :----: | :----------------------: |
+|  index   | Number |   用户长按图片的索引值   |
+| tapIndex | Number | 用户点击按钮列表的索引值 |
+
+
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">预览图片</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseImage({
+					count: 8,
+					sizeType: ['original', 'compressed'],
+					sourceType: ['album'], //从相册选择
+					success: function(res) {
+						uni.previewImage({
+							urls: res.tempFilePaths,
+							longPressActions: {
+								itemList: ['发送给朋友', '保存图片', '收藏'],
+								success: function(data) {
+									console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data
+										.index + 1) + '张图片');
+								},
+								fail: function(err) {
+									console.log(err.errMsg);
+								}
+							}
+						});
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+![image-20231226162547228](img/uniapp学习笔记/image-20231226162547228.png)
+
+
+
+![image-20231226162557788](img/uniapp学习笔记/image-20231226162557788.png)
+
+
+
+![image-20231226162604635](img/uniapp学习笔记/image-20231226162604635.png)
+
+
+
+![image-20231226162612509](img/uniapp学习笔记/image-20231226162612509.png)
+
+
+
+
+
+### uni.closePreviewImage(OBJECT)
+
+#### 概述
+
+关闭预览图片
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+| success  | Function |  否  |              接口调用成功的回调函数              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">预览图片</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseImage({
+					count: 8,
+					sizeType: ['original', 'compressed'],
+					sourceType: ['album'], //从相册选择
+					success: function(res) {
+						uni.previewImage({
+							urls: res.tempFilePaths,
+							longPressActions: {
+								itemList: ['发送给朋友', '保存图片', '收藏'],
+								success: function(data) {
+									console.log('选中了第' + (data.tapIndex + 1) + '个按钮,第' + (data
+										.index + 1) + '张图片');
+								},
+								fail: function(err) {
+									console.log(err.errMsg);
+								}
+							}
+						});
+						setTimeout(function(){
+							uni.closePreviewImage({
+								success: () => {
+									console.log("关闭成功");
+								}
+							})
+						},1000)
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+### uni.getImageInfo(OBJECT)
+
+#### 概述
+
+获取图片信息
+
+小程序下获取网络图片信息需先配置download域名白名单才能生效
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                             说明                             |
+| :------: | :------: | :--: | :----------------------------------------------------------: |
+|   src    |  String  |  是  | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
+| success  | Function |  否  |                    接口调用成功的回调函数                    |
+|   fail   | Function |  否  |                    接口调用失败的回调函数                    |
+| complete | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+**success 返回参数**
+
+|   参数名    |  类型  |        说明        |      平台差异说明       |
+| :---------: | :----: | :----------------: | :---------------------: |
+|    width    | Number |  图片宽度，单位px  |                         |
+|   height    | Number |  图片高度，单位px  |                         |
+|    path     | String | 返回图片的本地路径 |                         |
+| orientation | String |   返回图片的方向   | App、小程序、京东小程序 |
+|    type     | String |   返回图片的格式   | App、小程序、京东小程序 |
+
+
+
+
+
+**orientation 参数**
+
+|     枚举值     |        说明         |
+| :------------: | :-----------------: |
+|       up       |        默认         |
+|      down      |      180度旋转      |
+|      left      |   逆时针旋转90度    |
+|     right      |   顺时针旋转90度    |
+|  up-mirrored   |  同up，但水平翻转   |
+| down-mirrored  | 同down，但水平翻转  |
+| left-mirrored  | 同left，但垂直翻转  |
+| right-mirrored | 同right，但垂直翻转 |
+
+
+
+
+
+#### 示例
 
