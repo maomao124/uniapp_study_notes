@@ -15363,3 +15363,157 @@ current 为当前显示图片的链接/索引值，不填或填写的值无效�
 
 #### 示例
 
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">查看本地图片信息</button>
+		<button type="primary" @click="button2">查看网络图片信息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.getImageInfo({
+					src:'/static/logo.png',
+					success: (data) => {
+						console.log(data);
+					},
+					fail: (err) => {
+						console.log("错误",err);
+					}
+				})
+			},
+			button2() {
+				uni.getImageInfo({
+					src:'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png',
+					success: (data) => {
+						console.log(data);
+					},
+					fail: (err) => {
+						console.log("错误",err);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+```
+
+
+
+
+
+![image-20231226164703712](img/uniapp学习笔记/image-20231226164703712.png)
+
+
+
+
+
+### uni.saveImageToPhotosAlbum(OBJECT)
+
+#### 概述
+
+保存图片到系统相册，h5不支持
+
+* 可以通过用户授权API来判断用户是否给应用授予相册的访问权限
+* H5没有API可触发保存到相册行为，下载图片时浏览器会询问图片存放地址
+* 微信小程序在2023年10月17日之后，使用API需要配置隐私协议
+
+
+
+#### 参数
+
+| 参数名   | 类型     | 必填 | 说明                                                         |
+| :------- | :------- | :--- | :----------------------------------------------------------- |
+| filePath | String   | 是   | 图片文件路径，可以是临时文件路径也可以是永久文件路径，不支持网络图片路径 |
+| success  | Function | 否   | 接口调用成功的回调函数                                       |
+| fail     | Function | 否   | 接口调用失败的回调函数                                       |
+| complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行）             |
+
+
+
+
+
+**success 返回参数**
+
+| 参数名 | 类型   | 说明                                     |
+| :----- | :----- | :--------------------------------------- |
+| path   | String | 保存到相册的图片路径，仅 App 3.0.5+ 支持 |
+| errMsg | String | 调用结果                                 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">选择图片保存</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['original', 'compressed'],
+					sourceType: ['album'], //从相册选择
+					success: function(res) {
+
+						uni.saveImageToPhotosAlbum({
+							filePath: res.tempFilePaths[0],
+							success: (data) => {
+								console.log(data);
+							},
+							fail: (err) => {
+								console.log("错误：", err);
+							}
+						})
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 媒体-文件
+
