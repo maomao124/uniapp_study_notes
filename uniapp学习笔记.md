@@ -15765,7 +15765,157 @@ Android App端默认不会在通知栏出现音量控制
 
 #### 示例
 
+```vue
+<template>
+	<view>
+		<button type="primary" @click="init()">初始化</button>
+		<button type="primary" @click="button1">选择音乐1</button>
+		<button type="primary" @click="button2">选择音乐2</button>
+		<button type="primary" @click="button3">播放音乐</button>
+		<button type="primary" @click="button4">暂停播放</button>
+		<button type="primary" @click="button5">停止播放</button>
+		<button type="primary" @click="button6">跳转到5秒</button>
+	</view>
+</template>
 
+<script>
+	export default {
+		data() {
+			return {
+				bgAudioManager: null,
+			}
+		},
+		methods: {
+			init()
+			{
+				console.log("初始化");
+				this.bgAudioManager = uni.getBackgroundAudioManager();
+				this.bgAudioManager.onCanplay(function()
+				{
+					console.log("可以播放音乐");
+				})
+				this.bgAudioManager.onPlay(function()
+				{
+					console.log("播放音乐");
+				})
+				this.bgAudioManager.onPause(function()
+				{
+					console.log("暂停播放音乐");
+				})
+				this.bgAudioManager.onStop(function()
+				{
+					console.log("停止播放音乐");
+				})
+				this.bgAudioManager.onEnded(function()
+				{
+					console.log("自然播放结束");
+				})
+				this.bgAudioManager.onTimeUpdate(function()
+				{
+					console.log("播放进度更新");
+				})
+				this.bgAudioManager.onPrev(function()
+				{
+					console.log("点击上一曲");
+				})
+				this.bgAudioManager.onNext(function()
+				{
+					console.log("点击下一曲");
+				})
+				this.bgAudioManager.onError(function(err)
+				{
+					console.log("音频播放错误事件",err);
+				})
+				this.bgAudioManager.onWaiting(function()
+				{
+					console.log("音频加载中");
+				})
+			},
+			button1()
+			{
+				if(this.bgAudioManager!=null)
+				{
+					this.bgAudioManager.title = '致爱丽丝';
+					this.bgAudioManager.singer = '暂无';
+					this.bgAudioManager.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png';
+					this.bgAudioManager.src = 'https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-hello-uniapp/2cc220e0-c27a-11ea-9dfb-6da8e309e0d8.mp3';
+				}
+				else
+				{
+					console.log("bgAudioManager为空");
+				}
+			},
+			button2()
+			{
+				if(this.bgAudioManager!=null)
+				{
+					this.bgAudioManager.title = '测试音乐';
+					this.bgAudioManager.singer = '暂无';
+					this.bgAudioManager.coverImgUrl = '/static/logo.png';
+					this.bgAudioManager.src = '/static/test.mp3';
+				}
+				else
+				{
+					console.log("bgAudioManager为空");
+				}
+			},
+			button3()
+			{
+				if(this.bgAudioManager.paused)
+				{
+                    this.bgAudioManager.play();
+				}
+			},
+			button4()
+			{
+                this.bgAudioManager.pause();
+			},
+			button5()
+			{
+                this.bgAudioManager.stop();
+			},
+			button6()
+			{
+                this.bgAudioManager.seek(5);
+			},
+		},
+		onLoad: () => {
+
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+![image-20231227173205184](img/uniapp学习笔记/image-20231227173205184.png)
+
+
+
+
+
+![image-20231227173234216](img/uniapp学习笔记/image-20231227173234216.png)
+
+
+
+
+
+![image-20231228161326169](img/uniapp学习笔记/image-20231228161326169.png)
+
+
+
+
+
+![image-20231228161245569](img/uniapp学习笔记/image-20231228161245569.png)
 
 
 
@@ -15880,3 +16030,160 @@ Android App端默认不会在通知栏出现音量控制
 
 
 #### 示例
+
+```vue
+<template>
+    <view>
+        <button type="primary" @click="init()">初始化</button>
+        <button type="primary" @click="button1">选择音乐1</button>
+        <button type="primary" @click="button2">选择音乐2</button>
+        <button type="primary" @click="button3">播放音乐</button>
+        <button type="primary" @click="button4">暂停播放</button>
+        <button type="primary" @click="button5">停止播放</button>
+        <button type="primary" @click="button6">跳转到5秒</button>
+    </view>
+</template>
+
+<script>
+export default {
+    data()
+    {
+        return {
+            innerAudioContext: null,
+        }
+    },
+    methods: {
+        init()
+        {
+            console.log("初始化");
+            this.innerAudioContext = uni.createInnerAudioContext();
+            this.innerAudioContext.onCanplay(function ()
+            {
+                console.log("可以播放音乐");
+            })
+            this.innerAudioContext.onPlay(function ()
+            {
+                console.log("播放音乐");
+            })
+            this.innerAudioContext.onPause(function ()
+            {
+                console.log("暂停播放音乐");
+            })
+            this.innerAudioContext.onStop(function ()
+            {
+                console.log("停止播放音乐");
+            })
+            this.innerAudioContext.onEnded(function ()
+            {
+                console.log("自然播放结束");
+            })
+            this.innerAudioContext.onTimeUpdate(function ()
+            {
+                console.log("播放进度更新");
+            })
+            this.innerAudioContext.onError(function (err)
+            {
+                console.log("音频播放错误事件", err);
+            })
+            this.innerAudioContext.onWaiting(function ()
+            {
+                console.log("音频加载中");
+            })
+        },
+        button1()
+        {
+            if (this.innerAudioContext != null)
+            {
+                try
+                {
+                    this.innerAudioContext.destroy();
+                }
+                catch (e)
+                {
+                    console.log(e);
+                }
+                this.innerAudioContext.title = '致爱丽丝';
+                this.innerAudioContext.singer = '暂无';
+                this.innerAudioContext.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png';
+                this.innerAudioContext.src = 'https://bjetxgzv.cdn.bspapp.com/VKCEYUGU-hello-uniapp/2cc220e0-c27a-11ea-9dfb-6da8e309e0d8.mp3';
+            }
+            else
+            {
+                console.log("bgAudioManager为空");
+            }
+        },
+        button2()
+        {
+            if (this.innerAudioContext != null)
+            {
+                try
+                {
+                    this.innerAudioContext.destroy();
+                }
+                catch (e)
+                {
+                    console.log(e);
+                }
+                this.innerAudioContext.title = '测试音乐';
+                this.innerAudioContext.singer = '暂无';
+                this.innerAudioContext.coverImgUrl = '/static/logo.png';
+                this.innerAudioContext.src = '/static/test.mp3';
+            }
+            else
+            {
+                console.log("bgAudioManager为空");
+            }
+        },
+        button3()
+        {
+            if (this.innerAudioContext.paused)
+            {
+                this.innerAudioContext.play();
+            }
+        },
+        button4()
+        {
+            this.innerAudioContext.pause();
+        },
+        button5()
+        {
+            this.innerAudioContext.stop();
+        },
+        button6()
+        {
+            this.innerAudioContext.seek(5);
+        },
+    },
+    onLoad: () =>
+    {
+
+    }
+}
+</script>
+
+<style>
+button {
+    margin: 5px;
+}
+</style>
+
+```
+
+
+
+![image-20231228161627778](img/uniapp学习笔记/image-20231228161627778.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 媒体-视频
+
