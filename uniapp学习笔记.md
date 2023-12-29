@@ -16187,3 +16187,408 @@ button {
 
 ## 媒体-视频
 
+### uni.chooseVideo(OBJECT)
+
+#### 概述
+
+拍摄视频或从手机相册中选视频，返回视频的临时文件路径
+
+
+
+#### 参数
+
+|   参数名    |      类型      | 必填 |                             说明                             |                         平台差异说明                         |
+| :---------: | :------------: | :--- | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| sourceType  | Array\<String> | 否   | album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera'] |                                                              |
+|  extension  | Array\<String> | 否   |   根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。   |                    H5(HBuilder X 2.9.9+)                     |
+| compressed  |    Boolean     | 否   |     是否压缩所选的视频源文件，默认值为 true，需要压缩。      | 微信小程序、百度小程序、抖音小程序、飞书小程序、京东小程序、App(HBuilder X 3.2.7+) |
+| maxDuration |     Number     | 否   |        拍摄视频最长拍摄时间，单位秒。最长支持 60 秒。        | APP平台 1.9.7+(iOS支持，Android取决于ROM的拍照组件是否实现此功能，如果没实现此功能则忽略此属性。) 微信小程序、百度小程序、京东小程序 |
+|   camera    |     String     | 否   |                 'front'、'back'，默认'back'                  |                 APP、微信小程序、京东小程序                  |
+|   success   |    Function    | 否   | 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明。 |                                                              |
+|    fail     |    Function    | 否   |                    接口调用失败的回调函数                    |                                                              |
+|  complete   |    Function    | 否   |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                                              |
+
+
+
+**success 返回参数**
+
+|     参数     |  类型  |             说明             |                平台差异                |
+| :----------: | :----: | :--------------------------: | :------------------------------------: |
+| tempFilePath | String |    选定视频的临时文件路径    |                                        |
+|   tempFile   |  File  |        选定的视频文件        |          仅H5（2.6.15+）支持           |
+|   duration   | Number | 选定视频的时间长度，单位为 s | APP 2.1.0+、H5、微信小程序、京东小程序 |
+|     size     | Number |     选定视频的数据量大小     | APP 2.1.0+、H5、微信小程序、京东小程序 |
+|    height    | Number |       返回选定视频的高       | APP 2.1.0+、H5、微信小程序、京东小程序 |
+|    width     | Number |       返回选定视频的宽       | APP 2.1.0+、H5、微信小程序、京东小程序 |
+|     name     | String |     包含扩展名的文件名称     |                仅H5支持                |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">选择视频</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseVideo({
+					success: (data) => {
+						console.log(data.tempFilePath);
+					},
+					fail: (err) => {
+						console.log("错误：", err);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+### uni.saveVideoToPhotosAlbum(OBJECT)
+
+#### 概述
+
+保存视频到系统相册
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |           √            |    √     |     √      |     x      |
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                         说明                         |
+| :------: | :------: | :--: | :--------------------------------------------------: |
+| filePath |  String  |  是  | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
+| success  | Function |  否  |                接口调用成功的回调函数                |
+|   fail   | Function |  否  |                接口调用失败的回调函数                |
+| complete | Function |  否  |   接口调用结束的回调函数（调用成功、失败都会执行）   |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">选择视频保存</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseVideo({
+					success: (data) => {
+						console.log(data.tempFilePath);
+						uni.saveVideoToPhotosAlbum({
+							filePath:data.tempFilePath,
+							success: (data) => {
+								console.log("保存完成");
+							}
+						})
+					},
+					fail: (err) => {
+						console.log("错误：", err);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+### uni.getVideoInfo(OBJECT)
+
+#### 概述
+
+获取视频详细信息
+
+
+
+|   App   |   H5    | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :-----: | :-----: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+| 3.1.10+ | 3.1.10+ |  2.11.0+   |      x       |     x      |           x            |    x     |     √      |     x      |
+
+
+
+#### 参数
+
+|   属性   |   类型   | 默认值 | 必填 |                             说明                             |
+| :------: | :------: | :----: | :--: | :----------------------------------------------------------: |
+|   src    |  string  |   -    |  是  | 视频文件路径，可以是临时文件路径也可以是永久文件路径（不支持网络地址） |
+| success  | function |   -    |  否  |                    接口调用成功的回调函数                    |
+|   fail   | function |   -    |  否  |                    接口调用失败的回调函数                    |
+| complete | function |   -    |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+**success 返回参数**
+
+|   参数名    |  类型  |        说明         |          平台差异说明          |
+| :---------: | :----: | :-----------------: | :----------------------------: |
+| orientation | string |      画面方向       |   微信小程序、App（3.1.14+）   |
+|    type     | string |      视频格式       |   微信小程序、App（3.1.14+）   |
+|  duration   | number |      视频长度       | 微信小程序、App（3.1.10+）、H5 |
+|    size     | number |  视频大小，单位 kB  | 微信小程序、App（3.1.10+）、H5 |
+|   height    | number |  视频的长，单位 px  | 微信小程序、App（3.1.10+）、H5 |
+|    width    | number |  视频的宽，单位 px  | 微信小程序、App（3.1.10+）、H5 |
+|     fps     | number |      视频帧率       |   微信小程序、App（3.1.14+）   |
+|   bitrate   | number | 视频码率，单位 kbps |   微信小程序、App（3.1.14+）   |
+
+
+
+**res.orientation参数**
+
+|       值       |        说明         |
+| :------------: | :-----------------: |
+|       up       |        默认         |
+|      down      |      180度旋转      |
+|      left      |   逆时针旋转90度    |
+|     right      |   顺时针旋转90度    |
+|  up-mirrored   |  同up，但水平翻转   |
+| down-mirrored  | 同down，但水平翻转  |
+| left-mirrored  | 同left，但垂直翻转  |
+| right-mirrored | 同right，但垂直翻转 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">选择视频查看信息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseVideo({
+					success: (data) => {
+						console.log(data.tempFilePath);
+						uni.getVideoInfo({
+							src:data.tempFilePath,
+							success: (data) => {
+								console.log("视频信息：",data);
+							},
+							fail: (err) => {
+								console.log("错误：",err);
+							}
+						})
+					},
+					fail: (err) => {
+						console.log("错误：", err);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+### uni.createVideoContext(videoId, this)
+
+#### 概述
+
+创建并返回 video 上下文 videoContext 对象。在自定义组件下，第二个参数传入组件实例this，以操作组件内 `<video>` 组件
+
+
+
+#### 参数
+
+**videoContext 对象的方法列表**
+
+|       方法        |   参数   |                             说明                             |            平台差异说明             |
+| :---------------: | :------: | :----------------------------------------------------------: | :---------------------------------: |
+|       play        |    无    |                             播放                             |                                     |
+|       pause       |    无    |                             暂停                             |                                     |
+|       seek        | position |                    跳转到指定位置，单位 s                    |                                     |
+|       stop        |          |                           停止视频                           |             微信小程序              |
+|     sendDanmu     |  danmu   |           发送弹幕，danmu 包含两个属性 text, color           |                                     |
+|   playbackRate    |   rate   | 设置倍速播放，支持的倍率有 0.5/0.8/1.0/1.25/1.5。微信基础库2.6.3 起支持 2.0 倍速 |                                     |
+| requestFullScreen |    无    |     进入全屏，可传入{direction}参数，详见 video 组件文档     | H5和抖音小程序不支持{direction}参数 |
+|  exitFullScreen   |    无    |                           退出全屏                           |                                     |
+|   showStatusBar   |    无    |                显示状态栏，仅在iOS全屏下有效                 |  微信小程序、百度小程序、QQ小程序   |
+|   hideStatusBar   |    无    |                隐藏状态栏，仅在iOS全屏下有效                 |  微信小程序、百度小程序、QQ小程序   |
+
+
+
+
+
+```vue
+<template>
+	<view>
+		<view class="page-body">
+					<view class="page-section">
+						<video id="myVideo" src="/static/test.mp4" @error="videoErrorCallback" :danmu-list="danmuList"
+						    enable-danmu danmu-btn controls>
+		                                </video>
+		
+						<view class="uni-list">
+							<view class="uni-list-cell">
+								<view>
+									<view class="uni-label">弹幕内容</view>
+								</view>
+								<view class="uni-list-cell-db">
+									<input @blur="bindInputBlur" class="uni-input" type="text" placeholder="在此处输入弹幕内容" />
+								</view>
+							</view>
+						</view>
+						<view class="btn-area">
+							<button @tap="bindSendDanmu" class="page-body-button" formType="submit">发送弹幕</button>
+						</view>
+					</view>
+				</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				title: 'video',
+				videoContext: null,
+				src: '/static/test.mp4',
+				inputValue: '',
+				danmuList: [{
+						text: '第 1s 出现的弹幕',
+						color: '#ff0000',
+						time: 1
+					},
+					{
+						text: '第 3s 出现的弹幕',
+						color: '#ff00ff',
+						time: 3
+					}
+				]
+			}
+		},
+		methods: {
+			bindInputBlur: function(e) {
+				this.inputValue = e.target.value
+			},
+			bindButtonTap: function() {
+				var that = this
+				uni.chooseVideo({
+					sourceType: ['album', 'camera'],
+					maxDuration: 60,
+					camera: ['front', 'back'],
+					success: function(res) {
+						this.src = res.tempFilePath
+					}
+				})
+			},
+			bindSendDanmu: function() {
+				this.videoContext.sendDanmu({
+					text: this.inputValue,
+					color: this.getRandomColor()
+				})
+			},
+			videoErrorCallback: function(e) {
+				console.log('视频错误信息:')
+				console.log(e.target.errMsg)
+			},
+			getRandomColor: function() {
+				const rgb = []
+				for (let i = 0; i < 3; ++i) {
+					let color = Math.floor(Math.random() * 256).toString(16)
+					color = color.length == 1 ? '0' + color : color
+					rgb.push(color)
+				}
+				return '#' + rgb.join('')
+			}
+		},
+		onReady: function(res) {
+			this.videoContext = uni.createVideoContext('myVideo',this)
+		},
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+## 文件
+
+### uni.saveFile(OBJECT)
+
