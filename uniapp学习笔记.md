@@ -16592,3 +16592,210 @@ button {
 
 ### uni.saveFile(OBJECT)
 
+#### 概述
+
+保存文件到本地
+
+saveFile 会把临时文件移动，因此调用成功后传入的 tempFilePath 将不可用
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |           √            |    √     |     x      |     √      |
+
+
+
+#### 参数
+
+|    参数名    |   类型   | 必填 |                            说明                             |
+| :----------: | :------: | :--: | :---------------------------------------------------------: |
+| tempFilePath |  String  |  是  |                  需要保存的文件的临时路径                   |
+|   success    | Function |  否  | 返回文件的保存路径，res = {savedFilePath: '文件的保存路径'} |
+|     fail     | Function |  否  |                   接口调用失败的回调函数                    |
+|   complete   | Function |  否  |      接口调用结束的回调函数（调用成功、失败都会执行）       |
+
+
+
+**success 返回参数说明：**
+
+|     参数      |      说明      |
+| :-----------: | :------------: |
+| savedFilePath | 文件的保存路径 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">选择文件保存</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseImage({
+					success: function(res) {
+						var tempFilePaths = res.tempFilePaths;
+						uni.saveFile({
+							tempFilePath: tempFilePaths[0],
+							success: function(res) {
+								var savedFilePath = res.savedFilePath;
+								console.log("保存文件路径：",savedFilePath);
+							},
+							fail: (err) => {
+								console.log("文件保存失败：",err);
+							}
+						});
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+```
+
+
+
+
+
+### uni.getSavedFileList(OBJECT)
+
+获取本地已保存的文件列表
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |           √            |    √     |     x      |     √      |
+
+
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+| success  | Function |  否  |              接口调用成功的回调函数              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+**success 返回参数**
+
+|   参数   |      类型      |     说明     |
+| :------: | :------------: | :----------: |
+|  errMsg  |     String     | 接口调用结果 |
+| fileList | Array\<Object> |   文件列表   |
+
+
+
+
+
+**fileList 中的项目**
+
+|     键     |  类型  |                             说明                             |
+| :--------: | :----: | :----------------------------------------------------------: |
+|  filePath  | String |                        文件的本地路径                        |
+| createTime | Number | 文件的保存时的时间戳，从 `1970/01/01 08:00:00` 到该时刻的秒数。 |
+|    size    | Number |                   文件大小，以字节为单位。                   |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">选择文件保存</button>
+		<button type="primary" @click="button2">查看已保存的文件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseImage({
+					success: function(res) {
+						var tempFilePaths = res.tempFilePaths;
+						uni.saveFile({
+							tempFilePath: tempFilePaths[0],
+							success: function(res) {
+								var savedFilePath = res.savedFilePath;
+								console.log("保存文件路径：",savedFilePath);
+							},
+							fail: (err) => {
+								console.log("文件保存失败：",err);
+							}
+						});
+					}
+				});
+			},
+			button2() {
+				uni.getSavedFileList({
+					success: (data) => {
+						console.log(data.fileList);
+					},
+					fail: (err) => {
+						console.log("获取文件列表失败：",err);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+```
+
+
+
+
+
+![image-20231230193823777](img/uniapp学习笔记/image-20231230193823777.png)
+
+
+
+
+
+![image-20231230193915509](img/uniapp学习笔记/image-20231230193915509.png)
+
+
+
+
+
+
+
+
+
