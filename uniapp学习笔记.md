@@ -16799,3 +16799,351 @@ button{
 
 
 
+
+
+### uni.getSavedFileInfo(OBJECT)
+
+#### 概述
+
+获取本地文件的文件信息。此接口只能用于获取已保存到本地的文件
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |           x            |    √     |     x      |     √      |
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                          说明                           |
+| :------: | :------: | :--: | :-----------------------------------------------------: |
+| filePath |  String  |  是  |                        文件路径                         |
+| success  | Function |  否  | 接口调用成功的回调函数，返回结果见 success 返回参数说明 |
+|   fail   | Function |  否  |                 接口调用失败的回调函数                  |
+| complete | Function |  否  |    接口调用结束的回调函数（调用成功、失败都会执行）     |
+
+
+
+
+
+**success 返回参数**
+
+|    参数    |  类型  |                             说明                             |
+| :--------: | :----: | :----------------------------------------------------------: |
+|   errMsg   | String |                         接口调用结果                         |
+|    size    | Number |                   文件大小，以字节为单位。                   |
+| createTime | Number | 文件保存时的时间戳，从 `1970/01/01 08:00:00` 到该时刻的秒数。 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">选择文件保存</button>
+		<button type="primary" @click="button2">查看已保存的文件</button>
+		<text>文件列表：</text>
+		<view v-for="file in fileList" :key="file.filePath">
+			<button type="warn" @click="button3(file.filePath)">{{file.filePath}}</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				fileList:[],
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseImage({
+					success: function(res) {
+						var tempFilePaths = res.tempFilePaths;
+						uni.saveFile({
+							tempFilePath: tempFilePaths[0],
+							success: function(res) {
+								var savedFilePath = res.savedFilePath;
+								console.log("保存文件路径：",savedFilePath);
+							},
+							fail: (err) => {
+								console.log("文件保存失败：",err);
+							}
+						});
+					}
+				});
+			},
+			button2() {
+				uni.getSavedFileList({
+					success: (data) => {
+						console.log(data.fileList);
+						this.fileList=data.fileList;
+					},
+					fail: (err) => {
+						console.log("获取文件列表失败：",err);
+					}
+				})
+			},
+			button3(path)
+			{
+				console.log(path);
+				uni.getSavedFileInfo({
+					filePath:path,
+					success: (data) => {
+						console.log(data);
+						uni.showModal({
+							showCancel:false,
+							title:'文件信息',
+							content:'文件信息：'+JSON.stringify(data)
+						})
+					},
+					fail(err) {
+						console.log(err);
+						uni.showModal({
+							title:'错误',
+							content:'查看文件信息失败!'
+						})
+					}
+				})
+			}
+		},
+		onShow() {
+			uni.getSavedFileList({
+				success: (data) => {
+					console.log(data.fileList);
+					this.fileList=data.fileList;
+				},
+				fail: (err) => {
+					uni.showModal({
+						title:'错误',
+						content:'读取文件列表失败!'
+					})
+				}
+			})
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+text{
+	color: coral;
+	font-size: 1.5em;
+}
+</style>
+```
+
+
+
+
+
+![image-20231230200158319](img/uniapp学习笔记/image-20231230200158319.png)
+
+
+
+
+
+![image-20231230200209232](img/uniapp学习笔记/image-20231230200209232.png)
+
+
+
+![image-20231230200218910](img/uniapp学习笔记/image-20231230200218910.png)
+
+
+
+
+
+
+
+### uni.removeSavedFile(OBJECT)
+
+#### 概述
+
+删除本地存储的文件
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |           √            |    √     |     x      |     √      |
+
+
+
+
+
+#### 参数
+
+|  参数名  |   类型   | 必填 |                       说明                       |
+| :------: | :------: | :--: | :----------------------------------------------: |
+| filePath |  String  |  是  |                需要删除的文件路径                |
+| success  | Function |  否  |              接口调用成功的回调函数              |
+|   fail   | Function |  否  |              接口调用失败的回调函数              |
+| complete | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">选择文件保存</button>
+		<button type="primary" @click="button2">查看已保存的文件</button>
+		<text>文件列表：</text>
+		<view v-for="file in fileList" :key="file.filePath">
+			<button type="warn" @click="button3(file.filePath)">删除：{{file.filePath}}</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				fileList:[],
+			}
+		},
+		methods: {
+			button1() {
+				uni.chooseImage({
+					success: function(res) {
+						var tempFilePaths = res.tempFilePaths;
+						uni.saveFile({
+							tempFilePath: tempFilePaths[0],
+							success: function(res) {
+								var savedFilePath = res.savedFilePath;
+								console.log("保存文件路径：",savedFilePath);
+							},
+							fail: (err) => {
+								console.log("文件保存失败：",err);
+							}
+						});
+					}
+				});
+			},
+			button2() {
+				uni.getSavedFileList({
+					success: (data) => {
+						console.log(data.fileList);
+						this.fileList=data.fileList;
+					},
+					fail: (err) => {
+						console.log("获取文件列表失败：",err);
+					}
+				})
+			},
+			button3(path)
+			{
+				console.log(path);
+				uni.getSavedFileInfo({
+					filePath:path,
+					success: (data) => {
+						console.log(data);
+						uni.showModal({
+							title:'删除提示',
+							content:'是否删除以下文件：'+JSON.stringify(data),
+							success: (res) => {
+								if(res.confirm)
+								{
+									uni.removeSavedFile({
+										filePath:path,
+										success: (res) => {
+											uni.showModal({
+												showCancel:false,
+												title:'提示',
+												content:'删除成功!'
+											})
+											this.button2();
+										},
+										fail: (err) => {
+											uni.showModal({
+												showCancel:false,
+												title:'错误',
+												content:'文件删除失败!'
+											})
+										}
+									})
+								}
+							}
+						})
+					},
+					fail(err) {
+						console.log(err);
+						uni.showModal({
+							title:'错误',
+							content:'查看文件信息失败!'
+						})
+					}
+				})
+			}
+		},
+		onShow() {
+			uni.getSavedFileList({
+				success: (data) => {
+					console.log(data.fileList);
+					this.fileList=data.fileList;
+				},
+				fail: (err) => {
+					uni.showModal({
+						title:'错误',
+						content:'读取文件列表失败!'
+					})
+				}
+			})
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+text{
+	color: coral;
+	font-size: 1.5em;
+}
+</style>
+```
+
+
+
+
+
+![image-20231230201136069](img/uniapp学习笔记/image-20231230201136069.png)
+
+
+
+
+
+![image-20231230201155283](img/uniapp学习笔记/image-20231230201155283.png)
+
+
+
+![image-20231230201203438](img/uniapp学习笔记/image-20231230201203438.png)
+
+
+
+![image-20231230201212614](img/uniapp学习笔记/image-20231230201212614.png)
+
+
+
+
+
+
+
+
+
+
+
+### uni.openDocument(OBJECT)
+
