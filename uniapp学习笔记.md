@@ -17147,3 +17147,276 @@ text{
 
 ### uni.openDocument(OBJECT)
 
+#### 概述
+
+新开页面打开文档，支持格式：doc, xls, ppt, pdf, docx, xlsx, pptx
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |           √            |    √     |     x      |     √      |
+
+
+
+| 平台        | 打开方式                                   |
+| :---------- | :----------------------------------------- |
+| 小程序      | 在小程序的入口应用内打开                   |
+| App iOS     | 在当前应用内打开                           |
+| App Android | 调用系统相关应用打开，无相关应用则不能打开 |
+| H5          | 使用浏览器打开，当前浏览器不支持则不能打开 |
+
+
+
+#### 参数
+
+|  参数名  |  类型   |               必填               |                             说明                             |             平台差异说明             |
+| :------: | :-----: | :------------------------------: | :----------------------------------------------------------: | :----------------------------------: |
+| filePath | String  |                是                |                文件路径，可通过 downFile 获得                |                                      |
+| fileType | String  | 支付宝小程序必填，其他平台非必填 | 文件类型，指定文件类型打开文件，有效值 doc, xls, ppt, pdf, docx, xlsx, pptx，支付宝小程序仅支持pdf | 微信小程序、支付宝小程序、京东小程序 |
+| showMenu | Boolean |                否                |                右上角是否有可以转发分享的功能                |              微信小程序              |
+| success  | String  |                否                |                    接口调用成功的回调函数                    |                                      |
+|   fail   | String  |                否                |                    接口调用失败的回调函数                    |        微信小程序、京东小程序        |
+| complete | String  |                否                |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                      |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="openPdf2()">打开pdf文件</button>
+		<button type="primary" @click="openDocx()">打开docx文件</button>
+		<button type="primary" @click="openXlsx()">打开xlsx文件</button>
+		<button type="primary" @click="openPpt()">打开ppt文件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				baseUrl:'http://localhost:8080/',
+			}
+		},
+		methods: {
+			openPdf()
+			{
+				uni.showLoading({})
+				uni.downloadFile({
+					url: this.baseUrl+ '/static/pdf',
+					//url: 'https://example.com/somefile.pdf',
+					success: (data) => {
+						uni.hideLoading();
+						console.log("打开pdf");
+						var filePath = data.tempFilePath;
+						uni.openDocument({
+							filePath: filePath,
+							fileType:'pdf',
+							showMenu: true,
+							success: (res) => {
+								console.log("打开成功");
+							},
+							fail: (err) => {
+								console.log(err);
+								uni.showModal({
+									title:'提示',
+									content:'文件打开失败',
+									showCancel:false
+								})
+							}
+						})
+					},
+					fail: (err) => {
+						uni.hideLoading();
+						console.log(err);
+						uni.showModal({
+							title:'提示',
+							content:'文件下载失败',
+							showCancel:false
+						})
+					}
+				})
+				
+			},
+			openPdf2()
+			{
+				uni.showLoading({})
+				uni.downloadFile({
+					url: this.baseUrl+ '/static/pdf',
+					//url: 'https://example.com/somefile.pdf',
+					success: (data) => {
+						uni.saveFile({
+							tempFilePath:data.tempFilePath,
+							success: (res) => {
+								uni.hideLoading();
+								console.log("打开pdf");
+								var filePath = res.savedFilePath;
+								uni.openDocument({
+									filePath: filePath,
+									fileType:'pdf',
+									showMenu: true,
+									success: (res) => {
+										console.log("打开成功");
+									},
+									fail: (err) => {
+										console.log(err);
+										uni.showModal({
+											title:'提示',
+											content:'文件打开失败',
+											showCancel:false
+										})
+									}
+								})
+							},
+							fail: (err) => {
+								uni.hideLoading();
+								uni.showModal({
+									title:'提示',
+									content:'文件保存失败',
+									showCancel:false
+								})
+							}
+						})
+					},
+					fail: (err) => {
+						uni.hideLoading();
+						console.log(err);
+						uni.showModal({
+							title:'提示',
+							content:'文件下载失败',
+							showCancel:false
+						})
+					}
+				})
+			},
+			openDocx()
+			{
+				uni.showLoading({})
+				uni.downloadFile({
+					url: this.baseUrl+ '/static/docx',
+					success: (data) => {
+						uni.hideLoading();
+						console.log("打开docx");
+						uni.openDocument({
+							filePath: data.tempFilePath,
+							fileType:'docx',
+							showMenu: true,
+							success: (res) => {
+								console.log("打开成功");
+							},
+							fail: (err) => {
+								console.log(err);
+								uni.showModal({
+									title:'提示',
+									content:'文件打开失败',
+									showCancel:false
+								})
+							}
+						})
+					},
+					fail: (err) => {
+						uni.hideLoading();
+						console.log(err);
+						uni.showModal({
+							title:'提示',
+							content:'文件下载失败',
+							showCancel:false
+						})
+					}
+				})
+				
+			},
+			openXlsx()
+			{
+				uni.showLoading({})
+				uni.downloadFile({
+					url: this.baseUrl+ '/static/xlsx',
+					success: (data) => {
+						uni.hideLoading();
+						console.log("打开xlsx");
+						uni.openDocument({
+							filePath: data.tempFilePath,
+							fileType:'xlsx',
+							showMenu: true,
+							success: (res) => {
+								console.log("打开成功");
+							},
+							fail: (err) => {
+								console.log(err);
+								uni.showModal({
+									title:'提示',
+									content:'文件打开失败',
+									showCancel:false
+								})
+							}
+						})
+					},
+					fail: (err) => {
+						uni.hideLoading();
+						console.log(err);
+						uni.showModal({
+							title:'提示',
+							content:'文件下载失败',
+							showCancel:false
+						})
+					}
+				})
+				
+			},
+			openPpt()
+			{
+				uni.showLoading({})
+				uni.downloadFile({
+					url: this.baseUrl+ '/static/ppt',
+					success: (data) => {
+						uni.hideLoading();
+						console.log("打开ppt");
+						uni.openDocument({
+							filePath: data.tempFilePath,
+							fileType:'ppt',
+							showMenu: true,
+							success: (res) => {
+								console.log("打开成功");
+							},
+							fail: (err) => {
+								console.log(err);
+								uni.showModal({
+									title:'提示',
+									content:'文件打开失败',
+									showCancel:false
+								})
+							}
+						})
+					},
+					fail: (err) => {
+						uni.hideLoading();
+						console.log(err);
+						uni.showModal({
+							title:'提示',
+							content:'文件下载失败',
+							showCancel:false
+						})
+					}
+				})
+				
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
