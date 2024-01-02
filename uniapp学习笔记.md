@@ -17420,3 +17420,221 @@ button{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 键盘
+
+### uni.hideKeyboard()
+
+#### 概述
+
+隐藏软键盘
+
+隐藏已经显示的软键盘，如果软键盘没有显示则不做任何操作
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<input type="text"/>
+		<button type="primary" @click="button1">隐藏软键盘</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.hideKeyboard();
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+### uni.onKeyboardHeightChange(CALLBACK)
+
+#### 概述
+
+监听键盘高度变化
+
+
+
+|       App        |  H5  | 微信小程序 |   支付宝小程序   | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--------------: | :--: | :--------: | :--------------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+| HBuilderX 2.2.3+ |  x   | 基础库2.7+ | HBuilderX 3.6.8+ |     x      |           x            |    √     |     √      |     √      |
+
+
+
+#### 参数
+
+| 参数   | 类型   | 说明     |
+| :----- | :----- | :------- |
+| height | Number | 键盘高度 |
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<input type="text"/>
+		<button type="primary" @click="button1">隐藏软键盘</button>
+		<button type="primary" @click="button2">监听键盘高度变化</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.hideKeyboard();
+			},
+			button2()
+			{
+				console.log("监听键盘高度变化");
+				uni.onKeyboardHeightChange(function(res)
+				{
+					console.log("键盘高度变化：",res.height);
+				})
+			}
+		},
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+### uni.offKeyboardHeightChange(CALLBACK)
+
+#### 概述
+
+取消监听键盘高度变化事件
+
+参数为onKeyboardHeightChange 传入的监听函数。不传此参数则移除所有监听函数
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<input type="text"/>
+		<button type="primary" @click="button1">隐藏软键盘</button>
+		<button type="primary" @click="button2">监听键盘高度变化</button>
+		<button type="primary" @click="button3">取消监听键盘高度变化</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				f:undefined,
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.hideKeyboard();
+			},
+			button2()
+			{
+				if(!this.f)
+				{
+					console.log("监听键盘高度变化");
+					this.f=function(res)
+					{
+						console.log("键盘高度变化：",res.height);
+					}
+					uni.onKeyboardHeightChange(this.f)
+				}
+			},
+			button3()
+			{
+				if(this.f)
+				{
+					console.log("取消监听键盘高度变化");
+					uni.offKeyboardHeightChange(this.f);
+					this.f=undefined;
+				}
+			}
+		},
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+![image-20240102143131500](img/uniapp学习笔记/image-20240102143131500.png)
+
+
+
+
+
+
+
