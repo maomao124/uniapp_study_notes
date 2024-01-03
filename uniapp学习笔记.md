@@ -17638,3 +17638,473 @@ button{
 
 
 
+
+
+
+
+## 设备-系统
+
+### uni.getSystemInfo(OBJECT)
+
+#### 概述
+
+异步获取系统信息
+
+参数[点击进入](https://uniapp.dcloud.net.cn/api/system/info.html#success-返回参数说明)
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">异步获取系统信息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.getSystemInfo({
+					success: (data) => {
+						console.log(data);
+					},
+					fail: (err) => {
+						console.log("获取失败");
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+```json
+{
+	"SDKVersion": "",
+	"appId": "",
+	"appLanguage": "zh-Hans",
+	"appName": "uniapp-device-system",
+	"appVersion": "1.0.0",
+	"appVersionCode": "100",
+	"browserName": "safari",
+	"browserVersion": "11.0",
+	"deviceId": "1704179700253440942",
+	"deviceModel": "iPhone",
+	"deviceOrientation": "portrait",
+	"devicePixelRatio": 2,
+	"deviceType": "phone",
+	"errMsg": "getSystemInfo:ok",
+	"hostLanguage": "zh-CN",
+	"hostName": "safari",
+	"hostTheme": "light",
+	"hostVersion": "11.0",
+	"language": "zh-CN",
+	"model": "iPhone",
+	"osName": "ios",
+	"osVersion": "11.0",
+	"pixelRatio": 2,
+	"platform": "ios",
+	"safeArea": {
+		"bottom": 667,
+		"height": 667,
+		"left": 0,
+		"right": 375,
+		"top": 0,
+		"width": 375
+	},
+	"safeAreaInsets": {
+		"bottom": 0,
+		"left": 0,
+		"right": 0,
+		"top": 0
+	},
+	"screenHeight": 667,
+	"screenWidth": 375,
+	"statusBarHeight": 0,
+	"system": "iOS 11.0",
+	"ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1 HBuilderX",
+	"uniCompileVersion": "3.99",
+	"uniPlatform": "web",
+	"uniRuntimeVersion": "3.99",
+	"version": "",
+	"windowBottom": 0,
+	"windowHeight": 623,
+	"windowTop": 44,
+	"windowWidth": 375
+}
+```
+
+```json
+{
+	"SDKVersion": "",
+	"appId": "",
+	"appLanguage": "zh-Hans",
+	"appName": "uniapp-device-system",
+	"appVersion": "1.0.0",
+	"appVersionCode": "100",
+	"browserName": "chrome",
+	"browserVersion": "71.0.3578.80",
+	"deviceId": "1704179700253440942",
+	"deviceModel": "Pixel 2",
+	"deviceOrientation": "portrait",
+	"devicePixelRatio": 2.625,
+	"deviceType": "phone",
+	"errMsg": "getSystemInfo:ok",
+	"hostLanguage": "zh-CN",
+	"hostName": "chrome",
+	"hostTheme": "light",
+	"hostVersion": "71.0.3578.80",
+	"language": "zh-CN",
+	"model": "Pixel 2",
+	"osName": "android",
+	"osVersion": "8.0",
+	"pixelRatio": 2.625,
+	"platform": "android",
+	"safeArea": {
+		"bottom": 731,
+		"height": 731,
+		"left": 0,
+		"right": 411,
+		"top": 0,
+		"width": 411
+	},
+	"safeAreaInsets": {
+		"bottom": 0,
+		"left": 0,
+		"right": 0,
+		"top": 0
+	},
+	"screenHeight": 731,
+	"screenWidth": 411,
+	"statusBarHeight": 0,
+	"system": "Android 8.0",
+	"ua": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Mobile Safari/537.36 HBuilderX",
+	"uniCompileVersion": "3.99",
+	"uniPlatform": "web",
+	"uniRuntimeVersion": "3.99",
+	"version": "",
+	"windowBottom": 0,
+	"windowHeight": 687,
+	"windowTop": 44,
+	"windowWidth": 411
+}
+```
+
+
+
+
+
+
+
+### uni.getSystemInfoSync()
+
+#### 概述
+
+获取系统信息的同步接口
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">异步获取系统信息</button>
+		<button type="primary" @click="button2">同步获取系统信息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.getSystemInfo({
+					success: (data) => {
+						console.log(data);
+					},
+					fail: (err) => {
+						console.log("获取失败");
+					}
+				})
+			},
+			button2()
+			{
+				const info= uni.getSystemInfoSync();
+				console.log(info);
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.getDeviceInfo()
+
+获取设备基础信息
+
+
+
+| App           | H5            | 微信小程序    | 支付宝小程序 | 抖音小程序 | 快手小程序 | QQ小程序 | 百度小程序 | 京东小程序 | 钉钉小程序 | 飞书小程序 |
+| :------------ | :------------ | :------------ | :----------- | :--------- | :--------- | :------- | :--------- | :--------- | :--------- | :--------- |
+| √ `(3.4.13+)` | √ `(3.4.13+)` | √ `(2.20.1+)` | x            | x          | x          | x        | x          | x          | x          | x          |
+
+
+
+
+
+#### 参数
+
+| 参数名            |    类型    |                             说明                             |                         平台差异说明                         |
+| :---------------- | :--------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| deviceBrand       |   string   |               设备品牌。如：`apple`、`huawei`                |                         `H5 不支持`                          |
+| deviceId          |   string   | 设备 id 。由 uni-app 框架生成并存储，清空 Storage 会导致改变 |                                                              |
+| deviceModel       |   string   |                           设备型号                           |                                                              |
+| deviceType        |   string   |                 设备类型`phone`、`pad`、`pc`                 |                                                              |
+| deviceOrientation |   string   |          设备方向 `竖屏 portrait`、`横屏 landscape`          | `App、H5`。微信小程序请使用 `(getSystemInfo Api)[/api/system/info.html]` 获取 |
+| devicePixelRatio  |   string   |                          设备像素比                          | `App、H5`。微信小程序请使用 `(getSystemInfo Api)[/api/system/info.html]` 获取 |
+| system            |   string   |                        操作系统及版本                        |                                                              |
+| platform          | 客户端平台 |                                                              |                                                              |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">异步获取系统信息</button>
+		<button type="primary" @click="button2">同步获取系统信息</button>
+		<button type="primary" @click="button3">获取设备基础信息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.getSystemInfo({
+					success: (data) => {
+						console.log(data);
+					},
+					fail: (err) => {
+						console.log("获取失败");
+					}
+				})
+			},
+			button2()
+			{
+				const info= uni.getSystemInfoSync();
+				console.log(info);
+			},
+			button3()
+			{
+				const info= uni.getDeviceInfo();
+				console.log(info);
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+```json
+{
+	"deviceId": "1704179700253440942",
+	"deviceModel": "iPhone",
+	"deviceOrientation": "portrait",
+	"devicePixelRatio": 3,
+	"deviceType": "phone",
+	"model": "iPhone",
+	"platform": "ios",
+	"system": "iOS 11.0"
+}
+```
+
+
+
+
+
+
+
+### uni.getWindowInfo()
+
+#### 概述
+
+获取窗口信息
+
+
+
+| App           | H5            | 微信小程序    | 支付宝小程序 | 抖音小程序 | 快手小程序 | QQ小程序 | 百度小程序 | 京东小程序 | 钉钉小程序 | 飞书小程序 |
+| :------------ | :------------ | :------------ | :----------- | :--------- | :--------- | :------- | :--------- | :--------- | :--------- | :--------- |
+| √ `(3.4.13+)` | √ `(3.4.13+)` | √ `(2.20.1+)` | x            | x          | x          | x        | x          | x          | x          | x          |
+
+
+
+#### 参数
+
+|     参数名      |  类型  |               说明               | 平台差异说明 |
+| :-------------: | :----: | :------------------------------: | :----------- |
+|   pixelRatio    | number |            设备像素比            |              |
+|   screenWidth   | number |             屏幕宽度             |              |
+|  screenHeight   | number |             屏幕高度             |              |
+|   windowWidth   | number |          可使用窗口宽度          |              |
+|  windowHeight   | number |          可使用窗口高度          |              |
+|    windowTop    | number |       可使用窗口的顶部位置       |              |
+|  windowBottom   | number |       可使用窗口的底部位置       |              |
+| statusBarHeight | number |         手机状态栏的高度         |              |
+|    screenTop    | number |        窗口上边缘的 y 值         |              |
+|    safeArea     | object |     在竖屏正方向下的安全区域     |              |
+| safeAreaInsets  | object | 在竖屏正方向下的安全区域插入位置 |              |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">异步获取系统信息</button>
+		<button type="primary" @click="button2">同步获取系统信息</button>
+		<button type="primary" @click="button3">获取设备基础信息</button>
+		<button type="primary" @click="button4">获取窗口信息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.getSystemInfo({
+					success: (data) => {
+						console.log(data);
+					},
+					fail: (err) => {
+						console.log("获取失败");
+					}
+				})
+			},
+			button2()
+			{
+				const info= uni.getSystemInfoSync();
+				console.log(info);
+			},
+			button3()
+			{
+				const info= uni.getDeviceInfo();
+				console.log(info);
+			},
+			button4()
+			{
+				const info= uni.getWindowInfo();
+				console.log(info);
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+```json
+{
+	"pixelRatio": 3,
+	"safeArea": {
+		"bottom": 896,
+		"height": 896,
+		"left": 0,
+		"right": 414,
+		"top": 0,
+		"width": 414
+	},
+	"safeAreaInsets": {
+		"bottom": 0,
+		"left": 0,
+		"right": 0,
+		"top": 0
+	},
+	"screenHeight": 896,
+	"screenTop": 44,
+	"screenWidth": 414,
+	"statusBarHeight": 0,
+	"windowBottom": 0,
+	"windowHeight": 852,
+	"windowTop": 44,
+	"windowWidth": 414
+}
+```
+
+
+
+
+
+
+
