@@ -18108,3 +18108,414 @@ button{
 
 
 
+### uni.getAppBaseInfo()
+
+#### 概述
+
+获取APP 基础信息
+
+
+
+| App           | H5            | 微信小程序    | 支付宝小程序 | 抖音小程序 | 快手小程序 | QQ小程序 | 百度小程序 | 京东小程序 | 钉钉小程序 | 飞书小程序 |
+| :------------ | :------------ | :------------ | :----------- | :--------- | :--------- | :------- | :--------- | :--------- | :--------- | :--------- |
+| √ `(3.4.13+)` | √ `(3.4.13+)` | √ `(2.20.1+)` | x            | x          | x          | x        | x          | x          | x          | x          |
+
+
+
+#### 参数
+
+| 参数名              |  类型  |                             说明                             |            平台差异说明             |
+| :------------------ | :----: | :----------------------------------------------------------: | :---------------------------------: |
+| appId               | string |        `manifest.json` 中应用appid，即DCloud appid。         |                                     |
+| appName             | string |                  `manifest.json` 中应用名称                  |                                     |
+| appVersion          | string |               `manifest.json` 中应用版本名称。               |                                     |
+| appVersionCode      | string |               `manifest.json` 中应用版本名号。               |                                     |
+| appLanguage         | string |     应用设置的语言`en`、`zh-Hans`、`zh-Hant`、`fr`、`es`     |             `App`、`H5`             |
+| appWgtVersion       | string |                 应用资源（wgt）的版本名称。                  |             App 3.5.5+              |
+| hostLanguage        | string |                        小程序宿主语言                        | `App 仅 UNIMPSDK 支持`、`H5 不支持` |
+| hostVersion         | string |             App、小程序宿主版本。如：微信版本号              | `App 仅 UNIMPSDK 支持`、`H5 不支持` |
+| hostName            | string |                        小程序宿主名称                        | `App 仅 UNIMPSDK 支持`、`H5 不支持` |
+| hostPackageName     | string |                        小程序宿主包名                        |         `仅 UNIMPSDK 支持`          |
+| hostSDKVersion      | string |           uni小程序SDK版本、小程序客户端基础库版本           | `App 仅 UNIMPSDK 支持`、`H5 不支持` |
+| hostTheme           | string | 系统当前主题，取值为light或dark。微信小程序全局配置"darkmode":true时才能获取，否则为 undefined （不支持小游戏） | `App 仅 UNIMPSDK 支持`、`H5 不支持` |
+| hostFontSizeSetting | string | 用户字体大小设置。以“我-设置-通用-字体大小”中的设置为准，单位：px |          `仅 小程序 支持`           |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">异步获取系统信息</button>
+		<button type="primary" @click="button2">同步获取系统信息</button>
+		<button type="primary" @click="button3">获取设备基础信息</button>
+		<button type="primary" @click="button4">获取窗口信息</button>
+		<button type="primary" @click="button5">获取APP基础信息</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.getSystemInfo({
+					success: (data) => {
+						console.log(data);
+					},
+					fail: (err) => {
+						console.log("获取失败");
+					}
+				})
+			},
+			button2()
+			{
+				const info= uni.getSystemInfoSync();
+				console.log(info);
+			},
+			button3()
+			{
+				const info= uni.getDeviceInfo();
+				console.log(info);
+			},
+			button4()
+			{
+				const info= uni.getWindowInfo();
+				console.log(info);
+			},
+			button5()
+			{
+				const info= uni.getAppBaseInfo();
+				console.log(info);
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+```json
+{
+	"SDKVersion": "",
+	"appId": "",
+	"appLanguage": "zh-Hans",
+	"appName": "uniapp-device-system",
+	"appVersion": "1.0.0",
+	"appVersionCode": "100",
+	"enableDebug": false,
+	"hostLanguage": "zh-CN",
+	"hostName": "chrome",
+	"hostTheme": "light",
+	"hostVersion": "90.0.4430.212",
+	"language": "zh-CN",
+	"theme": "light",
+	"version": ""
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+## 设备-网络状态
+
+### uni.getNetworkType(OBJECT)
+
+#### 概述
+
+获取网络类型
+
+
+
+#### 参数
+
+| 参数名   | 类型     | 必填 | 说明                                             |
+| :------- | :------- | :--- | :----------------------------------------------- |
+| success  | Function | 是   | 接口调用成功，返回网络类型 networkType           |
+| fail     | Function | 否   | 接口调用失败的回调函数                           |
+| complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+**success 返回参数**
+
+| 参数        | 说明     |
+| :---------- | :------- |
+| networkType | 网络类型 |
+
+
+
+**networkType 有效值**
+
+| 值       | 说明                       | 平台差异说明 |
+| :------- | :------------------------- | :----------- |
+| wifi     | wifi 网络                  |              |
+| 2g       | 2g 网络                    |              |
+| 3g       | 3g 网络                    |              |
+| 4g       | 4g 网络                    |              |
+| 5g       | 5g 网络                    |              |
+| ethernet | 有线网络                   | App          |
+| unknown  | Android 下不常见的网络类型 |              |
+| none     | 无网络                     |              |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">获取网络类型</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.getNetworkType({
+					success: (res) => {
+						console.log(res);
+						console.log(res.networkType);
+						uni.showModal({
+							title:'提示',
+							content:'当前网络类型为：'+res.networkType,
+							showCancel:false,
+						})
+					},
+					fail: (err) => {
+						console.log('获取网络类型失败');
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.onNetworkStatusChange(CALLBACK)
+
+#### 概述
+
+监听网络状态变化
+
+
+
+| 参数        | 类型    | 说明               | 平台差异说明     |
+| :---------- | :------ | :----------------- | :--------------- |
+| isConnected | Boolean | 当前是否有网络连接 | 抖音小程序不支持 |
+| networkType | String  | 网络类型           |                  |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">获取网络类型</button>
+		<button type="primary" @click="button2">监听网络状态变化</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.getNetworkType({
+					success: (res) => {
+						console.log(res);
+						console.log(res.networkType);
+						uni.showModal({
+							title:'提示',
+							content:'当前网络类型为：'+res.networkType,
+							showCancel:false,
+						})
+					},
+					fail: (err) => {
+						console.log('获取网络类型失败');
+					}
+				})
+			},
+			button2()
+			{
+				console.log("监听网络状态变化");
+				uni.onNetworkStatusChange(function(res)
+				{
+					console.log(res.isConnected);
+					console.log(res.networkType);
+					uni.showModal({
+						title:'提示',
+						content:'监听到当前网络类型为：'+ res.networkType+',连接状态：'+res.isConnected,
+						showCancel:false,
+					})
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.offNetworkStatusChange(CALLBACK)
+
+#### 概述
+
+取消监听网络状态变化
+
+`CALLBACK`必须为调用`uni.onNetworkStatusChange`时传入的`CALLBACK`
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">获取网络类型</button>
+		<button type="primary" @click="button2">监听网络状态变化</button>
+		<button type="primary" @click="button3">取消监听网络状态变化</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				f:undefined
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.getNetworkType({
+					success: (res) => {
+						console.log(res);
+						console.log(res.networkType);
+						uni.showModal({
+							title:'提示',
+							content:'当前网络类型为：'+res.networkType,
+							showCancel:false,
+						})
+					},
+					fail: (err) => {
+						console.log('获取网络类型失败');
+					}
+				})
+			},
+			button2()
+			{
+				if(!this.f)
+				{
+					console.log("监听网络状态变化");
+					this.f=function(res)
+					{
+						console.log(res.isConnected);
+						console.log(res.networkType);
+						uni.showModal({
+							title:'提示',
+							content:'监听到当前网络类型为：'+ res.networkType+',连接状态：'+res.isConnected,
+							showCancel:false,
+						})
+					}
+					uni.onNetworkStatusChange(this.f)
+				}
+			},
+			button3()
+			{
+				if(this.f)
+				{
+					console.log("取消监听网络状态变化");
+					uni.offNetworkStatusChange(this.f);
+					this.f=undefined;
+				}
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+
+
+## 设备-加速度计
+
+### uni.onAccelerometerChange(CALLBACK)
+
