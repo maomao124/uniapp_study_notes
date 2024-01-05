@@ -18519,3 +18519,421 @@ button{
 
 ### uni.onAccelerometerChange(CALLBACK)
 
+#### 概述
+
+监听加速度数据，频率：5次/秒，接口调用后会自动开始监听
+
+
+
+#### 参数
+
+| 参数 | 类型   | 说明 |
+| :--- | :----- | :--- |
+| x    | Number | X 轴 |
+| y    | Number | Y 轴 |
+| z    | Number | Z 轴 |
+
+
+
+
+
+H5端获取加速度信息，需要部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议
+
+
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>x:{{x}}</h2>
+		<h2>y:{{y}}</h2>
+		<h2>z:{{z}}</h2>
+		<button type="primary" @click="button1">监听加速度</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				x:0,
+				y:0,
+				z:0,
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.onAccelerometerChange(function(res)
+				{
+					this.x=res.x;
+					this.y=res.y;
+					this.z=res.z;
+					console.log(this.x,this.y,this.z);
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+
+
+### uni.offAccelerometerChange(CALLBACK)
+
+#### 概述
+
+取消监听加速度数据
+
+参数为onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>x:{{x}}</h2>
+		<h2>y:{{y}}</h2>
+		<h2>z:{{z}}</h2>
+		<button type="primary" @click="button1">监听加速度</button>
+		<button type="primary" @click="button2">取消监听加速度</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				x:0,
+				y:0,
+				z:0,
+				f:undefined,
+			}
+		},
+		methods: {
+			button1()
+			{
+				if(!this.f)
+				{
+					this.f =function(res)
+					{
+						this.x=res.x;
+						this.y=res.y;
+						this.z=res.z;
+						console.log(this.x,this.y,this.z);
+					}
+					uni.onAccelerometerChange(this.f)
+				}
+			},
+			button2()
+			{
+				if(this.f)
+				{
+					uni.offAccelerometerChange(this.f);
+					this.f=undefined;
+				}
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+### uni.startAccelerometer(OBJECT)
+
+#### 概述
+
+开始监听加速度数据
+
+
+
+#### 参数
+
+| 参数名   | 类型     | 默认   | 必填 | 说明                                             | 平台差异说明                                             |
+| :------- | :------- | :----- | :--- | :----------------------------------------------- | :------------------------------------------------------- |
+| interval | String   | normal | 否   | 监听加速度数据回调函数的执行频率                 | 微信小程序、百度小程序、QQ小程序、快手小程序、京东小程序 |
+| success  | Function |        | 否   | 接口调用成功的回调                               |                                                          |
+| fail     | Function |        | 否   | 接口调用失败的回调函数                           |                                                          |
+| complete | Function |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |                                                          |
+
+
+
+`interval` 的合法值
+
+|   值   |                   说明                    |
+| :----: | :---------------------------------------: |
+|  game  | 适用于更新游戏的回调频率，在 20ms/次 左右 |
+|   ui   | 适用于更新 UI 的回调频率，在 60ms/次 左右 |
+| normal |     普通的回调频率，在 200ms/次 左右      |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>x:{{x}}</h2>
+		<h2>y:{{y}}</h2>
+		<h2>z:{{z}}</h2>
+		<button type="primary" @click="button1">注册监听加速度回调</button>
+		<button type="primary" @click="button2">取消注册监听加速度回调</button>
+		<button type="primary" @click="button3">开始监听加速度</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				x:0,
+				y:0,
+				z:0,
+				f:undefined,
+			}
+		},
+		methods: {
+			button1()
+			{
+				if(!this.f)
+				{
+					this.f =function(res)
+					{
+						this.x=res.x;
+						this.y=res.y;
+						this.z=res.z;
+						console.log(this.x,this.y,this.z);
+					}
+					uni.onAccelerometerChange(this.f)
+				}
+			},
+			button2()
+			{
+				if(this.f)
+				{
+					uni.offAccelerometerChange(this.f);
+					this.f=undefined;
+				}
+			},
+			button3()
+			{
+				uni.startAccelerometer({
+					interval:'normal',
+					success: () => {
+						uni.showToast({
+							icon:'success',
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'失败',
+							icon:'fail',
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.stopAccelerometer(OBJECT)
+
+#### 概述
+
+停止监听加速度数据
+
+
+
+| 参数名   | 类型     | 必填 | 说明                                             |
+| :------- | :------- | :--- | :----------------------------------------------- |
+| success  | Function | 否   | 接口调用成功的回调                               |
+| fail     | Function | 否   | 接口调用失败的回调函数                           |
+| complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>x:{{x}}</h2>
+		<h2>y:{{y}}</h2>
+		<h2>z:{{z}}</h2>
+		<button type="primary" @click="button1">注册监听加速度回调</button>
+		<button type="primary" @click="button2">取消注册监听加速度回调</button>
+		<button type="primary" @click="button3">开始监听加速度</button>
+		<button type="primary" @click="button4">停止监听加速度</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				x:0.0,
+				y:0.0,
+				z:0.0,
+				f:undefined,
+			}
+		},
+		methods: {
+			button1()
+			{
+				if(!this.f)
+				{
+					const that = this;
+					this.f = function(res)
+					{
+						console.log(res);
+						console.log(res.x,res.y,res.z);
+						that.x=res.x;
+						that.y=res.y;
+						that.z=res.z;
+					}
+					uni.onAccelerometerChange(this.f)
+				}
+			},
+			button2()
+			{
+				if(this.f)
+				{
+					uni.offAccelerometerChange(this.f);
+					this.f=undefined;
+				}
+			},
+			button3()
+			{
+				uni.startAccelerometer({
+					interval:'normal',
+					success: () => {
+						uni.showToast({
+							icon:'success',
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'失败',
+							icon:'fail',
+						})
+					}
+				})
+			},
+			button4()
+			{
+				uni.stopAccelerometer({
+					interval:'normal',
+					success: () => {
+						uni.showToast({
+							icon:'success',
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'失败',
+							icon:'fail',
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+![image-20240104161104189](img/uniapp学习笔记/image-20240104161104189.png)
+
+
+
+
+
+![image-20240104161123944](img/uniapp学习笔记/image-20240104161123944.png)
+
+
+
+
+
+![image-20240104161159178](img/uniapp学习笔记/image-20240104161159178.png)
+
+
+
+
+
+
+
+
+
+
+
+## 设备-罗盘
+
+### uni.onCompassChange(CALLBACK)
+
