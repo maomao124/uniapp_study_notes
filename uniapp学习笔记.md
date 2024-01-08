@@ -18937,3 +18937,348 @@ button{
 
 ### uni.onCompassChange(CALLBACK)
 
+#### 概述
+
+监听罗盘数据，频率：5次/秒，接口调用后会自动开始监听
+
+H5端获取罗盘信息，需要部署在 **https** 服务上，本地预览（localhost）仍然可以使用 http 协议
+
+
+
+| 参数      | 类型   | 说明           |
+| :-------- | :----- | :------------- |
+| direction | Number | 面对的方向度数 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>direction:{{direction}}</h2>
+		<button type="primary" @click="button1">监听罗盘数据</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				direction:0,
+			}
+		},
+		methods: {
+			button1()
+			{
+				const f = function(res)
+				{
+					console.log(res.direction);
+					this.direction = res.direction;
+				}
+				console.log("监听罗盘数据");
+				uni.onCompassChange(f);
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+### uni.offCompassChange(CALLBACK)
+
+#### 概述
+
+取消监听罗盘数据
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>direction:{{direction}}</h2>
+		<button type="primary" @click="button1">监听罗盘数据</button>
+		<button type="primary" @click="button2">取消监听罗盘数据</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				direction:0,
+				f:undefined
+			}
+		},
+		methods: {
+			button1()
+			{
+				if(!this.f)
+				{
+					const f = function(res)
+					{
+						this.direction = res.direction;
+						console.log(res.direction);
+					}
+					console.log("监听罗盘数据");
+					uni.onCompassChange(f);
+					this.f=f;
+				}
+			},
+			button2()
+			{
+				if(this.f)
+				{
+					console.log("取消监听罗盘数据");
+					uni.offCompassChange(this.f);
+					this.f = undefined;
+				}
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.startCompass(OBJECT)
+
+#### 概述
+
+开始监听罗盘数据
+
+
+
+| 参数名   | 类型     | 必填 | 说明                                             |
+| :------- | :------- | :--- | :----------------------------------------------- |
+| success  | Function | 否   | 接口调用成功的回调                               |
+| fail     | Function | 否   | 接口调用失败的回调函数                           |
+| complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>direction:{{direction}}</h2>
+		<button type="primary" @click="button1">注册监听罗盘数据回调</button>
+		<button type="primary" @click="button2">取消注册监听罗盘数据回调</button>
+		<button type="primary" @click="button3">开始监听罗盘数据</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				direction:0,
+				f:undefined
+			}
+		},
+		methods: {
+			button1()
+			{
+				if(!this.f)
+				{
+					const f = function(res)
+					{
+						this.direction = res.direction;
+						console.log(res.direction);
+					}
+					console.log("监听罗盘数据");
+					uni.onCompassChange(f);
+					this.f=f;
+				}
+			},
+			button2()
+			{
+				if(this.f)
+				{
+					console.log("取消监听罗盘数据");
+					uni.offCompassChange(this.f);
+					this.f = undefined;
+				}
+			},
+			button3()
+			{
+				uni.startCompass({
+					success: () => {
+						uni.showToast({
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+### uni.stopCompass(OBJECT)
+
+停止监听罗盘数据
+
+
+
+| 参数名   | 类型     | 必填 | 说明                                             |
+| :------- | :------- | :--- | :----------------------------------------------- |
+| success  | Function | 否   | 接口调用成功的回调                               |
+| fail     | Function | 否   | 接口调用失败的回调函数                           |
+| complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>direction:{{direction}}</h2>
+		<button type="primary" @click="button1">注册监听罗盘数据回调</button>
+		<button type="primary" @click="button2">取消注册监听罗盘数据回调</button>
+		<button type="primary" @click="button3">开始监听罗盘数据</button>
+		<button type="primary" @click="button4">停止监听罗盘数据</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				direction: 0,
+				f:undefined
+			}
+		},
+		methods: {
+			button1()
+			{
+				if(!this.f)
+				{
+					this.f = (res)=>
+					{
+						console.log(res.direction);
+						this.direction = res.direction;
+					}
+					console.log("监听罗盘数据");
+					uni.onCompassChange(this.f);
+				}
+			},
+			button2()
+			{
+				if(this.f)
+				{
+					console.log("取消监听罗盘数据");
+					uni.offCompassChange(this.f);
+					this.f = undefined;
+				}
+			},
+			button3()
+			{
+				uni.startCompass({
+					success: () => {
+						uni.showToast({
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'失败'
+						})
+					}
+				})
+			},
+			button4()
+			{
+				uni.stopCompass({
+					success: () => {
+						uni.showToast({
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+
+
+![image-20240106190218209](img/uniapp学习笔记/image-20240106190218209.png)
+
+
+
+![image-20240106190303104](img/uniapp学习笔记/image-20240106190303104.png)
+
+
+
+
+
+
+
+
+
+
+
+## 设备-陀螺仪
