@@ -19282,3 +19282,308 @@ button{
 
 
 ## 设备-陀螺仪
+
+### uni.onGyroscopeChange(CALLBACK)
+
+#### 概述
+
+监听陀螺仪数据变化事件
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: |
+|  x   |  x   |     √      |      √       |     x      |           x            |
+
+
+
+
+
+#### 参数
+
+**CALLBACK 参数**
+
+| 属性 | 类型   | 说明          |
+| ---- | ------ | ------------- |
+| res  | Object | res = {x,y,x} |
+
+
+
+**res 的结构**
+
+| 名称 | 类型   | 描述          |
+| ---- | ------ | ------------- |
+| x    | number | x轴方向角速度 |
+| y    | number | y轴方向角速度 |
+| z    | number | z轴方向角速度 |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>x{{x}}</h2>
+		<h2>y{{y}}</h2>
+		<h2>z{{z}}</h2>
+		<button type="primary" @click="button1">监听陀螺仪数据变化事件</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				x,
+				y,
+				z,
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.onGyroscopeChange((res)=>
+				{
+					console.log(res.x,res.y,res.z);
+					this.x=res.x;
+					this.y=res.y;
+					this.z=res.z;
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.startGyroscope(OBJECT)
+
+#### 概述
+
+开始监听陀螺仪数据
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: |
+|  x   |  x   |     √      |      √       |     x      |           x            |
+
+
+
+#### 属性
+
+| 属性     | 类型     | 默认值 | 必填 | 说明                                                         | 平台说明   |
+| -------- | -------- | ------ | ---- | ------------------------------------------------------------ | ---------- |
+| interval | string   | normal | 否   | 监听陀螺仪数据回调函数的执行频率：game（20ms/次）、ui（60ms/次）、normal（200ms/次） | 微信小程序 |
+| success  | function |        | 否   | 接口调用成功的回调函数                                       |            |
+| fail     | function |        | 否   | 接口调用失败的回调函数                                       |            |
+| complete | function |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行）             |            |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>x{{x}}</h2>
+		<h2>y{{y}}</h2>
+		<h2>z{{z}}</h2>
+		<button type="primary" @click="button1">监听陀螺仪数据变化事件</button>
+		<button type="primary" @click="button2">开始监听陀螺仪数据</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				x,
+				y,
+				z,
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.onGyroscopeChange((res)=>
+				{
+					console.log(res.x,res.y,res.z);
+					this.x=res.x;
+					this.y=res.y;
+					this.z=res.z;
+				})
+			},
+			button2()
+			{
+				uni.startGyroscope({
+					success: () => {
+						uni.showToast({
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							icon:'fail',
+							title:'失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.stopGyroscope(OBJECT)
+
+#### 概述
+
+停止监听陀螺仪数据
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: |
+|  x   |  x   |     √      |      √       |     x      |           x            |
+
+
+
+
+
+#### 属性
+
+| 属性     | 类型     | 必填 | 说明                                             |
+| -------- | -------- | ---- | ------------------------------------------------ |
+| success  | function | 否   | 接口调用成功的回调函数                           |
+| fail     | function | 否   | 接口调用失败的回调函数                           |
+| complete | function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<h2>x{{x}}</h2>
+		<h2>y{{y}}</h2>
+		<h2>z{{z}}</h2>
+		<button type="primary" @click="button1">监听陀螺仪数据变化事件</button>
+		<button type="primary" @click="button2">开始监听陀螺仪数据</button>
+		<button type="primary" @click="button3">停止监听陀螺仪数据</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				x,
+				y,
+				z,
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.onGyroscopeChange((res)=>
+				{
+					console.log(res.x,res.y,res.z);
+					this.x=x;
+					this.y=y;
+					this.z=z;
+				})
+			},
+			button2()
+			{
+				uni.startGyroscope({
+					success: () => {
+						uni.showToast({
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							icon:'fail',
+							title:'失败'
+						})
+					}
+				})
+			},
+			button3()
+			{
+				uni.stopGyroscope({
+					success: () => {
+						uni.showToast({
+							title:'成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							icon:'fail',
+							title:'失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+![image-20240109210314672](img/uniapp学习笔记/image-20240109210314672.png)
+
+
+
+
+
+![image-20240109210334670](img/uniapp学习笔记/image-20240109210334670.png)
+
+
+
+![image-20240109210348156](img/uniapp学习笔记/image-20240109210348156.png)
+
+
+
+
+
