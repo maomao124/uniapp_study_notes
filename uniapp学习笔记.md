@@ -19587,3 +19587,78 @@ button{
 
 
 
+
+
+
+
+
+
+## 设备-拨打电话
+
+### uni.makePhoneCall(OBJECT)
+
+#### 概述
+
+拨打电话
+
+- Android需要在 manifest.json 增加权限 `<uses-permission android:name="android.permission.CALL_PHONE"/>`
+
+  
+
+
+
+#### 参数
+
+|   参数名    |   类型   | 必填 |                       说明                       |
+| :---------: | :------: | :--: | :----------------------------------------------: |
+| phoneNumber |  String  |  是  |                需要拨打的电话号码                |
+|   success   | Function |  否  |                接口调用成功的回调                |
+|    fail     | Function |  否  |              接口调用失败的回调函数              |
+|  complete   | Function |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="call('1234567')">拨打电话1234567</button>
+		<button type='warn' @click="call('110')">拨打电话110</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			call(number)
+			{
+				uni.makePhoneCall({
+					phoneNumber: number
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+
+
+
+
