@@ -19662,3 +19662,233 @@ button{
 
 
 
+
+
+
+
+## 设备-扫码
+
+### uni.scanCode(OBJECT)
+
+#### 概述
+
+调起客户端扫码界面，扫码成功后返回对应的结果
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------------------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |           √            |    √     |     √      |     √      |
+
+
+
+#### 参数
+
+|      参数名       |   类型   | 必填 |                             说明                             |                   平台差异说明                   |
+| :---------------: | :------: | :--: | :----------------------------------------------------------: | :----------------------------------------------: |
+|  onlyFromCamera   | Boolean  |  否  |           是否只能从相机扫码，不允许从相册选择图片           | 抖音小程序、百度小程序、支付宝小程序不支持此参数 |
+|     scanType      |  Array   |  否  |                           扫码类型                           |              抖音小程序不支持此参数              |
+| autoDecodeCharset | Boolean  |  否  |            是否启用自动识别字符编码功能，默认为否            |                       App                        |
+|     autoZoom      | Boolean  |  否  |                  是否启用自动放大，默认启用                  |           仅 App-Android (3.5.4+) 支持           |
+|   barCodeInput    | Boolean  |  否  |                    是否支持手动输入条形码                    |           仅飞书小程序（V3.14.0）支持            |
+|     hideAlbum     | Boolean  |  否  | 是否隐藏相册（不允许从相册选择图片），只能从相机扫码。默认值为 false。 |                仅支付宝小程序支持                |
+|      success      | Function |  否  |        接口调用成功的回调，返回内容详见返回参数说明。        |                                                  |
+|       fail        | Function |  否  |   接口调用失败的回调函数（识别失败、用户取消等情况下触发）   |                                                  |
+|     complete      | Function |  否  |       接口调用结束的回调函数（调用成功、失败都会执行）       |                                                  |
+
+
+
+
+
+**scanType**
+
+|     值     |      说明      |
+| :--------: | :------------: |
+|  barCode   |     一维码     |
+|   qrCode   |     二维码     |
+| datamatrix | Data Matrix 码 |
+|   pdf417   |  PDF417 条码   |
+
+
+
+**success 返回参数**
+
+|     参数     |                             说明                             |                         平台差异说明                         |
+| :----------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|    result    |                         所扫码的内容                         |                                                              |
+|   scanType   |                         所扫码的类型                         | App、微信小程序、百度小程序、QQ小程序、京东小程序、支付宝小程序 |
+|   charSet    |                        所扫码的字符集                        | App、微信小程序、百度小程序(所扫码的字符集，仅支持 Android 系统)、QQ小程序、京东小程序 |
+|     path     | 当所扫的码为当前应用的合法二维码时，会返回此字段，内容为二维码携带的 path。 |               微信小程序、QQ小程序、京东小程序               |
+|   rawData    |                    原始数据，base64 编码                     |        微信小程序、QQ小程序、京东小程序、支付宝小程序        |
+|     code     |                         扫码所得数据                         |                         支付宝小程序                         |
+|    qrCode    |                  扫描二维码时返回二维码数据                  |                         支付宝小程序                         |
+|   barCode    |                  扫描条形码时返回条形码数据                  |                         支付宝小程序                         |
+| imageChannel |                             来源                             |                         支付宝小程序                         |
+
+
+
+
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">扫码</button>
+		<button type="primary" @click="button2">只能从相机扫码</button>
+		<button type="primary" @click="button3">扫码类型 一维码</button>
+		<button type="primary" @click="button4">扫码类型 二维码</button>
+		<button type="primary" @click="button5">扫码类型 Data Matrix 码</button>
+		<button type="primary" @click="button6">扫码类型 PDF417 条码</button>
+		<button type="primary" @click="button7">自动识别字符编码</button>
+		<button type="primary" @click="button8">禁用自动放大</button>
+		<button type="primary" @click="button9">支持手动输入条形码</button>
+		<button type="primary" @click="button10">隐藏相册</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			button1()
+			{
+				uni.scanCode({
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button2()
+			{
+				uni.scanCode({
+					onlyFromCamera:true,
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button3()
+			{
+				uni.scanCode({
+					onlyFromCamera:true,
+					scanType:'barCode',
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button4()
+			{
+				uni.scanCode({
+					onlyFromCamera:true,
+					scanType:'qrCode',
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button5()
+			{
+				uni.scanCode({
+					onlyFromCamera:true,
+					scanType:'datamatrix',
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button6()
+			{
+				uni.scanCode({
+					onlyFromCamera:true,
+					scanType:'pdf417',
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button7()
+			{
+				uni.scanCode({
+					onlyFromCamera:true,
+					autoDecodeCharset:true,
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button8()
+			{
+				uni.scanCode({
+					onlyFromCamera:true,
+					autoDecodeCharset:false,
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button9()
+			{
+				uni.scanCode({
+					onlyFromCamera:true,
+					scanType:'barCode',
+					barCodeInput:true,
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+			button10()
+			{
+				uni.scanCode({
+					hideAlbum:true,
+					success: (res) => {
+						console.log('内容：',res);
+					},
+					fail: (err) => {
+						console.log("错误：",err);
+					}
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
