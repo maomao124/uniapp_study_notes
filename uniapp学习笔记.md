@@ -20075,3 +20075,336 @@ button{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+## 设备-屏幕亮度
+
+### uni.setScreenBrightness(OBJECT)
+
+#### 概述
+
+设置屏幕亮度
+
+避免 onshow() 里使用 setScreenBrightness() , 亮度变化会再次触发 onShow() 造成死循环
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序 | 飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------: | :--------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |     x      |     √      |    √     |     √      |     √      |
+
+
+
+
+
+#### 参数
+
+| 参数名   | 类型     | 必填 | 说明                                             |
+| :------- | :------- | :--- | :----------------------------------------------- |
+| value    | Number   | 是   | 屏幕亮度值，范围 0~1，0 最暗，1 最亮             |
+| success  | Function | 否   | 接口调用成功的回调                               |
+| fail     | Function | 否   | 接口调用失败的回调函数                           |
+| complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set(1)" >设置屏幕亮度- 1</button>
+		<button type="primary" @click="set(0.5)" >设置屏幕亮度- 0.5</button>
+		<button type="primary" @click="set(0)" >设置屏幕亮度- 0</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			set(number)
+			{
+				uni.setScreenBrightness({
+					value:number,
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'设置失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.getScreenBrightness(OBJECT)
+
+#### 概述
+
+获取屏幕亮度
+
+
+
+| App  |  H5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序 | 飞书小程序 | QQ小程序 | 快手小程序 | 京东小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------: | :--------: | :------: | :--------: | :--------: |
+|  √   |  x   |     √      |      √       |     √      |     x      |     √      |    √     |     √      |     √      |
+
+
+
+
+
+#### 参数
+
+| 参数名   | 类型     | 必填 | 说明                                             |
+| :------- | :------- | :--- | :----------------------------------------------- |
+| success  | Function | 否   | 接口调用成功的回调                               |
+| fail     | Function | 否   | 接口调用失败的回调函数                           |
+| complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+**success 返回参数**
+
+| 参数  | 类型   | 说明                                   |
+| :---- | :----- | :------------------------------------- |
+| value | Number | 屏幕亮度值，范围 0~1，0 最暗，1 最亮。 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set(1)" >设置屏幕亮度- 1</button>
+		<button type="primary" @click="set(0.5)" >设置屏幕亮度- 0.5</button>
+		<button type="primary" @click="set(0)" >设置屏幕亮度- 0</button>
+		<button type="primary" @click="get()" >读取屏幕亮度</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			set(number)
+			{
+				uni.setScreenBrightness({
+					value:number,
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'设置失败'
+						})
+					}
+				})
+			},
+			get()
+			{
+				uni.getScreenBrightness({
+					success: (res) => {
+						uni.showToast({
+							title:'当前亮度值：'+res.value
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'读取失败'
+						})
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
+
+
+### uni.setKeepScreenOn(OBJECT)
+
+#### 概述
+
+设置是否保持常亮状态。仅在当前应用生效，离开应用后设置失效
+
+
+
+#### 参数
+
+| 参数名       | 类型     | 必填 | 说明                                             |
+| :----------- | :------- | :--- | :----------------------------------------------- |
+| keepScreenOn | Boolean  | 是   | 是否保持屏幕常亮                                 |
+| success      | Function | 否   | 接口调用成功的回调                               |
+| fail         | Function | 否   | 接口调用失败的回调函数                           |
+| complete     | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+**success 返回参数**
+
+| 参数   | 类型   | 说明     |
+| :----- | :----- | :------- |
+| errMsg | String | 调用结果 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="set(1)" >设置屏幕亮度- 1</button>
+		<button type="primary" @click="set(0.5)" >设置屏幕亮度- 0.5</button>
+		<button type="primary" @click="set(0)" >设置屏幕亮度- 0</button>
+		<button type="primary" @click="get()" >读取屏幕亮度</button>
+		<button type="primary" @click="button1()" >保持屏幕常亮</button>
+		<button type="primary" @click="button2()" >取消保持屏幕常亮</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			set(number)
+			{
+				uni.setScreenBrightness({
+					value:number,
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'设置失败'
+						})
+					}
+				})
+			},
+			get()
+			{
+				uni.getScreenBrightness({
+					success: (res) => {
+						uni.showToast({
+							title:'当前亮度值：'+res.value
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'读取失败'
+						})
+					}
+				})
+			},
+			button1()
+			{
+				uni.setKeepScreenOn({
+					keepScreenOn: true,
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'设置失败'
+						})
+					}
+				});
+			},
+			button2()
+			{
+				uni.setKeepScreenOn({
+					keepScreenOn: false,
+					success: () => {
+						uni.showToast({
+							title:'设置成功'
+						})
+					},
+					fail: () => {
+						uni.showToast({
+							title:'设置失败'
+						})
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+button{
+	margin: 5px;
+}
+</style>
+
+```
+
+
+
+
+
