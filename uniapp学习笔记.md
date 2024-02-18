@@ -20664,3 +20664,566 @@ button{
 
 
 
+
+
+
+
+
+
+## 设备-生物认证
+
+### 概述
+
+生物认证，包含手机的指纹识别、faceid两部分。即通过人体身体特征来进行身份认证识别
+
+
+
+
+
+### uni.startSoterAuthentication(OBJECT)
+
+#### 概述
+
+开始 SOTER 生物认证
+
+
+
+| App         | H5   | 微信小程序 | 支付宝小程序 | 百度小程序 | 抖音小程序、飞书小程序 | QQ小程序 |
+| :---------- | :--- | :--------- | :----------- | :--------- | :--------------------- | :------- |
+| √（2.3.8+） | x    | √          | x            | x          | x                      | x        |
+
+
+
+#### 参数
+
+| 属性             | 类型     | 默认值 | 必填 | 说明                                                         | 平台差异说明    |
+| :--------------- | :------- | :----- | :--- | :----------------------------------------------------------- | :-------------- |
+| requestAuthModes | Array    |        | 是   | 请求使用的可接受的生物认证方式                               | APP、微信小程序 |
+| challenge        | String   |        | 是   | 挑战因子。挑战因子为调用者为此次生物鉴权准备的用于签名的字符串关键识别信息，将作为 resultJSON 的一部分，供调用者识别本次请求。例如：如果场景为请求用户对某订单进行授权确认，则可以将订单号填入此参数。 | 微信小程序      |
+| authContent      | String   | ''     | 否   | 验证描述，即识别过程中显示在界面上的对话框提示内容           | APP、微信小程序 |
+| success          | Function |        | 否   | 接口调用成功的回调函数                                       |                 |
+| fail             | Function |        | 否   | 接口调用失败的回调函数                                       |                 |
+| complete         | Function |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行）             |                 |
+
+
+
+
+
+**OBJECT.requestAuthModes**
+
+|     值      |   说明   |
+| :---------: | :------: |
+| fingerPrint | 指纹识别 |
+|   facial    | 人脸识别 |
+
+
+
+
+
+**OBJECT.success返回值**
+
+| 属性                | 类型   | 说明                                                         | 平台差异说明    |
+| :------------------ | :----- | :----------------------------------------------------------- | :-------------- |
+| authMode            | string | 生物认证方式                                                 | APP、微信小程序 |
+| resultJSON          | string | 在设备安全区域（TEE）内获得的本机安全信息（如TEE名称版本号等以及防重放参数）以及本次认证信息（仅Android支持，本次认证的指纹ID）。具体说明见下文 | 微信小程序      |
+| resultJSONSignature | string | 用SOTER安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20) | 微信小程序      |
+| errCode             | number | 错误码                                                       |                 |
+| errMsg              | string | 错误信息                                                     |                 |
+
+
+
+
+
+**resultJSON**
+
+此数据为设备TEE中，将传入的challenge和TEE内其他安全信息组成的数据进行组装而来的JSON
+
+| 字段名  |                             说明                             |
+| :-----: | :----------------------------------------------------------: |
+|   raw   |                    调用者传入的challenge                     |
+|   fid   | （仅Android支持）本次生物识别认证的生物信息编号（如指纹识别则是指纹信息在本设备内部编号） |
+| counter |                        防重放特征参数                        |
+|  tee_n  |               TEE名称（如高通或者trustonic等）               |
+|  tee_v  |                          TEE版本号                           |
+|  fp_n   |            指纹以及相关逻辑模块提供商（如FPC等）             |
+|  fp_v   |                    指纹以及相关模块版本号                    |
+| cpu_id  |                        机器唯一识别ID                        |
+|   uid   |           概念同Android系统定义uid，即应用程序编号           |
+
+
+
+
+
+**错误码**
+
+| 错误码 |                    错误码说明                     |
+| :----: | :-----------------------------------------------: |
+|   0    |                     识别成功                      |
+| 90001  |               本设备不支持生物认证                |
+| 90002  |           用户未授权使用该生物认证接口            |
+| 90003  |           请求使用的生物认证方式不支持            |
+| 90004  | 未传入challenge或challenge长度过长（最长512字符） |
+| 90005  |     auth_content长度超过限制（最长42个字符）      |
+| 90007  |                     内部错误                      |
+| 90008  |                   用户取消授权                    |
+| 90009  |                     识别失败                      |
+| 90010  |                重试次数过多被冻结                 |
+| 90011  |              用户未录入所选识别方式               |
+
+
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">开始人脸认证</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				console.log("人脸认证");
+				uni.startSoterAuthentication({
+					requestAuthModes: ['facial'],
+					challenge:'12345',
+					authContent: '请人脸认证',
+					success: (data) => {
+						console.log("生物认证方式:" + data.authMode);
+						console.log('resultJSON:' + data.resultJSON);
+						console.log("resultJSONSignature:" + data.resultJSONSignature);
+					},
+					fail: (err) => {
+						console.log("错误码：" + err.errCode);
+						console.log("错误信息：" + err.errMsg);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">开始人脸认证</button>
+		<button type="primary" @click="button2">开始指纹识别</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				console.log("人脸认证");
+				uni.startSoterAuthentication({
+					requestAuthModes: ['facial'],
+					challenge:'12345',
+					authContent: '请人脸认证',
+					success: (data) => {
+						console.log("生物认证方式:" + data.authMode);
+						console.log('resultJSON:' + data.resultJSON);
+						console.log("resultJSONSignature:" + data.resultJSONSignature);
+					},
+					fail: (err) => {
+						console.log("错误码：" + err.errCode);
+						console.log("错误信息：" + err.errMsg);
+					}
+				})
+			},
+			button2() {
+				console.log("指纹识别");
+				uni.startSoterAuthentication({
+					requestAuthModes: ['fingerPrint'],
+					challenge:'12345',
+					authContent: '请指纹认证',
+					success: (data) => {
+						console.log("生物认证方式:" + data.authMode);
+						console.log('resultJSON:' + data.resultJSON);
+						console.log("resultJSONSignature:" + data.resultJSONSignature);
+					},
+					fail: (err) => {
+						console.log("错误码：" + err.errCode);
+						console.log("错误信息：" + err.errMsg);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+
+
+
+
+![image-20240218110453377](img/uniapp学习笔记/image-20240218110453377.png)
+
+![image-20240218110410567](img/uniapp学习笔记/image-20240218110410567.png)
+
+
+
+
+
+
+
+
+
+### uni.checkIsSupportSoterAuthentication(OBJECT)
+
+#### 概述
+
+获取本机支持的 SOTER 生物认证方式
+
+
+
+#### 参数
+
+| 属性     | 类型     | 默认值 | 必填 | 说明                                             |
+| :------- | :------- | :----- | :--- | :----------------------------------------------- |
+| success  | function |        | 否   | 接口调用成功的回调函数                           |
+| fail     | function |        | 否   | 接口调用失败的回调函数                           |
+| complete | function |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+**OBJECT.success返回值**
+
+| 属性        | 类型  | 说明                                    |
+| :---------- | :---- | :-------------------------------------- |
+| supportMode | Array | 该设备支持的可被SOTER识别的生物识别方式 |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">开始人脸认证</button>
+		<button type="primary" @click="button2">开始指纹识别</button>
+		<button type="primary" @click="button3">获取本机支持的生物认证方式</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				console.log("人脸认证");
+				uni.startSoterAuthentication({
+					requestAuthModes: ['facial'],
+					challenge:'12345',
+					authContent: '请人脸认证',
+					success: (data) => {
+						console.log("生物认证方式:" + data.authMode);
+						console.log('resultJSON:' + data.resultJSON);
+						console.log("resultJSONSignature:" + data.resultJSONSignature);
+					},
+					fail: (err) => {
+						console.log("错误码：" + err.errCode);
+						console.log("错误信息：" + err.errMsg);
+					}
+				})
+			},
+			button2() {
+				console.log("指纹识别");
+				uni.startSoterAuthentication({
+					requestAuthModes: ['fingerPrint'],
+					challenge:'12345',
+					authContent: '请指纹认证',
+					success: (data) => {
+						console.log("生物认证方式:" + data.authMode);
+						console.log('resultJSON:' + data.resultJSON);
+						console.log("resultJSONSignature:" + data.resultJSONSignature);
+					},
+					fail: (err) => {
+						console.log("错误码：" + err.errCode);
+						console.log("错误信息：" + err.errMsg);
+					}
+				})
+			},
+			button3()
+			{
+				console.log("获取本机支持的生物认证方式");
+				uni.checkIsSupportSoterAuthentication({
+					success: (data) => {
+						console.log('支持：',data.supportMode);
+						uni.showModal({
+							showCancel:false,
+							title:'提示',
+							content:'支持：'+data.supportMode
+						})
+					},
+					fail: (err) => {
+						console.log("错误:",err);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+
+
+![image-20240218111604956](img/uniapp学习笔记/image-20240218111604956.png)
+
+
+
+![image-20240218111633509](img/uniapp学习笔记/image-20240218111633509.png)
+
+
+
+
+
+
+
+### uni.checkIsSoterEnrolledInDevice(OBJECT)
+
+#### 概述
+
+获取设备内是否录入如指纹等生物信息的接口
+
+
+
+#### 参数
+
+|     属性      |   类型   | 默认值 | 必填 |                       说明                       |
+| :-----------: | :------: | :----: | :--: | :----------------------------------------------: |
+| checkAuthMode |  string  |        |  是  |                     认证方式                     |
+|    success    | function |        |  否  |              接口调用成功的回调函数              |
+|     fail      | function |        |  否  |              接口调用失败的回调函数              |
+|   complete    | function |        |  否  | 接口调用结束的回调函数（调用成功、失败都会执行） |
+
+
+
+**OBJECT.checkAuthMode合法值**
+
+| 值          | 说明     |
+| :---------- | :------- |
+| fingerPrint | 指纹识别 |
+| facial      | 人脸识别 |
+
+
+
+**OBJECT.success返回值**
+
+| 属性       | 类型    | 说明           |
+| :--------- | :------ | :------------- |
+| isEnrolled | boolean | 是否已录入信息 |
+| errMsg     | string  | 错误信息       |
+
+
+
+
+
+#### 示例
+
+```vue
+<template>
+	<view>
+		<button type="primary" @click="button1">开始人脸认证</button>
+		<button type="primary" @click="button2">开始指纹识别</button>
+		<button type="primary" @click="button3">获取本机支持的生物认证方式</button>
+		<button type="primary" @click="button4">设备是否录入指纹</button>
+		<button type="primary" @click="button5">设备是否录入人脸</button>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			button1() {
+				console.log("人脸认证");
+				uni.startSoterAuthentication({
+					requestAuthModes: ['facial'],
+					challenge:'12345',
+					authContent: '请人脸认证',
+					success: (data) => {
+						console.log("生物认证方式:" + data.authMode);
+						console.log('resultJSON:' + data.resultJSON);
+						console.log("resultJSONSignature:" + data.resultJSONSignature);
+					},
+					fail: (err) => {
+						console.log("错误码：" + err.errCode);
+						console.log("错误信息：" + err.errMsg);
+					}
+				})
+			},
+			button2() {
+				console.log("指纹识别");
+				uni.startSoterAuthentication({
+					requestAuthModes: ['fingerPrint'],
+					challenge:'12345',
+					authContent: '请指纹认证',
+					success: (data) => {
+						console.log("生物认证方式:" + data.authMode);
+						console.log('resultJSON:' + data.resultJSON);
+						console.log("resultJSONSignature:" + data.resultJSONSignature);
+					},
+					fail: (err) => {
+						console.log("错误码：" + err.errCode);
+						console.log("错误信息：" + err.errMsg);
+					}
+				})
+			},
+			button3()
+			{
+				console.log("获取本机支持的生物认证方式");
+				uni.checkIsSupportSoterAuthentication({
+					success: (data) => {
+						console.log('支持：',data.supportMode);
+						uni.showModal({
+							showCancel:false,
+							title:'提示',
+							content:'支持：'+data.supportMode
+						})
+					},
+					fail: (err) => {
+						console.log("错误:",err);
+					}
+				})
+			},
+			button4()
+			{
+				uni.checkIsSoterEnrolledInDevice({
+					checkAuthMode:'fingerPrint',
+					success: (data) => {
+						console.log(data);
+						if(data.isEnrolled)
+						{
+							uni.showModal({
+								showCancel:false,
+								title:'提示',
+								content:'已录入指纹'
+							})
+						}
+						else
+						{
+							uni.showModal({
+								showCancel:false,
+								title:'提示',
+								content:'未录入指纹'
+							})
+						}
+					},
+					fail: (err) => {
+						console.log('错误：',err);
+					}
+				})
+			},
+			button5()
+			{
+				uni.checkIsSoterEnrolledInDevice({
+					checkAuthMode:'facial',
+					success: (data) => {
+						console.log(data);
+						if(data.isEnrolled)
+						{
+							uni.showModal({
+								showCancel:false,
+								title:'提示',
+								content:'已录入人脸'
+							})
+						}
+						else
+						{
+							uni.showModal({
+								showCancel:false,
+								title:'提示',
+								content:'未录入人脸'
+							})
+						}
+					},
+					fail: (err) => {
+						console.log('错误：',err);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	button {
+		margin: 5px;
+	}
+</style>
+```
+
+
+
+
+
+![image-20240218112636834](img/uniapp学习笔记/image-20240218112636834.png)
+
+
+
+![image-20240218112731813](img/uniapp学习笔记/image-20240218112731813.png)
+
+
+
+
+
